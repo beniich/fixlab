@@ -1,0 +1,6 @@
+{
+  "name": "Sovereign Device Manager",
+  "description": "Cyber-Industrial Sovereignty Control Console featuring active health alerts, policy enforcement, predictive failure analytics, direct shell emulator, and interactive automation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
