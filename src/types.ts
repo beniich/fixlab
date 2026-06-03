@@ -124,3 +124,90 @@ export interface SovereignSettings {
   dataSynthesis: string;
 }
 
+export interface GatewayLog {
+  id: string;
+  timestamp: string;
+  method: "POST" | "GET" | "WS_EMIT" | "SSH_EXEC";
+  route: string;
+  adapter: "JumpServer PAM" | "gRPC Fleet Agency" | "LLM Neural Intel" | "Prometheus Node Exporter";
+  status: number;
+  delay: string;
+  payload: string;
+}
+
+export interface ComplianceControl {
+  id: string;
+  standard: "SOC2" | "ISO27001";
+  code: string;
+  name: string;
+  description: string;
+  status: "verified" | "drift" | "broken";
+  lastChecked: string;
+  evidenceType: "JumpServer Logs" | "Access Policy" | "Network Whitelist" | "Software Vulnerability Scan" | "TLS DNS Setup" | "Prometheus SLA Metrics";
+  evidenceSnapshot: string;
+  linkedPolicyId?: string;
+}
+
+export interface ComplianceDomain {
+  id: string;
+  name: string;
+  score: number;
+  status: "optimal" | "warning" | "critical";
+  controlsCount: number;
+  verifiedCount: number;
+}
+
+export interface ApplianceConfig {
+  bastionEnabled: boolean;
+  bastionPort: number;
+  encryptedProtocolMode: "TLS_v1.3" | "SSH_v2" | "IPSec_VPN";
+  telemetryInterval: "realtime" | "standard" | "eco";
+  autoIsolateOnOverheat: boolean;
+  mfaEnforced: boolean;
+  ipWhitelist: string;
+  installedPlugins: {
+    pfBlockerNG: boolean;
+    suricataIDS: boolean;
+    soc2Auditor: boolean;
+    vncStreamer: boolean;
+  };
+}
+
+export interface EnrollmentRequest {
+  id: string;
+  designation: string;
+  sector: string;
+  ip: string;
+  os: "Linux" | "Windows" | "macOS" | "SovereignOS";
+  clearanceLevel: number;
+  rootAccess: boolean;
+  signerOperator: string;
+  status: "pending" | "approved" | "rejected" | "enrolled";
+  token?: string;
+  createdTime: string;
+  enrolledTime?: string;
+}
+
+export interface VolatileSession {
+  id: string;
+  subscriberName: string;
+  token: string;
+  status: "active" | "expired";
+  ramPath: string; // e.g. /dev/shm/nexus_session_X.key
+  ipAddress: string;
+  roleAssigned: string;
+  establishedTime: string;
+  timeRemainingSeconds: number; // TTL representation
+  totalTtlSeconds: number;
+}
+
+export interface GoogleAdminProfile {
+  email: string;
+  name: string;
+  avatarUrl: string;
+  isAuthenticated: boolean;
+  tokenJwt?: string;
+}
+
+
+

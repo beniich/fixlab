@@ -43,7 +43,7 @@ service cloud.firestore {
     function isValidUserProfile(data) {
       return data.uid is string && data.uid == request.auth.uid &&
              data.email is string && data.email.size() <= 254 &&
-             data.role is string && (data.role == "super-admin" || data.role == "strategist" || data.role == "tactician" || data.role == "auditor") &&
+             data.role is string && (data.role == "client" || data.role == "super-admin" || data.role == "strategist" || data.role == "tactician" || data.role == "auditor") &&
              data.plan is string && (data.plan == "tactical" || data.plan == "sovereign" || data.plan == "imperial");
     }
 
@@ -98,9 +98,24 @@ service cloud.firestore {
              data.ownerId is string && data.ownerId == request.auth.uid;
     }
 
+    function isValidContact(data) {
+      return data.id is string && data.id.size() <= 64 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 254 &&
+             data.phone is string && data.phone.size() <= 30 &&
+             data.organization is string && data.organization.size() <= 100 &&
+             data.type is string && (data.type == "platform-admin" || data.type == "subscriber-client") &&
+             data.ownerId is string && data.ownerId == request.auth.uid;
+    }
+
     // ==========================================
     // RESOURCE BOUNDARY MATCH BLOCKS
     // ==========================================
+
+    // Connection Diagnostics Match
+    match /test/connection {
+      allow get: if true;
+    }
 
     // Users Collection Root
     match /users/{userId} {
@@ -143,6 +158,15 @@ service cloud.firestore {
         allow create: if isOwner(userId) && isEmailVerified() && isValidId(groupId) && isValidGroupFolder(incoming());
         allow update: if isOwner(userId) && isEmailVerified() && isValidId(groupId) && isValidGroupFolder(incoming()) && incoming().id == existing().id;
         allow delete: if isOwner(userId) && isValidId(groupId);
+      }
+
+      // Contacts Subcollection
+      match /contacts/{contactId} {
+        allow get: if isOwner(userId) && isValidId(contactId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isEmailVerified() && isValidId(contactId) && isValidContact(incoming());
+        allow update: if isOwner(userId) && isEmailVerified() && isValidId(contactId) && isValidContact(incoming()) && incoming().id == existing().id;
+        allow delete: if isOwner(userId) && isValidId(contactId);
       }
     }
   }

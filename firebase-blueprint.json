@@ -7,7 +7,7 @@
       "properties": {
         "uid": { "type": "string", "description": "Unique user credentials identifier" },
         "email": { "type": "string", "format": "email", "description": "The registered email address" },
-        "role": { "type": "string", "enum": ["super-admin", "strategist", "tactician", "auditor"], "description": "RBAC clearance level" },
+        "role": { "type": "string", "enum": ["super-admin", "strategist", "tactician", "auditor", "client"], "description": "RBAC clearance level" },
         "plan": { "type": "string", "enum": ["tactical", "sovereign", "imperial"], "description": "SaaS licensing plan" },
         "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
         "updatedAt": { "type": "string", "format": "date-time", "description": "Last updated timestamp" }
@@ -72,7 +72,7 @@
     },
     "groupFolder": {
       "title": "GroupFolder",
-      "description": "Clinical logical network segments linking multiple endpoints",
+      "description": "Sovereign logical network segments linking multiple endpoints",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
@@ -84,6 +84,22 @@
         "ownerId": { "type": "string" }
       },
       "required": ["id", "name", "deviceCount", "healthScore", "activeThreats", "category", "ownerId"]
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Sovereign platform registry recipient",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "organization": { "type": "string" },
+        "type": { "type": "string", "enum": ["platform-admin", "subscriber-client"] },
+        "createdAt": { "type": "string" },
+        "ownerId": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "phone", "organization", "type", "ownerId"]
     }
   },
   "firestore": {
@@ -101,11 +117,15 @@
     },
     "users/{userId}/securityPolicies/{policyId}": {
       "schema": { "$ref": "#/entities/securityPolicy" },
-      "description": "Customized clinical host endpoint validation policies"
+      "description": "Customized sovereign host endpoint validation policies"
     },
     "users/{userId}/groupFolders/{groupId}": {
       "schema": { "$ref": "#/entities/groupFolder" },
-      "description": "Clinical node categorization clusters"
+      "description": "Sovereign node categorization clusters"
+    },
+    "users/{userId}/contacts/{contactId}": {
+      "schema": { "$ref": "#/entities/contact" },
+      "description": "Sovereign Administrative and Client Contacts"
     }
   }
 }

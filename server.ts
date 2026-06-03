@@ -93,6 +93,56 @@ interface SovereignSettings {
   dataSynthesis: string;
 }
 
+interface GatewayLog {
+  id: string;
+  timestamp: string;
+  method: "POST" | "GET" | "WS_EMIT" | "SSH_EXEC";
+  route: string;
+  adapter: "JumpServer PAM" | "gRPC Fleet Agency" | "LLM Neural Intel" | "Prometheus Node Exporter";
+  status: number;
+  delay: string;
+  payload: string;
+}
+
+interface ComplianceControl {
+  id: string;
+  standard: "SOC2" | "ISO27001";
+  code: string;
+  name: string;
+  description: string;
+  status: "verified" | "drift" | "broken";
+  lastChecked: string;
+  evidenceType: "JumpServer Logs" | "Access Policy" | "Network Whitelist" | "Software Vulnerability Scan" | "TLS DNS Setup" | "Prometheus SLA Metrics" | "Storage Regulation";
+  evidenceSnapshot: string;
+  linkedPolicyId?: string;
+}
+
+interface ComplianceDomain {
+  id: string;
+  name: string;
+  score: number;
+  status: "optimal" | "warning" | "critical";
+  controlsCount: number;
+  verifiedCount: number;
+}
+
+
+interface ApplianceConfig {
+  bastionEnabled: boolean;
+  bastionPort: number;
+  encryptedProtocolMode: "TLS_v1.3" | "SSH_v2" | "IPSec_VPN";
+  telemetryInterval: "realtime" | "standard" | "eco";
+  autoIsolateOnOverheat: boolean;
+  mfaEnforced: boolean;
+  ipWhitelist: string;
+  installedPlugins: {
+    pfBlockerNG: boolean;
+    suricataIDS: boolean;
+    soc2Auditor: boolean;
+    vncStreamer: boolean;
+  };
+}
+
 // Global In-Memory Database State
 let sovereignSettings: SovereignSettings = {
   coreIdentity: 45,
@@ -101,6 +151,142 @@ let sovereignSettings: SovereignSettings = {
   energyProfile: 75,
   dataSynthesis: "Low-Latency"
 };
+
+let applianceConfig: ApplianceConfig = {
+  bastionEnabled: true,
+  bastionPort: 443,
+  encryptedProtocolMode: "TLS_v1.3",
+  telemetryInterval: "realtime",
+  autoIsolateOnOverheat: true,
+  mfaEnforced: true,
+  ipWhitelist: "10.240.11.1, 10.240.12.*, 127.0.0.1",
+  installedPlugins: {
+    pfBlockerNG: true,
+    suricataIDS: false,
+    soc2Auditor: true,
+    vncStreamer: true
+  }
+};
+
+interface EnrollmentRequest {
+  id: string;
+  designation: string;
+  sector: string;
+  ip: string;
+  os: "Linux" | "Windows" | "macOS" | "SovereignOS";
+  clearanceLevel: number;
+  rootAccess: boolean;
+  signerOperator: string;
+  status: "pending" | "approved" | "rejected" | "enrolled";
+  token?: string;
+  createdTime: string;
+  enrolledTime?: string;
+}
+
+let staticEnrollmentRequests: EnrollmentRequest[] = [
+  {
+    id: "REQ-3301",
+    designation: "SIGINT-RECEIVER-4",
+    sector: "Périmètre Externe (Edge)",
+    ip: "10.240.11.45",
+    os: "Linux",
+    clearanceLevel: 3,
+    rootAccess: false,
+    signerOperator: "Lieutenant Vance",
+    status: "pending",
+    createdTime: "2026-06-02 08:30:11"
+  },
+  {
+    id: "REQ-3302",
+    designation: "ALPHA-COMMAND-VAULT",
+    sector: "Secteur Nord (Commandement)",
+    ip: "10.240.12.8",
+    os: "SovereignOS",
+    clearanceLevel: 5,
+    rootAccess: true,
+    signerOperator: "Major General Carter",
+    status: "approved",
+    token: "SOV-77926-XDF89",
+    createdTime: "2026-06-02 10:14:45"
+  }
+];
+
+interface VolatileSession {
+  id: string;
+  subscriberName: string;
+  token: string;
+  status: "active" | "expired";
+  ramPath: string;
+  ipAddress: string;
+  roleAssigned: string;
+  establishedTime: string;
+  timeRemainingSeconds: number;
+  totalTtlSeconds: number;
+}
+
+let volatileSessions: VolatileSession[] = [
+  {
+    id: "VOL-X92",
+    subscriberName: "NEXUS-RE-04",
+    token: "LNK-7C6BB5-X92",
+    status: "active",
+    ramPath: "/dev/shm/nexus_session_VOL-X92.key",
+    ipAddress: "10.240.11.19",
+    roleAssigned: "Tactical Sensor Operator",
+    establishedTime: "2026-06-02 11:30:22",
+    timeRemainingSeconds: 2450,
+    totalTtlSeconds: 3600
+  },
+  {
+    id: "VOL-A44",
+    subscriberName: "DRONE-TACTICAL-8",
+    token: "LNK-FF5C00-P95",
+    status: "expired",
+    ramPath: "/dev/shm/nexus_session_VOL-A44.key",
+    ipAddress: "10.240.11.7",
+    roleAssigned: "Telemetry Auditor",
+    establishedTime: "2026-06-02 09:12:00",
+    timeRemainingSeconds: 0,
+    totalTtlSeconds: 3600
+  }
+];
+
+let gatewayLogs: GatewayLog[] = [
+  {
+    id: "REQ-001",
+    timestamp: "21:09:12",
+    method: "GET",
+    route: "/api/gateway/prom/nodes/load",
+    adapter: "Prometheus Node Exporter",
+    status: 200,
+    delay: "1.24ms",
+    payload: "{ nodesTotal: 1250, activeRate: 0.945 }"
+  },
+  {
+    id: "REQ-002",
+    timestamp: "21:09:15",
+    method: "POST",
+    route: "/api/gateway/pam/replicate-session",
+    adapter: "JumpServer PAM",
+    status: 200,
+    delay: "4.85ms",
+    payload: "{ sessionId: 'SSID-7489', auditActive: true }"
+  },
+  {
+    id: "REQ-003",
+    method: "WS_EMIT",
+    route: "fleet:reboot_target",
+    adapter: "gRPC Fleet Agency",
+    status: 101,
+    delay: "2.12ms",
+    payload: "{ targetNode: 'Sovereign-A1', code: '0x39' }",
+    timestamp: "21:09:18"
+  }
+];
+
+let gatewayRequestsCount = 14502;
+let averageDelay = 2.32;
+let gatewayReqCounter = 104;
 
 let dnsRecords: DNSRecord[] = [
   { id: "DNS-001", domain: "gateway.sovereign.local", type: "A", value: "10.240.11.14", ttl: 3600, status: "active", systemManaged: true },
@@ -472,7 +658,152 @@ function appendLog(message: string, level: "info" | "warning" | "critical" | "su
   return newLog;
 }
 
+// Gateway logging generator
+function addGatewayLog(
+  method: "POST" | "GET" | "WS_EMIT" | "SSH_EXEC",
+  route: string,
+  adapter: GatewayLog["adapter"],
+  status: number,
+  delayMs: number,
+  payload: string
+) {
+  const newLog: GatewayLog = {
+    id: `REQ-${gatewayReqCounter++}`,
+    timestamp: getTimestamp(),
+    method,
+    route,
+    adapter,
+    status,
+    delay: `${delayMs.toFixed(2)}ms`,
+    payload
+  };
+  gatewayLogs = [newLog, ...gatewayLogs].slice(0, 50);
+  gatewayRequestsCount++;
+  averageDelay = Number((averageDelay * 0.95 + delayMs * 0.05).toFixed(2));
+  broadcast("gateway_logs_update", { gatewayLogs, gatewayRequestsCount, averageDelay });
+  return newLog;
+}
+
+// Sovereign Continuous Compliance Engine State Builder
+function getComplianceState() {
+  const usbEnabled = policies.find(p => p.id === "POL-001")?.enabled ?? true;
+  const timeoutEnabled = policies.find(p => p.id === "POL-002")?.enabled ?? true;
+  const mfaEnabled = policies.find(p => p.id === "POL-003")?.enabled ?? true;
+  const whitelistEnabled = policies.find(p => p.id === "POL-004")?.enabled ?? true;
+
+  const list: ComplianceControl[] = [
+    {
+      id: "CTRL-001",
+      standard: "SOC2" as const,
+      code: "CC6.1",
+      name: "Logical Access Controls / Privilege JIT Authorization",
+      description: "Enforces distinct user privilege pathways securely. Links to JumpServer bastion recording session logs.",
+      status: mfaEnabled ? (timeoutEnabled ? "verified" : "drift") : "broken",
+      lastChecked: "Just now",
+      evidenceType: "JumpServer Logs" as const,
+      evidenceSnapshot: JSON.stringify({ authorizationMode: "JIT", activeMFA: mfaEnabled, timeoutLimitEnforced: timeoutEnabled, pamVersion: "v3.10.4-s9" }),
+      linkedPolicyId: "POL-003"
+    },
+    {
+      id: "CTRL-002",
+      standard: "ISO27001" as const,
+      code: "A.9.2.2",
+      name: "Allocation of Privilege Access Rights",
+      description: "Requires explicit MFA-backed credential checks and roles mapped in a Centralized Directory schema.",
+      status: mfaEnabled ? "verified" : "broken",
+      lastChecked: mfaEnabled ? "Just now" : "Failed 3 mins ago",
+      evidenceType: "Access Policy" as const,
+      evidenceSnapshot: JSON.stringify({ roleEnforced: "Platform Strategist", mfaEnforced: mfaEnabled, hashType: "SHA-512-argon2" }),
+      linkedPolicyId: "POL-003"
+    },
+    {
+      id: "CTRL-003",
+      standard: "SOC2" as const,
+      code: "CC6.3",
+      name: "Network Boundary Safeguards",
+      description: "Ensures network access whitelist definitions block all unaligned port scan sweeps.",
+      status: whitelistEnabled ? "verified" : "drift",
+      lastChecked: "Just now",
+      evidenceType: "Network Whitelist" as const,
+      evidenceSnapshot: JSON.stringify({ portRestricted: whitelistEnabled, boundIPs: ["10.240.11.0/24", "10.240.12.0/24"], activeGatewayRules: 14 }),
+      linkedPolicyId: "POL-004"
+    },
+    {
+      id: "CTRL-004",
+      standard: "ISO27001" as const,
+      code: "A.12.6.1",
+      name: "Technical Vulnerability Management",
+      description: "Performs continuous scans of all running OS kernels and local node packages for CVE targets.",
+      status: "verified",
+      lastChecked: "4 mins ago",
+      evidenceType: "Software Vulnerability Scan" as const,
+      evidenceSnapshot: JSON.stringify({ scannerEngine: "Nexus-Aegis", scansRun: 42, activeCVEsDetected: 0, highestRisk: "None" })
+    },
+    {
+      id: "CTRL-005",
+      standard: "SOC2" as const,
+      code: "CC6.6",
+      name: "Device and Removable Media Control",
+      description: "Restricts flash drives or foreign storage components from escalating local kernel privileges.",
+      status: usbEnabled ? "verified" : "broken",
+      lastChecked: "Just now",
+      evidenceType: "Storage Regulation" as const,
+      evidenceSnapshot: JSON.stringify({ blockUSB: usbEnabled, dynamicKernelIntercept: true, whitelistUdevRules: 3 }),
+      linkedPolicyId: "POL-001"
+    },
+    {
+      id: "CTRL-006",
+      standard: "ISO27001" as const,
+      code: "A.12.4.1",
+      name: "Security Event Logging & Monitoring",
+      description: "Guarantees unalterable logging of admin actions, terminal commands, and system alert cascades.",
+      status: "verified",
+      lastChecked: "Just now",
+      evidenceType: "Prometheus SLA Metrics" as const,
+      evidenceSnapshot: JSON.stringify({ activeAuditsCount: gatewayLogs.length, loggingStorage: "Unalterable RingBuffer", telemetryLossRate: "0.00%" })
+    }
+  ];
+
+  const verifiedCount = list.filter(c => c.status === "verified").length;
+  const driftCount = list.filter(c => c.status === "drift").length;
+  const brokenCount = list.filter(c => c.status === "broken").length;
+
+  const scorePct = Math.round(((verifiedCount * 1.0 + driftCount * 0.5) / list.length) * 100);
+
+  const domains: ComplianceDomain[] = [
+    {
+      id: "security",
+      name: "Logical Access & Security Perimeter",
+      score: Math.round(((list.filter(c => c.standard === "SOC2" && c.status === "verified").length) / list.filter(c => c.standard === "SOC2").length) * 100),
+      status: list.some(c => c.standard === "SOC2" && c.status === "broken") ? "critical" : (list.some(c => c.standard === "SOC2" && c.status === "drift") ? "warning" : "optimal"),
+      controlsCount: list.filter(c => c.standard === "SOC2").length,
+      verifiedCount: list.filter(c => c.standard === "SOC2" && c.status === "verified").length
+    },
+    {
+      id: "operations",
+      name: "Operations & Vulnerability Management",
+      score: Math.round(((list.filter(c => c.standard === "ISO27001" && c.status === "verified").length) / list.filter(c => c.standard === "ISO27001").length) * 100),
+      status: list.some(c => c.standard === "ISO27001" && c.status === "broken") ? "critical" : "optimal",
+      controlsCount: list.filter(c => c.standard === "ISO27001").length,
+      verifiedCount: list.filter(c => c.standard === "ISO27001" && c.status === "verified").length
+    }
+  ];
+
+  return {
+    score: scorePct,
+    controls: list,
+    domains,
+    summary: {
+      verifiedCount,
+      driftCount,
+      brokenCount,
+      totalCount: list.length
+    }
+  };
+}
+
 // Start Server Setup
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -491,7 +822,7 @@ async function startServer() {
 
     // Stream initial database snapshot
     res.write(`event: sync_all\n`);
-    res.write(`data: ${JSON.stringify({ devices, policies, logs, software, failures, dnsRecords, dnsQueryLogs, sovereignSettings })}\n\n`);
+    res.write(`data: ${JSON.stringify({ devices, policies, logs, software, failures, dnsRecords, dnsQueryLogs, sovereignSettings, applianceConfig, enrollmentRequests: staticEnrollmentRequests, volatileSessions, gatewayLogs, gatewayRequestsCount, averageDelay, compliance: getComplianceState() })}\n\n`);
 
     req.on("close", () => {
       sseClients = sseClients.filter(c => c.id !== clientId);
@@ -508,6 +839,146 @@ async function startServer() {
   app.get("/api/dns/logs", (req, res) => res.json(dnsQueryLogs));
   app.get("/api/settings", (req, res) => res.json(sovereignSettings));
 
+  // --- SOVEREIGN AUDIT CONTINUOUS COMPLIANCE ENDPOINTS ---
+  app.get("/api/compliance", (req, res) => {
+    res.json(getComplianceState());
+  });
+
+  app.post("/api/compliance/evidence/:controlId", (req, res) => {
+    const { controlId } = req.params;
+    const { auditorSigned } = req.body;
+    const currentState = getComplianceState();
+    const control = currentState.controls.find(c => c.id === controlId);
+    if (!control) {
+      return res.status(404).json({ error: "Compliance control reference not found." });
+    }
+
+    const timestamp = new Date().toISOString();
+    const hashSeed = `${control.id}-${control.status}-${timestamp}-${JSON.stringify(control.evidenceSnapshot)}`;
+    let hash = 0;
+    for (let i = 0; i < hashSeed.length; i++) {
+      hash = (hash << 5) - hash + hashSeed.charCodeAt(i);
+      hash |= 0;
+    }
+    const signature = `SHA256SEC-${Math.abs(hash).toString(16).toUpperCase()}-${Date.now().toString().slice(-4)}`;
+
+    const evidenceSeal = {
+      controlId: control.id,
+      code: control.code,
+      name: control.name,
+      standard: control.standard,
+      status: control.status,
+      evidenceType: control.evidenceType,
+      evidenceSnapshot: JSON.parse(control.evidenceSnapshot),
+      sealTimestamp: timestamp,
+      integritySignature: signature,
+      verificationAuthority: "Sovereign Nexus Compliance Engine v4.2",
+      sealedBy: auditorSigned ? "Guest Auditor (Sealed Token Session)" : "Sovereign Bastion Automated Daemon"
+    };
+
+    appendLog(`Compliance evidence sealed for ${control.code}: Signature ${signature}`, "success", "Continuous Compliance Module");
+    broadcast("compliance_update", currentState);
+    res.json(evidenceSeal);
+  });
+
+  app.post("/api/compliance/generate-report", (req, res) => {
+    const currentState = getComplianceState();
+    const activePolicies = policies.filter(p => p.enabled);
+    const brokenControls = currentState.controls.filter(c => c.status === "broken");
+    const driftControls = currentState.controls.filter(c => c.status === "drift");
+
+    const reportMarkdown = `
+# SOVEREIGN NEXUS CONTINUOUS COMPLIANCE AUDIT
+**Standard Reference Framework:** SOC 2 Type II & ISO 27001 Annex A
+**Generated on (UTC):** ${new Date().toISOString().replace('T', ' ').substring(0, 19)}
+**Overall Placement Score:** ${currentState.score}% Compliance Alignment
+
+---
+
+## 🛡️ EXEC SUMMARY
+The compliance engine has executed a dynamic automated evaluation across all interconnected airgapped PC target fleet units (the "Fleet Control") routing through the **JumpServer PAM Bastion**. 
+
+- **Compliance Rating:** **${currentState.score}%** Real-Time Alignment
+- **Verified Controls:** ${currentState.summary.verifiedCount} / ${currentState.summary.totalCount} active checks
+- **Minor Drift Discovered:** ${currentState.summary.driftCount} checks
+- **Breached/Failed Checks:** ${currentState.summary.brokenCount} checks
+
+---
+
+## 📁 COMPLIANCE DOMAIN SUB-SCORES
+
+${currentState.domains.map(dom => `
+### • ${dom.name} (${dom.score}% Alignment)
+- Status: **${dom.status.toUpperCase()}**
+- Total Mapped Controls: ${dom.controlsCount}
+- Active Verified Safeguards: ${dom.verifiedCount}
+`).join("\n")}
+
+---
+
+## 📊 CRITICAL ANOMALIES & ASSESSMENTS
+${brokenControls.length === 0 && driftControls.length === 0 ? `
+🟢 **ALL SYSTEMS IN CONTINUOUS COMPLIANCE:** All active nodes are whitelisting requests and enforcing credential policies correctly according to zero-trust standards.
+` : `
+${brokenControls.map(ctrl => `
+🔴 **BREACH (FAIL)** - **[${ctrl.standard} ${ctrl.code}] ${ctrl.name}**
+- Description: ${ctrl.description}
+- Remediation Plan: Enable the corresponding security policies immediately within the System Essence dashboard.
+`).join("\n")}
+
+${driftControls.map(ctrl => `
+🟡 **DRIFT (WARNING)** - **[${ctrl.standard} ${ctrl.code}] ${ctrl.name}**
+- Description: ${ctrl.description}
+- Remediation Plan: Review the JIT dynamic access boundaries or update node telemetry status.
+`).join("\n")}
+`}
+
+---
+
+## 🔒 CRYPTOGRAPHIC ASSURANCE
+This report has been automatically signed and compiled using state-verification primitives.
+**Sealed Fingerprint SHA-256:**
+\`\`\`text
+SHA256-RPT-${Math.floor(Math.random() * 900000 + 100000)}-NEXUS-COMPLIANCE-SEALED
+\`\`\`
+`;
+
+    appendLog("Continuous compliance report synthesized by AI Neural engine.", "success", "Nexus Compliance AI");
+    res.json({ report: reportMarkdown });
+  });
+
+  // --- OBSERVATION DECK VNC/RDP ACTION ENDPOINT ---
+  app.post("/api/observation-deck/action", (req, res) => {
+    const { deviceId, action, remoteUser } = req.body;
+    const dev = devices.find(d => d.id === deviceId);
+    if (!dev) {
+      return res.status(404).json({ error: "Assigned target host not found." });
+    }
+
+    if (action === "lock-screen") {
+      appendLog(`VNC lock instruction streamed to ${dev.name} by user '${remoteUser || "Sovereign Operator"}' via JumpServer tunnel.`, "info", "Apache Guacamole Gateway", dev.id);
+    } else if (action === "force-reboot") {
+      dev.status = "online";
+      dev.cpu = 5;
+      dev.ram = 18;
+      dev.lastActive = "Just now";
+      dev.uptime = "0d 00h";
+      appendLog(`Guacamole command dispatch: Hard ACPI power cycle triggered on ${dev.name}.`, "warning", "Apache Guacamole Gateway", dev.id);
+    } else if (action === "kill-process") {
+      dev.cpu = Math.max(10, dev.cpu - 35);
+      dev.ram = Math.max(15, dev.ram - 20);
+      appendLog(`Sent SIGKILL instruction to high-load process tree on host ${dev.name}.`, "success", "Apache Guacamole Gateway", dev.id);
+    } else if (action === "patch-kernel") {
+      dev.policyCompliance = 100;
+      appendLog(`JumpServer LivePatch: Security hotfixes applied to Host ${dev.name} successfully.`, "success", "Apache Guacamole Gateway", dev.id);
+    }
+
+    broadcast("devices_update", devices);
+    broadcast("logs_update", logs);
+    broadcast("compliance_update", getComplianceState());
+    res.json({ success: true, device: dev });
+  });
+
   // Settings Apply POST endpoint
   app.post("/api/settings", (req, res) => {
     const updated = req.body;
@@ -521,6 +992,302 @@ async function startServer() {
     appendLog(`Sovereign essence parameters recalibrated: Identity=${sovereignSettings.coreIdentity}%, Cognitive=${sovereignSettings.cognitiveLoad}%, Resonance=${sovereignSettings.hapticResonance}Hz, Energy=${sovereignSettings.energyProfile}%, Sync=${sovereignSettings.dataSynthesis}`, "success", "Central Recalibration Daemon");
     broadcast("settings_update", sovereignSettings);
     res.json({ success: true, sovereignSettings });
+  });
+
+  // --- SOVEREIGN APPLIANCE ENDPOINTS (PFSENSE-STYLE) ---
+  app.get("/api/appliance/config", (req, res) => {
+    res.json(applianceConfig);
+  });
+
+  app.post("/api/appliance/apply", (req, res) => {
+    const updated = req.body;
+    
+    // Bind target configuration fields
+    applianceConfig = {
+      bastionEnabled: !!updated.bastionEnabled,
+      bastionPort: Number(updated.bastionPort ?? applianceConfig.bastionPort),
+      encryptedProtocolMode: updated.encryptedProtocolMode ?? applianceConfig.encryptedProtocolMode,
+      telemetryInterval: updated.telemetryInterval ?? applianceConfig.telemetryInterval,
+      autoIsolateOnOverheat: !!updated.autoIsolateOnOverheat,
+      mfaEnforced: !!updated.mfaEnforced,
+      ipWhitelist: String(updated.ipWhitelist ?? applianceConfig.ipWhitelist),
+      installedPlugins: {
+        pfBlockerNG: !!updated.installedPlugins?.pfBlockerNG,
+        suricataIDS: !!updated.installedPlugins?.suricataIDS,
+        soc2Auditor: !!updated.installedPlugins?.soc2Auditor,
+        vncStreamer: !!updated.installedPlugins?.vncStreamer,
+      }
+    };
+
+    try {
+      // Direct file IO simulation representing pfSense system core behavior
+      const fs = require("fs");
+      const path = require("path");
+      fs.writeFileSync(path.join(process.cwd(), "system_config.json"), JSON.stringify(applianceConfig, null, 2));
+    } catch (err) {
+      console.warn("Could not write config.xml/json file to physical disk. Running in disk-emulated memory mode:", err);
+    }
+
+    // Direct sequential orchestration daemon logging
+    appendLog("Orchestrator config rewrite launched. Overwriting /etc/sovereign-nexus/system_config.json.", "info", "Sovereign Appliance Core");
+    
+    setTimeout(() => {
+      appendLog(`Daemon check: ${applianceConfig.bastionEnabled ? "Launching" : "Terminating"} JumpServer Docker proxy on Port: ${applianceConfig.bastionPort} (${applianceConfig.encryptedProtocolMode}).`, "info", "Sovereign Appliance Core");
+    }, 400);
+
+    setTimeout(() => {
+      appendLog(`Vulnerability & Metrics scraper calibrated to frequency interval: '${applianceConfig.telemetryInterval}'.`, "success", "Sovereign Appliance Core");
+    }, 800);
+
+    setTimeout(() => {
+      // Dynamic device compliance penalty if MFA is unapproved or plug-ins are broken
+      if (!applianceConfig.mfaEnforced) {
+        devices.forEach(d => {
+          d.policyCompliance = Math.max(30, d.policyCompliance - 25);
+        });
+        appendLog("SECURITY RISK: MFA Enforcement disabled. Global JIT target policies demoted.", "warning", "Sovereign Appliance Core");
+      } else {
+        devices.forEach(d => {
+          d.policyCompliance = Math.min(100, d.policyCompliance + 10);
+        });
+        appendLog("Security Rules: Active MFA enforcement confirmed. Target policies promoted.", "success", "Sovereign Appliance Core");
+      }
+      broadcast("devices_update", devices);
+    }, 1200);
+
+    setTimeout(() => {
+      appendLog(`Appliance OS firewall updated. Allow IP white-range matches: [${applianceConfig.ipWhitelist}].`, "success", "Sovereign Appliance Core");
+    }, 1600);
+
+    setTimeout(() => {
+      appendLog(`Loaded core plugins index: ${Object.keys(applianceConfig.installedPlugins).filter(k => applianceConfig.installedPlugins[k as keyof typeof applianceConfig.installedPlugins]).join(", ") || "none"}.`, "info", "Sovereign Appliance Core");
+    }, 2000);
+
+    setTimeout(() => {
+      appendLog("pfSense Core System successfully rebooted in Single Image sandbox. Node status: OPTIMAL.", "success", "Sovereign Appliance Core");
+    }, 2400);
+
+    broadcast("appliance_config_update", applianceConfig);
+    res.json({ success: true, applianceConfig });
+  });
+
+  // --- SOVEREIGN MILITARY ASSET ENROLLMENT ENDPOINTS ---
+  app.get("/api/appliance/enroll/list", (req, res) => {
+    res.json(staticEnrollmentRequests);
+  });
+
+  app.post("/api/appliance/enroll/request", (req, res) => {
+    const { designation, sector, ip, os, clearanceLevel, rootAccess, signerOperator } = req.body;
+    
+    if (!designation || !ip) {
+      return res.status(400).json({ error: "Designation and Static IP address are required." });
+    }
+
+    const newRequest: EnrollmentRequest = {
+      id: `REQ-${Math.floor(3300 + staticEnrollmentRequests.length + 1)}`,
+      designation: String(designation).toUpperCase().trim(),
+      sector: String(sector ?? "External"),
+      ip: String(ip).trim(),
+      os: os || "Linux",
+      clearanceLevel: Number(clearanceLevel ?? 3),
+      rootAccess: !!rootAccess,
+      signerOperator: String(signerOperator || "Officer Cadet").trim(),
+      status: "pending",
+      createdTime: new Date().toISOString().replace("T", " ").substring(0, 19)
+    };
+
+    staticEnrollmentRequests.push(newRequest);
+    appendLog(`Asset Request filed for tactical unit: ${newRequest.designation} (${newRequest.os}) at IP: ${newRequest.ip}. Clearance level requested: ${newRequest.clearanceLevel}.`, "info", "Appliance Onboarding");
+    
+    broadcast("enrollment_requests_update", staticEnrollmentRequests);
+    broadcast("logs_update", logs);
+    res.json({ success: true, request: newRequest });
+  });
+
+  app.post("/api/appliance/enroll/approve", (req, res) => {
+    const { requestId } = req.body;
+    const request = staticEnrollmentRequests.find(r => r.id === requestId);
+    
+    if (!request) {
+      return res.status(404).json({ error: "Access Enrollment request reference not found." });
+    }
+
+    if (request.status !== "pending") {
+      return res.status(400).json({ error: "Request is already processed." });
+    }
+
+    const generatedToken = `SOV-${Math.floor(10000 + Math.random() * 90000)}-${Math.random().toString(36).substring(3, 8).toUpperCase()}`;
+    request.status = "approved";
+    request.token = generatedToken;
+
+    appendLog(`Access Request APPROVED for ${request.designation} by Sovereign Command. Single-use JIT activation token registered: ${generatedToken}`, "success", "Appliance Onboarding");
+    
+    broadcast("enrollment_requests_update", staticEnrollmentRequests);
+    broadcast("logs_update", logs);
+    res.json({ success: true, request });
+  });
+
+  app.post("/api/appliance/enroll/handshake", (req, res) => {
+    const { token } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({ error: "Activation token key is required for handshaking." });
+    }
+
+    const request = staticEnrollmentRequests.find(r => r.token === token && r.status === "approved");
+    
+    if (!request) {
+      return res.status(404).json({ error: "Invalid, expired, or already-used activation token." });
+    }
+
+    // Mark as enrolled
+    request.status = "enrolled";
+    request.enrolledTime = new Date().toISOString().replace("T", " ").substring(0, 19);
+
+    // Add device to main database array, dynamically expanding capabilities!
+    const newDevice: Device = {
+      id: request.designation.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+      name: request.designation,
+      ip: request.ip,
+      os: request.os,
+      status: "online",
+      cpu: 14,
+      ram: 28,
+      storage: 18,
+      bandwidth: 3.4,
+      uptime: "0d 00h",
+      lastActive: "Just now",
+      group: request.sector.replace("Secteur ", "").replace("Périmètre ", ""),
+      location: "Tactical Perimeter Gateway",
+      policyCompliance: 100,
+      serialNumber: `SN-MIL-${Math.floor(100000 + Math.random() * 900000)}`,
+      kernelVersion: request.os === "SovereignOS" ? "SovereignOS-RTOS v2.4" : "Linux-Grsec 5.15.0-98-generic"
+    };
+
+    devices.push(newDevice);
+
+    appendLog(`Cryptographic Handshake COMPLETED: Active tactical asset ${request.designation} (${request.ip}) safely synchronized. Token retired.`, "success", "Appliance Onboarding", newDevice.id);
+    
+    broadcast("devices_update", devices);
+    broadcast("logs_update", logs);
+    broadcast("compliance_update", getComplianceState());
+    broadcast("enrollment_requests_update", staticEnrollmentRequests);
+
+    res.json({ success: true, device: newDevice, request });
+  });
+
+  // --- SOVEREIGN VOLATILE EPHEMERAL LINK ENDPOINTS ---
+  app.get("/api/appliance/volatile/list", (req, res) => {
+    res.json(volatileSessions);
+  });
+
+  app.post("/api/appliance/volatile/generate", (req, res) => {
+    const { subscriberName, ipAddress, roleAssigned, durationSeconds } = req.body;
+    if (!subscriberName || !ipAddress) {
+      return res.status(400).json({ error: "Subscriber name and static IP targets are required." });
+    }
+
+    const sessionId = `VOL-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const token = `LNK-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${sessionId}`;
+    const ttl = Number(durationSeconds || 120); // default to 120 seconds in simulation for reactive demonstration!
+
+    const newSession: VolatileSession = {
+      id: sessionId,
+      subscriberName: String(subscriberName).toUpperCase().trim(),
+      token,
+      status: "active",
+      ramPath: `/dev/shm/nexus_session_${sessionId}.key`,
+      ipAddress: String(ipAddress).trim(),
+      roleAssigned: roleAssigned || "Guest Terminal Operator",
+      establishedTime: new Date().toISOString().replace("T", " ").substring(0, 19),
+      timeRemainingSeconds: ttl,
+      totalTtlSeconds: ttl
+    };
+
+    volatileSessions.push(newSession);
+
+    appendLog(`Provisioned short-lived Volatile Configuration Link for ${newSession.subscriberName}. RAM storage binding: ${newSession.ramPath}. Single-Use token: ${token} (expires in ${ttl} seconds)`, "info", "Volatile Link");
+
+    broadcast("volatile_sessions_update", volatileSessions);
+    broadcast("logs_update", logs);
+
+    res.json({ success: true, session: newSession });
+  });
+
+  app.post("/api/appliance/volatile/claim", (req, res) => {
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json({ error: "RAM cryptographic token is required for registration." });
+    }
+
+    const session = volatileSessions.find(s => s.token === token);
+    if (!session) {
+      return res.status(404).json({ error: "Cryptographic link token is invalid or expired." });
+    }
+
+    if (session.status === "expired" || session.timeRemainingSeconds <= 0) {
+      return res.status(400).json({ error: "The requested volatile session has expired or its RAM storage was cleared." });
+    }
+
+    appendLog(`Handshake completed over volatile memory partition: CLIENT ${session.subscriberName} on IP ${session.ipAddress} synchronized. Single-use token claimed.`, "success", "Volatile Link");
+
+    // Add device to active network
+    const existingNode = devices.find(d => d.ip === session.ipAddress);
+    if (!existingNode) {
+      const dev: Device = {
+        id: `volatile-${session.id.toLowerCase()}`,
+        name: session.subscriberName,
+        ip: session.ipAddress,
+        os: "SovereignOS",
+        status: "online",
+        cpu: 8,
+        ram: 11,
+        storage: 0, // 0 for memory-disk
+        bandwidth: 1.5,
+        uptime: "0h 01m",
+        lastActive: "Just now",
+        group: "Volatile Guest Link",
+        location: "/dev/shm [RAM DISK]",
+        policyCompliance: 100,
+        serialNumber: `SN-VOL-${session.id}`,
+        kernelVersion: "SovereignOS-Transient v0.9 (Ephemeral)"
+      };
+      devices.push(dev);
+    } else {
+      existingNode.status = "online";
+    }
+
+    broadcast("volatile_sessions_update", volatileSessions);
+    broadcast("devices_update", devices);
+    broadcast("logs_update", logs);
+
+    res.json({ success: true, session });
+  });
+
+  app.post("/api/appliance/volatile/reboot", (req, res) => {
+    const { sessionId } = req.body;
+    const session = volatileSessions.find(s => s.id === sessionId);
+    if (!session) {
+      return res.status(404).json({ error: "Volatile session target reference not discovered." });
+    }
+
+    session.status = "expired";
+    session.timeRemainingSeconds = 0;
+
+    // Simulate complete RAM loss: knock the device offline!
+    const dev = devices.find(d => d.ip === session.ipAddress || d.id === `volatile-${session.id.toLowerCase()}`);
+    if (dev) {
+      dev.status = "offline";
+      dev.lastActive = "RAM Wiped (Reboot)";
+    }
+
+    appendLog(`PHYSICAL REBOOT TRIGGERED on client device ${session.subscriberName} (${session.ipAddress}). Volatile credential key at ${session.ramPath} is completely wiped from physical RAM cells. Asset isolated.`, "critical", "Volatile Link");
+
+    broadcast("volatile_sessions_update", volatileSessions);
+    broadcast("devices_update", devices);
+    broadcast("logs_update", logs);
+
+    res.json({ success: true, session });
   });
 
   // 3. Post Command Override action (Reboot, Isolate, Direct triggers)
@@ -587,6 +1354,7 @@ async function startServer() {
 
     broadcast("policies_update", policies);
     broadcast("devices_update", devices);
+    broadcast("compliance_update", getComplianceState());
     res.json({ success: true, policies, devices });
   });
 
@@ -603,6 +1371,7 @@ async function startServer() {
 
     broadcast("policies_update", policies);
     broadcast("devices_update", devices);
+    broadcast("compliance_update", getComplianceState());
     res.json({ success: true, policies, devices });
   });
 
@@ -977,6 +1746,119 @@ Request timeout for icmp_seq 2 (Unreachable target IP boundary).
     dnsQueryLogs = [newSimLog, ...dnsQueryLogs].slice(0, 100);
     broadcast("dns_logs_update", dnsQueryLogs);
   }, 5000);
+
+  // --- UNIFIED API BLEND GATEWAY ENDPOINTS ---
+  app.get("/api/gateway/logs", (req, res) => {
+    res.json({
+      gatewayLogs,
+      gatewayRequestsCount,
+      averageDelay
+    });
+  });
+
+  app.get("/api/gateway/prom/nodes/load", (req, res) => {
+    const delay = Math.random() * 2 + 0.5;
+    addGatewayLog("GET", "/api/gateway/prom/nodes/load", "Prometheus Node Exporter", 200, delay, "{ nodesTotal: 1250, activeRate: 0.945 }");
+    res.json({ nodesTotal: 1250, activeRate: 0.945 });
+  });
+
+  app.post("/api/gateway/pam/replicate-session", (req, res) => {
+    const delay = Math.random() * 4 + 2;
+    addGatewayLog("POST", "/api/gateway/pam/replicate-session", "JumpServer PAM", 200, delay, "{ sessionId: 'SSID-7489', auditActive: true }");
+    res.json({ sessionId: 'SSID-7489', auditActive: true });
+  });
+
+  app.get("/api/gateway/prom/metrics", (req, res) => {
+    const delay = Math.random() * 1.5 + 0.5;
+    addGatewayLog("GET", "/api/gateway/prom/metrics", "Prometheus Node Exporter", 200, delay, "{ memoryUsage: '4.2GB', swap: '0.1GB' }");
+    res.json({ memoryUsage: '4.2GB', swap: '0.1GB' });
+  });
+
+  app.get("/api/gateway/pam/audit-report", (req, res) => {
+    const delay = Math.random() * 3 + 1;
+    addGatewayLog("GET", "/api/gateway/pam/audit-report", "JumpServer PAM", 200, delay, "{ roleEnforced: 'Strategist', logsCaptured: 12 }");
+    res.json({ roleEnforced: 'Strategist', logsCaptured: 12 });
+  });
+
+  app.get("/api/gateway/ai/context_synthesis", (req, res) => {
+    const delay = Math.random() * 5 + 3;
+    addGatewayLog("GET", "/api/gateway/ai/context_synthesis", "LLM Neural Intel", 200, delay, "{ activeContextTokens: 1450, outputGrounded: true }");
+    res.json({ activeContextTokens: 1450, outputGrounded: true });
+  });
+
+  app.post("/api/gateway/bastion/root-bypass-attempt", (req, res) => {
+    const delay = Math.random() * 0.5 + 0.1;
+    addGatewayLog("POST", "/api/gateway/bastion/root-bypass-attempt", "JumpServer PAM", 403, delay, "{ message: 'THREAT DETECTED: UNALIGNED IP BLOCKED INDEPENDENTLY BY BASTION SHIELD' }");
+    res.status(403).json({ message: 'THREAT DETECTED: UNALIGNED IP BLOCKED INDEPENDENTLY BY BASTION SHIELD' });
+  });
+
+  app.post("/api/gateway/stress-test", (req, res) => {
+    const timestamp = getTimestamp();
+    const rogueLog = {
+      id: `REQ-${gatewayReqCounter++}`,
+      timestamp,
+      method: "SSH_EXEC" as const,
+      route: "/api/gateway/bastion/root-bypass-attempt",
+      adapter: "JumpServer PAM" as const,
+      status: 403,
+      delay: "0.25ms",
+      payload: "{ message: 'THREAT DETECTED: UNALIGNED IP BLOCKED INDEPENDENTLY BY BASTION SHIELD' }"
+    };
+    gatewayLogs = [rogueLog, ...gatewayLogs];
+    gatewayRequestsCount += 1;
+
+    appendLog("API Gateway registered unauthorized client request on /api/gateway/bastion. Rate Limiting Engaged.", "critical", "API Gateway Firewall");
+    broadcast("gateway_logs_update", { gatewayLogs, gatewayRequestsCount, averageDelay });
+    res.json({ success: true, gatewayLogs, gatewayRequestsCount });
+  });
+
+  // Ticker for API Gateway simulation logs
+  setInterval(() => {
+    const methods: Array<"POST" | "GET" | "WS_EMIT" | "SSH_EXEC"> = ["GET", "POST", "WS_EMIT", "SSH_EXEC"];
+    const routers = [
+      { route: "/api/gateway/prom/metrics", adapter: "Prometheus Node Exporter", payload: "{ memoryUsage: '4.2GB', swap: '0.1GB' }" },
+      { route: "/api/gateway/pam/audit-report", adapter: "JumpServer PAM", payload: "{ roleEnforced: 'Strategist', logsCaptured: 12 }" },
+      { route: "fleet:micro_overclock_offset", adapter: "gRPC Fleet Agency", payload: "{ overclocks: '85%', fans: '3450RPM' }" },
+      { route: "/api/gateway/ai/context_synthesis", adapter: "LLM Neural Intel", payload: "{ activeContextTokens: 1450, outputGrounded: true }" }
+    ];
+
+    const selectedRoute = routers[Math.floor(Math.random() * routers.length)];
+    const randomMethod = methods[Math.floor(Math.random() * methods.length)];
+    const delayMs = Math.random() * 3.5 + 0.8;
+    const isOk = Math.random() > 0.02 ? 200 : (randomMethod === "WS_EMIT" ? 101 : 500);
+
+    addGatewayLog(randomMethod, selectedRoute.route, selectedRoute.adapter as any, isOk, delayMs, selectedRoute.payload);
+  }, 4000);
+
+  // Ticker for Volatile Link session expiration countdown (ticking every 2 seconds for performance & reactivity)
+  setInterval(() => {
+    let changed = false;
+    volatileSessions.forEach(session => {
+      if (session.status === "active") {
+        if (session.timeRemainingSeconds > 0) {
+          session.timeRemainingSeconds = Math.max(0, session.timeRemainingSeconds - 2);
+          changed = true;
+        } else {
+          session.status = "expired";
+          changed = true;
+          appendLog(`Volatile session ${session.id} for subscriber ${session.subscriberName} expired. Memory key at ${session.ramPath} physically wiped.`, "warning", "Volatile Link");
+          
+          // Set device to offline
+          const dev = devices.find(d => d.id === `volatile-${session.id.toLowerCase()}`);
+          if (dev) {
+            dev.status = "offline";
+            dev.lastActive = "Key expired (RAM reset)";
+          }
+        }
+      }
+    });
+
+    if (changed) {
+      broadcast("volatile_sessions_update", volatileSessions);
+      broadcast("devices_update", devices);
+      broadcast("logs_update", logs);
+    }
+  }, 2000);
 
   // Serve static files / Vite middleware
   if (process.env.NODE_ENV !== "production") {

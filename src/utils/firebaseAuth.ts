@@ -6,10 +6,11 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
-// Request the official granular Gmail scopes requested by the user
+// Request the official granular Gmail and Contacts scopes requested by the user
 provider.addScope("https://www.googleapis.com/auth/gmail.send");
 provider.addScope("https://www.googleapis.com/auth/gmail.readonly");
 provider.addScope("https://www.googleapis.com/auth/gmail.compose");
+provider.addScope("https://www.googleapis.com/auth/contacts");
 
 // Flag to indicate if we are in the middle of a sign-in flow.
 let isSigningIn = false;

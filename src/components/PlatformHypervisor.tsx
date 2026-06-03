@@ -7,12 +7,14 @@ import {
 import { GlassCard, NeonButton } from "./GlassUI";
 
 export interface PlatformHypervisorProps {
-  currentRole: "super-admin" | "strategist" | "tactician" | "auditor";
-  onChangeRole: (newRole: "super-admin" | "strategist" | "tactician" | "auditor") => void;
+  currentRole: "super-admin" | "strategist" | "tactician" | "auditor" | "client";
+  onChangeRole: (newRole: "super-admin" | "strategist" | "tactician" | "auditor" | "client") => void;
   currentPlan: "tactical" | "sovereign" | "imperial";
   onChangePlan: (newPlan: "tactical" | "sovereign" | "imperial") => void;
   onAddLog?: (log: any) => void;
 }
+
+let reqCounter = 104;
 
 export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
   currentRole,
@@ -73,39 +75,26 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
   const [averageDelay, setAverageDelay] = useState(2.32);
   const [stressTesting, setStressTesting] = useState(false);
 
+  const fetchGatewayLogs = async () => {
+    try {
+      const res = await fetch("/api/gateway/logs");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.gatewayLogs) setGatewayLogs(data.gatewayLogs);
+        if (data.gatewayRequestsCount !== undefined) setGatewayRequestsCount(data.gatewayRequestsCount);
+        if (data.averageDelay !== undefined) setAverageDelay(data.averageDelay);
+      }
+    } catch (err) {
+      console.warn("Could not fetch gateway logs from server:", err);
+    }
+  };
+
   // Live Gateway routing requests tick simulations
   useEffect(() => {
-    const methods: Array<"POST" | "GET" | "WS_EMIT" | "SSH_EXEC"> = ["GET", "POST", "WS_EMIT", "SSH_EXEC"];
-    const routers = [
-      { route: "/api/gateway/prom/metrics", adapter: "Prometheus Node Exporter", payload: "{ memoryUsage: '4.2GB', swap: '0.1GB' }" },
-      { route: "/api/gateway/pam/audit-report", adapter: "JumpServer PAM", payload: "{ roleEnforced: 'Strategist', logsCaptured: 12 }" },
-      { route: "fleet:micro_overclock_offset", adapter: "gRPC Fleet Agency", payload: "{ overclocks: '85%', fans: '3450RPM' }" },
-      { route: "/api/gateway/ai/context_synthesis", adapter: "LLM Neural Intel", payload: "{ activeContextTokens: 1450, outputGrounded: true }" }
-    ];
-
+    fetchGatewayLogs();
     const interval = setInterval(() => {
-      const selectedRoute = routers[Math.floor(Math.random() * routers.length)];
-      const randomMethod = methods[Math.floor(Math.random() * methods.length)];
-      const delayMs = (Math.random() * 3.5 + 0.8).toFixed(2);
-      const isOk = Math.random() > 0.02 ? 200 : (randomMethod === "WS_EMIT" ? 101 : 500);
-
-      const newLog = {
-        id: `REQ-${Math.floor(Math.random() * 900) + 100}`,
-        timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
-        method: randomMethod,
-        route: selectedRoute.route,
-        adapter: selectedRoute.adapter as any,
-        status: isOk,
-        delay: `${delayMs}ms`,
-        payload: selectedRoute.payload
-      };
-
-      setGatewayLogs(prev => [newLog, ...prev.slice(0, 15)]);
-      setGatewayRequestsCount(prev => prev + 1);
-      
-      // Slightly fluctuate average latency
-      setAverageDelay(prev => Number((prev * 0.95 + Number(delayMs) * 0.05).toFixed(2)));
-    }, 2800);
+      fetchGatewayLogs();
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
@@ -148,39 +137,24 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
     }
   };
 
-  const triggerSecurityStressTest = () => {
+  const triggerSecurityStressTest = async () => {
     if (stressTesting) return;
     setStressTesting(true);
-    
-    // Push urgent system warnings into Gateway simulation log
-    const timestamp = new Date().toLocaleTimeString("en-GB", { hour12: false });
-    
-    const rogueLog = {
-      id: "GATEWAY-ERR-403",
-      timestamp,
-      method: "SSH_EXEC" as const,
-      route: "/api/gateway/bastion/root-bypass-attempt",
-      adapter: "JumpServer PAM" as const,
-      status: 403,
-      delay: "0.25ms",
-      payload: "{ message: 'THREAT DETECTED: UNALIGNED IP BLOCKED INDEPENDENTLY BY BASTION SHIELD' }"
-    };
 
-    setGatewayLogs(prev => [rogueLog, ...prev]);
-
-    if (onAddLog) {
-      onAddLog({
-        id: `LOG-STRESS-${Date.now()}`,
-        timestamp,
-        source: "API Gateway Firewall",
-        level: "critical",
-        message: "API Gateway registered unauthorized client request on /api/gateway/bastion. Rate Limiting Engaged."
+    try {
+      const res = await fetch("/api/gateway/stress-test", {
+        method: "POST"
       });
+      if (res.ok) {
+        await fetchGatewayLogs();
+      }
+    } catch (err) {
+      console.error("Stress execution failed:", err);
+    } finally {
+      setTimeout(() => {
+        setStressTesting(false);
+      }, 4000);
     }
-
-    setTimeout(() => {
-      setStressTesting(false);
-    }, 4000);
   };
 
   const plans = [
@@ -189,7 +163,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
       name: "Tactical Fleet",
       price: "$149",
       period: "per admin / mo",
-      desc: "For small klinical infrastructures, private offices, or edge terminal testing environments.",
+      desc: "For small isolated infrastructures, private offices, or edge terminal testing environments.",
       caps: ["1 Admin Operator", "Max 5 Managed PC Nodes", "Standard Node Exporter telemetry", "Local key-value storage persistence"],
       glowColor: "border-purple-500/10 text-purple-400"
     },
@@ -198,7 +172,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
       name: "Sovereign Enterprise",
       price: "$599",
       period: "per cluster / mo",
-      desc: "For full-scale clinic systems, hospitals, and medical operating centers needing continuous oversight.",
+      desc: "For full-scale distributed edges, server clusters, and sovereign control centers needing continuous oversight.",
       caps: ["5 Admin Operators", "64 Managed PC Nodes", "Full PAM secure tunnel access", "Integrative ML Predictive Analytics curves", "Continuous threat log matrix", "1s telemetry scraper pings"],
       best: true,
       glowColor: "border-cyan-400/40 text-[#22d3ee] shadow-[0_0_20px_rgba(34,211,238,0.15)] bg-[#1f124c]/90"
@@ -208,7 +182,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
       name: "Imperial Sovereignty",
       price: "Custom",
       period: "enquire / annually",
-      desc: "Maximum security, airgapped command rooms, government clinical networks, and on-premise hypervisors.",
+      desc: "Maximum security, airgapped command rooms, government critical networks, and on-premise hypervisors.",
       caps: ["Infinite Admin Operators", "Infinite PC Node agent tracking", "Pure Airgapped offline proxy deployment", "Custom gRPC Adapter modifications", "24/7 dedicated operational assistance"],
       glowColor: "border-amber-400/35 text-amber-300"
     }
@@ -297,7 +271,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
                             timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
                             source: "SaaS Gateway",
                             level: "info",
-                            message: `Transitioned clinical platform cluster tier layout to: [${p.name}]`
+                            message: `Transitioned sovereign platform cluster tier layout to: [${p.name}]`
                           });
                         }
                       }}
@@ -353,6 +327,112 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
           )}
         </div>
 
+        {/* INTEGRATED ACTIVE SUBSCRIPTION ENROLLMENT GATE */}
+        <div className="bg-gradient-to-r from-purple-950/25 via-[#150a36]/50 to-transparent p-5 rounded-[2rem] border border-[#3e2389]/40 space-y-3.5" id="active-subscription-gate">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
+            <h3 className="text-xs font-black uppercase tracking-widest text-[#22d3ee]">
+              Passerelle d'Abonnement et d'Enrôlement Rapide (Active Gate)
+            </h3>
+          </div>
+          <p className="text-[10px] text-[#7c6bb5] leading-relaxed">
+            Abonnez-vous ou changez de statut d'accréditation en un clic ci-dessous pour contrôler efficacement vos nœuds et terminaux à distance. Les privilèges d'accès réseau seront reconfigurés en temps réel dans votre profil de base de données.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+            
+            {/* Option A: Admin Access */}
+            <div className={`p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+              currentRole === "super-admin"
+                ? "bg-[#25175d]/80 border-[#a855f7] shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                : "bg-[#1f124c]/20 border-purple-500/5 hover:border-[#3e2389]/40 hover:bg-[#1f124c]/40"
+            }`}>
+              {currentRole === "super-admin" && (
+                <div className="absolute top-0 right-0 px-2 py-0.5 bg-purple-500 text-black text-[7px] font-black uppercase tracking-wider rounded-bl-lg">
+                  ACTIVE
+                </div>
+              )}
+              <div className="space-y-1.5">
+                <h4 className="text-[11px] font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+                  👑 Statut Administrateur
+                </h4>
+                <p className="text-[9px] text-[#7c6bb5] leading-normal uppercase font-semibold">
+                  Sovereign Executive — Full Terminal Control and SOC2 Stream auditing.
+                </p>
+              </div>
+              <button
+                id="btn-sub-admin"
+                onClick={() => {
+                  onChangeRole("super-admin");
+                  onChangePlan("sovereign");
+                  if (onAddLog) {
+                    onAddLog({
+                      id: `SUB-ADMIN-${Date.now()}`,
+                      timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+                      source: "Billing Gateway",
+                      level: "success",
+                      message: "User subscribed and elevated profile to Administrator level"
+                    });
+                  }
+                  alert("Abonnement Administrateur validé ! Accès souverain complet assigné dans Firebase.");
+                }}
+                className={`w-full mt-4 py-2.5 rounded-xl text-[8.5px] font-extrabold uppercase tracking-widest transition-all ${
+                  currentRole === "super-admin"
+                    ? "bg-purple-500 text-black shadow-[0_0_10px_rgba(168,85,247,0.3)] cursor-default font-black border-none"
+                    : "bg-purple-950/40 text-purple-300 border border-purple-500/20 hover:bg-purple-900/40 hover:text-white cursor-pointer"
+                }`}
+              >
+                {currentRole === "super-admin" ? "✓ Abonné (Sovereign Executive)" : "S'abonner comme Admin (Sovereign)"}
+              </button>
+            </div>
+
+            {/* Option B: Client Access */}
+            <div className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+              currentRole === "client"
+                ? "bg-[#25175d]/85 border-[#10b981] shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+                : "bg-[#1f124c]/20 border-purple-500/5 hover:border-[#3e2389]/40 hover:bg-[#1f124c]/40"
+            }`}>
+              {currentRole === "client" && (
+                <div className="absolute top-0 right-0 px-2 py-0.5 bg-emerald-500 text-black text-[7px] font-black uppercase tracking-wider rounded-bl-lg">
+                  ACTIVE
+                </div>
+              )}
+              <div className="space-y-1.5">
+                <h4 className="text-[11px] font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+                  ⚡ Statut Client Membre
+                </h4>
+                <p className="text-[9px] text-[#7c6bb5] leading-normal uppercase font-semibold">
+                  Subscriber Node — Courtesy access, core metrics reader & device sync.
+                </p>
+              </div>
+              <button
+                id="btn-sub-client"
+                onClick={() => {
+                  onChangeRole("client");
+                  onChangePlan("tactical");
+                  if (onAddLog) {
+                    onAddLog({
+                      id: `SUB-CLIENT-${Date.now()}`,
+                      timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+                      source: "Billing Gateway",
+                      level: "success",
+                      message: "User subscribed and toggled profile to Subscriber Client node"
+                    });
+                  }
+                  alert("Abonnement Client activé ! Rôle Client / Subscriber Node configuré dans Firebase.");
+                }}
+                className={`w-full mt-4 py-2.5 rounded-xl text-[8.5px] font-extrabold uppercase tracking-widest transition-all ${
+                  currentRole === "client"
+                    ? "bg-emerald-500 text-black shadow-[0_0_10px_rgba(16,185,129,0.3)] cursor-default font-black border-none"
+                    : "bg-purple-950/40 text-emerald-400 border border-emerald-500/20 hover:bg-[#10b981]/20 hover:text-white cursor-pointer"
+                }`}
+              >
+                {currentRole === "client" ? "✓ Abonné (Subscriber Node)" : "S'abonner comme Client (Tactical)"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+
         {/* SECTION 2: ACCESS CONTROL ROLES MATRIX */}
         <div className="space-y-4">
           <div className="flex justify-between items-center pl-1">
@@ -361,12 +441,13 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
           </div>
 
           {/* Quick Active user Profile Switches */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
             {[
               { id: "super-admin", name: "Sovereign Executive", title: "Super-Admin", color: "text-cyan-400 border-cyan-400/20", glow: "shadow-[0_0_15px_rgba(34,211,238,0.1)]" },
               { id: "strategist", name: "Strategist Leader", title: "Manager / Director", color: "text-purple-400 border-purple-500/10", glow: "" },
               { id: "tactician", name: "Tactician Operator", title: "System Operator", color: "text-amber-400 border-amber-500/10", glow: "" },
-              { id: "auditor", name: "Compliance Observer", title: "Reviewer / Auditor", color: "text-rose-400 border-rose-500/10", glow: "" }
+              { id: "auditor", name: "Compliance Observer", title: "Reviewer / Auditor", color: "text-rose-400 border-rose-500/10", glow: "" },
+              { id: "client", name: "Subscriber Node", title: "Client Account", color: "text-orange-400 border-orange-500/10", glow: "shadow-[0_0_15px_rgba(249,115,22,0.1)]" }
             ].map((r) => {
               const works = currentRole === r.id;
               return (

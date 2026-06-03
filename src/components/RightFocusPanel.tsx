@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { X, HardDrive, Cpu, Database, ShieldAlert, Folder, File, ChevronRight, Play, AlertTriangle, ShieldCheck, Terminal } from "lucide-react";
+import { X, HardDrive, Cpu, Database, ShieldAlert, Folder, File, ChevronRight, Play, AlertTriangle, ShieldCheck, Terminal, Laptop, Lock, Unlock, Eye, EyeOff, Keyboard, Sun, RefreshCw, Send, Monitor } from "lucide-react";
 import { Device, SystemLog } from "../types";
 import { generateTelemetryHistory } from "../mockData";
 
@@ -132,6 +132,14 @@ export const RightFocusPanel: React.FC<FocusPanelProps> = ({ device, onClose, on
   const [telemetry, setTelemetry] = useState<{ time: string; cpu: number; ram: number; bandwidth: number }[]>([]);
   const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 
+  // Hardware states for live overrides
+  const [localScreenLock, setLocalScreenLock] = useState<boolean>(false);
+  const [localShutterOpen, setLocalShutterOpen] = useState<boolean>(true);
+  const [localBacklightOn, setLocalBacklightOn] = useState<boolean>(true);
+  const [localBrightness, setLocalBrightness] = useState<number>(85);
+  const [localKeystroke, setLocalKeystroke] = useState<string>("");
+  const [keystrokeLogs, setKeystrokeLogs] = useState<string[]>([]);
+
   // File explorer active root state
   const [currentDirectories, setCurrentDirectories] = useState<FileNode[]>([]);
 
@@ -140,6 +148,12 @@ export const RightFocusPanel: React.FC<FocusPanelProps> = ({ device, onClose, on
       setTelemetry(generateTelemetryHistory(device.id));
       setCurrentDirectories(mockFileStructures[device.os] || mockFileStructures["Linux"]);
       setOpenFolders({});
+      setLocalScreenLock(false);
+      setLocalShutterOpen(true);
+      setLocalBacklightOn(true);
+      setLocalBrightness(85);
+      setLocalKeystroke("");
+      setKeystrokeLogs([]);
     }
   }, [device]);
 
@@ -389,67 +403,225 @@ export const RightFocusPanel: React.FC<FocusPanelProps> = ({ device, onClose, on
           </div>
         )}
 
-        {activeTab === "actions" && (
-          <div className="space-y-3.5 font-mono text-xs">
-            <span className="text-[10px] text-zinc-500 block uppercase font-bold tracking-wider mb-1">SECURE CONSOLE ACTUATION OVERRIDES</span>
-
-            {/* ACTION 1: REBOOT SYSTEM */}
-            <button
-              onClick={() => onActionTriggered("Manual Hard Reboot Requested", device.id, "warning")}
-              className="w-full flex items-center justify-between p-3 rounded border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 transition-colors text-left group cursor-pointer"
-            >
-              <div className="min-w-0 pr-3">
-                <span className="text-amber-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
-                  <Play className="w-3.5 h-3.5 fill-amber-500/20 text-danger" /> FORCE CYCLE POWER
-                </span>
-                <p className="text-[11px] text-zinc-400 leading-normal">Safely drains motherboard buffers and reboots root OS using cold hardware relays.</p>
+        {activeTab === "actions" && (() => {
+          const isLaptop = device.name.toLowerCase().includes("laptop") || device.os === "macOS" || device.id.startsWith("DEV-049") || device.id.startsWith("DEV-050") || device.id.startsWith("DEV-051");
+          return (
+            <div className="space-y-4 font-mono text-xs">
+              
+              {/* INTERACTIVE CONTROLLER DECK LAUNCHER */}
+              <div className="bg-cyan-950/20 border border-cyan-500/30 p-4 rounded-xl shadow-[0_0_15px_rgba(34,211,238,0.1)]">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="text-[9px] font-bold text-cyan-400 uppercase tracking-widest">LIVE WEBSOCKET CONTROLLER GATE</span>
+                </div>
+                <h4 className="text-[11px] font-black text-white uppercase mb-1.5">Sovereign VNC Desktop & Shell</h4>
+                <p className="text-[10px] text-zinc-400 leading-normal mb-3">Tether to this machine to take full visual mouse control, view frame updates, and run clinical node scripts.</p>
+                <button
+                  onClick={() => onActionTriggered("OPEN_REMOTE_TERMINAL", device.id, "success")}
+                  className="w-full py-2.5 bg-[#24175e] hover:bg-[#2e1d75] border border-cyan-400/20 text-cyan-400 hover:text-white rounded-xl transition-all duration-300 font-bold uppercase tracking-wider text-[11px] cursor-pointer flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(34,211,238,0.05)] hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+                >
+                  <Monitor className="w-3.5 h-3.5" /> Launch Live Remote Deck
+                </button>
               </div>
-              <ChevronRight className="w-4 h-4 text-amber-500 shrink-0 group-hover:translate-x-1 transition-transform" />
-            </button>
 
-            {/* ACTION 2: ISOLATE NODE */}
-            <button
-              onClick={() => onActionTriggered("Cyber-Security Isolation Triggered", device.id, "critical")}
-              className="w-full flex items-center justify-between p-3 rounded border border-rose-500/30 bg-rose-500/5 hover:bg-rose-500/10 transition-colors text-left group cursor-pointer"
-            >
-              <div className="min-w-0 pr-3">
-                <span className="text-rose-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
-                  <AlertTriangle className="w-3.5 h-3.5" /> ISOLATE INSTANT LOCK
-                </span>
-                <p className="text-[11px] text-zinc-400 leading-normal">Instantly cuts network routing to block outbound packets. Device enters airgap lockdown mode.</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-rose-400 shrink-0 group-hover:translate-x-1 transition-transform" />
-            </button>
+              {/* DYNAMIC LAPTOP PHYSICAL CONTROLS SUB-PANEL */}
+              {isLaptop && (
+                <div className="bg-purple-950/20 border border-purple-500/10 p-4 rounded-xl space-y-3">
+                  <span className="text-[10px] text-purple-400 font-extrabold uppercase tracking-widest block border-b border-purple-950 pb-1.5 mb-1">💻 CLIENT HARDWARE DRIVER MODIFIERS</span>
+                  
+                  {/* Screen Lock Twi-State Card */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-zinc-300">Screen Lock Lockout:</span>
+                    <button
+                      onClick={() => {
+                        const nextLock = !localScreenLock;
+                        setLocalScreenLock(nextLock);
+                        onActionTriggered(nextLock ? "Physical Screen Lockout Activated" : "Local Display Unlocked", device.id, "warning");
+                      }}
+                      className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] font-bold uppercase tracking-wider cursor-pointer flex items-center gap-1.5 transition-all ${
+                        localScreenLock 
+                          ? "bg-rose-950/30 border-rose-500/40 text-rose-400" 
+                          : "bg-emerald-950/20 border-emerald-500/30 text-emerald-400"
+                      }`}
+                    >
+                      {localScreenLock ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                      <span>{localScreenLock ? "Secured Map" : "Released"}</span>
+                    </button>
+                  </div>
 
-            {/* ACTION 3: DEPLOY RE-ENCRYPT */}
-            <button
-              onClick={() => onActionTriggered("Cryptographic Policy Force Enforced", device.id, "success")}
-              className="w-full flex items-center justify-between p-3 rounded border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors text-left group cursor-pointer"
-            >
-              <div className="min-w-0 pr-3">
-                <span className="text-emerald-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
-                  <ShieldCheck className="w-3.5 h-3.5" /> ENFORCE FULL COMPLIANCE
-                </span>
-                <p className="text-[11px] text-zinc-400 leading-normal">Forces active verification on all non-compliant policies. Disables USB mounts dynamically.</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-emerald-400 shrink-0 group-hover:translate-x-1 transition-transform" />
-            </button>
+                  {/* Lens safety Shutter */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-zinc-300">Lens Safety Shutter:</span>
+                    <button
+                      onClick={() => {
+                        const nextShutter = !localShutterOpen;
+                        setLocalShutterOpen(nextShutter);
+                        onActionTriggered(nextShutter ? "Privacy camera shutter opened" : "Camera privacy armor closed", device.id, "info");
+                      }}
+                      className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] font-bold uppercase tracking-wider cursor-pointer flex items-center gap-1.5 transition-all ${
+                        localShutterOpen 
+                          ? "bg-emerald-950/10 border-emerald-500/30 text-emerald-400" 
+                          : "bg-zinc-900 border-zinc-805 text-zinc-500"
+                      }`}
+                    >
+                      {localShutterOpen ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                      <span>{localShutterOpen ? "Active Lens" : "Shining Off"}</span>
+                    </button>
+                  </div>
 
-            {/* ACTION 4: REMOTE DIAGNOSTIC SHELL */}
-            <button
-              onClick={() => onActionTriggered("Diagnostic Port Stream Synced", device.id, "info")}
-              className="w-full flex items-center justify-between p-3 rounded border border-teal-500/30 bg-teal-500/5 hover:bg-teal-500/10 transition-colors text-left group cursor-pointer"
-            >
-              <div className="min-w-0 pr-3">
-                <span className="text-teal-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
-                  <Terminal className="w-3.5 h-3.5" /> REMOTE TERMINAL TETHER
-                </span>
-                <p className="text-[11px] text-zinc-400 leading-normal">Establish a secure, authenticated SSH shell session in active foreground container environment.</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-teal-400 shrink-0 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        )}
+                  {/* Keyboard backlight toggle */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-zinc-300">Keyboard LEDs Backlight:</span>
+                    <button
+                      onClick={() => {
+                        const nextBacklight = !localBacklightOn;
+                        setLocalBacklightOn(nextBacklight);
+                        onActionTriggered(nextBacklight ? "Keyboard backlights at 100%" : "Keyboard backlights at 0%", device.id, "info");
+                      }}
+                      className={`px-3 py-1.5 rounded-lg border font-mono text-[10px] font-bold uppercase tracking-wider cursor-pointer flex items-center gap-1.5 transition-all ${
+                        localBacklightOn 
+                          ? "bg-cyan-950/20 border-cyan-400/35 text-cyan-400" 
+                          : "bg-zinc-900 border-zinc-805 text-zinc-500"
+                      }`}
+                    >
+                      <Keyboard className="w-3 h-3" />
+                      <span>{localBacklightOn ? "Matrix ON" : "Matrix OFF"}</span>
+                    </button>
+                  </div>
+
+                  {/* Slider for light brightness */}
+                  <div className="space-y-1 pt-1.5">
+                    <div className="flex justify-between text-[10px] text-purple-300">
+                      <span>Live Brightness Level:</span>
+                      <span className="text-cyan-400 font-bold">{localBrightness}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Sun size={12} className="text-amber-400" />
+                      <input 
+                        type="range" 
+                        min="20" 
+                        max="100" 
+                        value={localBrightness}
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          setLocalBrightness(val);
+                          onActionTriggered(`Screen brightness slider: ${val}%`, device.id, "info");
+                        }}
+                        className="w-full h-1 bg-[#120732] rounded-lg appearance-none cursor-pointer border border-purple-900"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Direct Keystroke Injector Form */}
+                  <div className="pt-2 border-t border-purple-950/50 space-y-2">
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest block">Hardware Keystroke Injector:</span>
+                    <div className="flex gap-1.5">
+                      <input 
+                        type="text"
+                        value={localKeystroke}
+                        onChange={(e) => setLocalKeystroke(e.target.value)}
+                        placeholder="Type hardware sweep keyseq..."
+                        className="flex-1 bg-zinc-950/60 border border-zinc-800 rounded px-2.5 py-1.5 text-[10px] text-cyan-400 font-mono outline-none focus:border-cyan-400/40"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && localKeystroke.trim()) {
+                            const val = localKeystroke.trim();
+                            const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
+                            setKeystrokeLogs(prev => [`[${time}] dis: "${val}"`, ...prev].slice(0, 3));
+                            onActionTriggered(`Manual keyboard inject string: "${val}"`, device.id, "success");
+                            setLocalKeystroke("");
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() => {
+                          if (!localKeystroke.trim()) return;
+                          const val = localKeystroke.trim();
+                          const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
+                          setKeystrokeLogs(prev => [`[${time}] dis: "${val}"`, ...prev].slice(0, 3));
+                          onActionTriggered(`Manual keyboard inject string: "${val}"`, device.id, "success");
+                          setLocalKeystroke("");
+                        }}
+                        className="p-1.5 bg-cyan-900/30 hover:bg-cyan-950/60 text-cyan-400 border border-cyan-400/30 rounded cursor-pointer flex items-center justify-center transition-colors"
+                      >
+                        <Send className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* Mini inline keystroke buffer log */}
+                    {keystrokeLogs.length > 0 && (
+                      <div className="bg-[#0b051c] p-2 rounded border border-purple-950 space-y-1">
+                        {keystrokeLogs.map((logStr, lIdx) => (
+                          <div key={lIdx} className="text-[8.5px] font-mono text-[#a855f7] leading-tight truncate">
+                            {logStr}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+              <span className="text-[10px] text-zinc-500 block uppercase font-bold tracking-wider mb-1 pt-2">SECURE CONSOLE ACTUATION OVERRIDES</span>
+
+              {/* ACTION 1: REBOOT SYSTEM */}
+              <button
+                onClick={() => onActionTriggered("Manual Hard Reboot Requested", device.id, "warning")}
+                className="w-full flex items-center justify-between p-3 rounded border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 transition-colors text-left group cursor-pointer"
+              >
+                <div className="min-w-0 pr-3">
+                  <span className="text-amber-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
+                    <Play className="w-3.5 h-3.5 fill-amber-500/20 text-danger" /> FORCE CYCLE POWER
+                  </span>
+                  <p className="text-[11px] text-zinc-400 leading-normal">Safely drains motherboard buffers and reboots root OS using cold hardware relays.</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-amber-500 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              {/* ACTION 2: ISOLATE NODE */}
+              <button
+                onClick={() => onActionTriggered("Cyber-Security Isolation Triggered", device.id, "critical")}
+                className="w-full flex items-center justify-between p-3 rounded border border-rose-500/30 bg-rose-500/5 hover:bg-rose-500/10 transition-colors text-left group cursor-pointer"
+              >
+                <div className="min-w-0 pr-3">
+                  <span className="text-rose-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
+                    <AlertTriangle className="w-3.5 h-3.5" /> ISOLATE INSTANT LOCK
+                  </span>
+                  <p className="text-[11px] text-zinc-400 leading-normal">Instantly cuts network routing to block outbound packets. Device enters airgap lockdown mode.</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-rose-400 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              {/* ACTION 3: DEPLOY RE-ENCRYPT */}
+              <button
+                onClick={() => onActionTriggered("Cryptographic Policy Force Enforced", device.id, "success")}
+                className="w-full flex items-center justify-between p-3 rounded border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors text-left group cursor-pointer"
+              >
+                <div className="min-w-0 pr-3">
+                  <span className="text-emerald-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
+                    <ShieldCheck className="w-3.5 h-3.5" /> ENFORCE FULL COMPLIANCE
+                  </span>
+                  <p className="text-[11px] text-zinc-400 leading-normal">Forces active verification on all non-compliant policies. Disables USB mounts dynamically.</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-emerald-400 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              {/* ACTION 4: REMOTE DIAGNOSTIC SHELL */}
+              <button
+                onClick={() => onActionTriggered("Diagnostic Port Stream Synced", device.id, "info")}
+                className="w-full flex items-center justify-between p-3 rounded border border-teal-500/30 bg-teal-500/5 hover:bg-teal-500/10 transition-colors text-left group cursor-pointer"
+              >
+                <div className="min-w-0 pr-3">
+                  <span className="text-teal-400 font-semibold flex items-center gap-1.5 mb-1 text-sm">
+                    <Terminal className="w-3.5 h-3.5" /> REMOTE TERMINAL TETHER
+                  </span>
+                  <p className="text-[11px] text-zinc-400 leading-normal">Establish a secure, authenticated SSH shell session in active foreground container environment.</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-teal-400 shrink-0 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          );
+        })()}
       </div>
     </aside>
   );

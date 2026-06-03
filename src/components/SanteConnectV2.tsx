@@ -11,17 +11,17 @@ interface SanteConnectV2Props {
   onNavigateToTab?: (tabId: string) => void;
 }
 
-// Custom Premium EKG Medical Cross Logo exactly matching the reference image's fine aqua outline elements
-const SanteCrossLogo: React.FC = () => (
+// Custom Premium Telemetry Wave Shield Logo exactly matching the fine aqua outline elements
+const SovereignNodeLogo: React.FC = () => (
   <svg className="w-8 h-8 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.7)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Clean medical cross outline */}
+    {/* Clean shield/node outline */}
     <path 
-      d="M10 3.5H14V9H19.5V13H14V18.5H10V13H4.5V9H10V3.5Z" 
+      d="M12 2L4 5V11C4 16.5 12 21 12 21C12 21 20 16.5 20 11V5L12 2Z" 
       stroke="#22d3ee" 
       strokeWidth="2" 
       strokeLinejoin="round" 
     />
-    {/* Centered EKG heartbeat pulse trace traversing the cross */}
+    {/* Centered frequency pulse trace traversing the shield */}
     <path 
       d="M5.5 11H8.5L9.5 7.5L11 15L12 9.5L12.5 11H18.5" 
       stroke="#22d3ee" 
@@ -39,14 +39,14 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
   onClearAlert,
   onNavigateToTab
 }) => {
-  // Let the user toggle simulated hospital loads versus linking directly to active server node data
-  const [dataSource, setDataSource] = useState<"hospital" | "node_direct">("hospital");
+  // Let the user toggle simulated edge network loads versus linking directly to active server node data
+  const [dataSource, setDataSource] = useState<"simulation" | "node_direct">("simulation");
 
   const [simulatedLoad, setSimulatedLoad] = useState(92);
-  const [simulatedFreeBeds, setSimulatedFreeBeds] = useState(14);
-  const [simulatedActiveStaff, setSimulatedActiveStaff] = useState(86);
+  const [simulatedChannels, setSimulatedChannels] = useState(14);
+  const [simulatedActiveAgents, setSimulatedActiveAgents] = useState(86);
 
-  // Fluctuations for hospital load simulator to give it a realistic, dynamic feel
+  // Fluctuations for system load simulator to give it a realistic, dynamic feel
   useEffect(() => {
     const interval = setInterval(() => {
       setSimulatedLoad(prev => {
@@ -54,7 +54,7 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
         const next = prev + delta;
         return next >= 88 && next <= 95 ? next : prev;
       });
-      setSimulatedActiveStaff(prev => {
+      setSimulatedActiveAgents(prev => {
         const delta = Math.random() > 0.5 ? 1 : -1;
         const next = prev + delta;
         return next >= 83 && next <= 89 ? next : prev;
@@ -74,9 +74,9 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
   );
 
   // Choose display statistics based on active data-source toggle
-  const currentFluxLoad = dataSource === "hospital" ? simulatedLoad : realNodeCompliantPercent;
-  const currentFreeBeds = dataSource === "hospital" ? simulatedFreeBeds : (offlineCount + warningCount || 7);
-  const currentActiveStaff = dataSource === "hospital" ? simulatedActiveStaff : (onlineCount * 12 + 6);
+  const currentFluxLoad = dataSource === "simulation" ? simulatedLoad : realNodeCompliantPercent;
+  const currentChannels = dataSource === "simulation" ? simulatedChannels : (offlineCount + warningCount || 7);
+  const currentActiveAgents = dataSource === "simulation" ? simulatedActiveAgents : (onlineCount * 12 + 6);
 
   // Status labels based on current parameters
   const getFluxStatus = (val: number) => {
@@ -85,16 +85,16 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
     return "STABLE";
   };
 
-  const getBedsStatus = (val: number) => {
+  const getChannelsStatus = (val: number) => {
     if (val < 15) return "TENSION";
-    return "DISPONIBLE";
+    return "AVAILABLE";
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="sante-connect-v2-container">
       
       {/* Dynamic toggle switch that allows switching datasets seamlessly */}
-      <div className="flex items-center justify-between p-2.5 bg-indigo-950/40 rounded-2xl border border-purple-500/10 backdrop-blur-sm">
+      <div className="flex items-center justify-between p-2.5 bg-indigo-950/40 rounded-2xl border border-purple-500/10 backdrop-blur-sm" id="sante-toggle-bar">
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4 text-purple-400 animate-pulse" />
           <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-200">
@@ -103,20 +103,22 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
         </div>
         <div className="flex gap-1.5 p-0.5 bg-black/30 rounded-lg border border-indigo-950">
           <button
-            onClick={() => setDataSource("hospital")}
+            id="btn-toggle-sim"
+            onClick={() => setDataSource("simulation")}
             className={`px-3 py-1 text-[9px] font-bold font-mono tracking-widest uppercase rounded-md transition-all cursor-pointer ${
-              dataSource === "hospital" 
-                ? "bg-[#25175d] text-[#22d3ee] border border-cyan-400/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]" 
+              dataSource === "simulation" 
+                ? "bg-purple-900/60 text-[#22d3ee] border border-cyan-400/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]" 
                 : "text-purple-400 hover:text-white"
             }`}
           >
-            🏥 SPEC PICTURE (HOSPITAL STATIC)
+            📡 MODEL SIMULATION (SPEC STATIC)
           </button>
           <button
+            id="btn-toggle-live"
             onClick={() => setDataSource("node_direct")}
             className={`px-3 py-1 text-[9px] font-bold font-mono tracking-widest uppercase rounded-md transition-all cursor-pointer ${
               dataSource === "node_direct" 
-                ? "bg-[#25175d] text-[#22d3ee] border border-cyan-400/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]" 
+                ? "bg-purple-900/60 text-[#22d3ee] border border-cyan-400/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]" 
                 : "text-purple-400 hover:text-white"
             }`}
           >
@@ -125,8 +127,8 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
         </div>
       </div>
 
-      {/* Main Santé Connect Rounded Card (Image 1 Core Spec) */}
-      <div className="rounded-[2.5rem] bg-[#1a0e41]/90 p-8 border border-purple-500/10 shadow-[0_15px_40px_rgba(76,29,149,0.35)] backdrop-blur-md relative overflow-hidden text-white font-sans">
+      {/* Main Coordinated Command Dashboard Panel */}
+      <div className="rounded-[2.5rem] bg-[#1a0e41]/90 p-8 border border-purple-500/10 shadow-[0_15px_40px_rgba(76,29,149,0.35)] backdrop-blur-md relative overflow-hidden text-white font-sans" id="sovereign-control-card">
         
         {/* Background ambient glowing core */}
         <div className="absolute right-0 top-0 w-[200px] h-[200px] bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none" />
@@ -135,17 +137,17 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
         {/* 1. HEADER SECTION */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            {/* Elegant glowing glass rounded square with Custom EKG/Medical logo */}
+            {/* Elegant glowing glass rounded square with Custom Wave logo */}
             <div className="w-14 h-14 bg-indigo-900/40 border border-[#22d3ee]/25 shadow-[0_0_20px_rgba(34,211,238,0.15)] flex items-center justify-center rounded-[1.25rem] shrink-0">
-              <SanteCrossLogo />
+              <SovereignNodeLogo />
             </div>
             
             <div>
               <h2 className="text-white text-[1.3rem] font-sans font-black italic tracking-wider uppercase select-none leading-none">
-                SANTÉ CONNECT V2
+                SOVEREIGN CONNECT V2
               </h2>
               <span className="text-[#7c6bb5] text-xs font-bold font-mono tracking-widest uppercase mt-2.5 block">
-                HÔPITAL UNIVERSITAIRE DE RABAT
+                CENTRAL SOVEREIGN CONTROL BASIN
               </span>
             </div>
           </div>
@@ -166,10 +168,10 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
         {/* 3. CORE METRIC CONTAINER ROW */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Box 1: FLUX URGENCES */}
+          {/* Box 1: NETWORK SYSTEM LOAD */}
           <div className="bg-[#24175e]/45 rounded-3xl p-6 border border-purple-500/5 hover:border-purple-500/15 transition-all duration-350 flex flex-col justify-between min-h-[145px] shadow-lg group">
             <span className="text-[#7c6bb5] text-[10px] font-sans font-bold tracking-widest uppercase mb-1 block">
-              FLUX URGENCES
+              NETWORK SYSTEM LOAD
             </span>
             <span className="text-white text-[2.75rem] font-sans font-black italic tracking-wide my-1 select-none leading-none group-hover:scale-105 duration-300 transform origin-left">
               {currentFluxLoad}%
@@ -179,26 +181,26 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
             </span>
           </div>
 
-          {/* Box 2: LITS LIBRES */}
+          {/* Box 2: AVAILABLE CHANNELS */}
           <div className="bg-[#24175e]/45 rounded-3xl p-6 border border-purple-500/5 hover:border-purple-500/15 transition-all duration-350 flex flex-col justify-between min-h-[145px] shadow-lg group">
             <span className="text-[#7c6bb5] text-[10px] font-sans font-bold tracking-widest uppercase mb-1 block">
-              LITS LIBRES
+              AVAILABLE CHANNELS
             </span>
             <span className="text-white text-[2.75rem] font-sans font-black italic tracking-wide my-1 select-none leading-none group-hover:scale-105 duration-300 transform origin-left">
-              {currentFreeBeds}
+              {currentChannels}
             </span>
             <span className="text-[#ff5c00] text-[10px] font-sans font-black tracking-widest uppercase mt-1 block">
-              {getBedsStatus(currentFreeBeds)}
+              {getChannelsStatus(currentChannels)}
             </span>
           </div>
 
-          {/* Box 3: STAFF ACTIF */}
+          {/* Box 3: ACTIVE PROCESS AGENTS */}
           <div className="bg-[#24175e]/45 rounded-3xl p-6 border border-purple-500/5 hover:border-purple-500/15 transition-all duration-350 flex flex-col justify-between min-h-[145px] shadow-lg group">
             <span className="text-[#7c6bb5] text-[10px] font-sans font-bold tracking-widest uppercase mb-1 block">
-              STAFF ACTIF
+              ACTIVE PROCESS AGENTS
             </span>
             <span className="text-white text-[2.75rem] font-sans font-black italic tracking-wide my-1 select-none leading-none group-hover:scale-105 duration-300 transform origin-left">
-              {currentActiveStaff}
+              {currentActiveAgents}
             </span>
             <span className="text-[#10b981] text-[10px] font-sans font-black tracking-widest uppercase mt-1 block">
               STABLE
@@ -216,9 +218,9 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
         </div>
 
         {/* Dynamic Alerts Queue styled strictly into the signature left-curved brackets design */}
-        <div className="space-y-3.5">
+        <div className="space-y-3.5" id="alerts-matrix-queue">
           
-          {/* Primary Mock Alarm showing exact Image 1 attributes */}
+          {/* Primary Mock Alarm showing Coordinated system activity */}
           <div className="relative bg-[#1f124c]/90 rounded-[1.8rem] p-5 border border-purple-500/5 flex items-center justify-between gap-4 shadow-[#130737]/45 shadow-sm group hover:scale-[1.01] transition-all duration-300">
             
             {/* Smooth left crescent parenthesis custom SVG curve with glowing border-pulsation */}
@@ -245,10 +247,10 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
 
               <div>
                 <span className="text-white font-sans font-extrabold text-[12px] tracking-widest block uppercase">
-                  ADMISSION CRITIQUE
+                  ALERT LEVEL: ENHANCED
                 </span>
                 <span className="text-[#7c6bb5] text-[10px] tracking-wide mt-1 block uppercase font-medium">
-                  AMBULANCE #402 EN APPROCHE
+                  REMOTE EDGE CONNECTION #402 INBOUND
                 </span>
               </div>
             </div>
@@ -288,7 +290,7 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
 
                   <div>
                     <span className="text-white font-sans font-extrabold text-[12px] tracking-widest block uppercase">
-                      VULNÉRABILITÉ SÉCURITÉ DECTECTÉE
+                      VULNÉRABILITÉ SÉCURITÉ DÉTECTÉE
                     </span>
                     <span className="text-[#7c6bb5] text-[10px] tracking-wide mt-1 block uppercase font-medium">
                       {alert.source}: {alert.message.slice(0, 50)}...
@@ -296,7 +298,7 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
                     {assocDevice && onSelectDevice && (
                       <button 
                         onClick={() => onSelectDevice(assocDevice)}
-                        className="text-[9px] text-[#22d3ee] mt-1 hover:underline cursor-pointer block font-mono text-left"
+                        className="text-[9px] text-[#22d3ee] mt-1 hover:underline cursor-pointer block font-mono text-left bg-transparent border-none out-none"
                       >
                         Tracer l'appareil cible ({assocDevice.name}) →
                       </button>
@@ -316,7 +318,7 @@ export const SanteConnectV2: React.FC<SanteConnectV2Props> = ({
       </div>
 
       {/* Quick Access panel back to other system sections to maintain flow usability */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4" id="quick-links-panel">
         {[
           { label: "🖥️ CORE COCKPIT", tabId: "overview_system" },
           { label: "🗺️ GLOBAL MATRIX MAP", tabId: "global-map" },

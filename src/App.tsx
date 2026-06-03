@@ -7,7 +7,9 @@ import { useState, useEffect } from "react";
 import { 
   FolderHeart, Network, ShieldCheck, Terminal as TermIcon, BrainCircuit, 
   Workflow, Layers, Server, Activity, AlertOctagon, RefreshCw, 
-  Settings2, Bot, Menu, X, Hammer, Globe, Mail, Landmark
+  Settings2, Bot, Menu, X, Hammer, Globe, Mail, Landmark,
+  Sun, Moon, ClipboardCheck, Monitor, Sliders, Settings, ShieldAlert,
+  Users, LogOut
 } from "lucide-react";
 
 import { Device, SystemLog, SecurityPolicy, GroupFolder, SoftwarePackage, PredictiveFailure, DNSRecord, DNSQueryLog, SovereignSettings } from "./types";
@@ -22,6 +24,8 @@ import {
   collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, getDoc
 } from "firebase/firestore";
 import { db, auth, OperationType, handleFirestoreError, testConnection } from "./utils/firebaseDb";
+import { logout } from "./utils/firebaseAuth";
+import { SovereignAuthGate } from "./components/SovereignAuthGate";
 
 // Components
 import { SystemStatusBar } from "./components/SystemStatusBar";
@@ -45,10 +49,17 @@ import { RemoteTerminal } from "./components/RemoteTerminal";
 import { HealthMatrix } from "./components/HealthMatrix";
 import { GlobalHorizonMap } from "./components/GlobalHorizonMap";
 import { QuantumNode } from "./components/QuantumNode";
-import { ExecutiveInsights } from "./components/ExecutiveInsights";
+import { VisionArchitecte } from "./components/VisionArchitecte";
 import { SecurityPerimeter } from "./components/SecurityPerimeter";
 import { DataVisualizationFlow } from "./components/DataVisualizationFlow";
 import { PlatformHypervisor } from "./components/PlatformHypervisor";
+import { SovereignAudit } from "./components/SovereignAudit";
+import { ObservationDeck } from "./components/ObservationDeck";
+import { ApplianceCore } from "./components/ApplianceCore";
+import { AssetEnrollment } from "./components/AssetEnrollment";
+import { ClientDashboard } from "./components/ClientDashboard";
+import { SovereignContacts } from "./components/SovereignContacts";
+import { PublicLanding, NeuralHandshake, SovereignPricingPage } from "./components/SovereignLifecycleOrchestrator";
 
 // Private custom hook that monitors system logs and notifies when a critical incident is registered
 function useSecurityAlertListener(
@@ -102,6 +113,18 @@ Sovereign Network Command Center`;
 
 export default function App() {
   const [devices, setDevices] = useState<Device[]>(initialDevices);
+  const [isLightMode, setIsLightMode] = useState<boolean>(() => {
+    return localStorage.getItem("theme") === "light";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("theme", isLightMode ? "light" : "dark");
+    if (isLightMode) {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  }, [isLightMode]);
   const [logs, setLogs] = useState<SystemLog[]>(initialLogs);
   const [policies, setPolicies] = useState<SecurityPolicy[]>(initialPolicies);
   const [groups, setGroups] = useState<GroupFolder[]>(initialGroups);
@@ -118,12 +141,30 @@ export default function App() {
   });
 
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [compliance, setCompliance] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<string>("insights");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [currentRole, setCurrentRole] = useState<"super-admin" | "strategist" | "tactician" | "auditor">("super-admin");
+  const [currentRole, setCurrentRole] = useState<"super-admin" | "strategist" | "tactician" | "auditor" | "client">("super-admin");
   const [currentPlan, setCurrentPlan] = useState<"tactical" | "sovereign" | "imperial">("sovereign");
 
+  useEffect(() => {
+    if (currentRole === "client") {
+      setActiveTab("client-dashboard");
+    } else if (activeTab === "client-dashboard") {
+      setActiveTab("dashboard");
+    }
+  }, [currentRole]);
+
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const [lifecycleState, setLifecycleState] = useState<"landing" | "auth" | "handshake" | "pricing" | "dashboard">("landing");
+
+  // Multi-state automatic redirection to handshake on active sessions
+  useEffect(() => {
+    if (currentUser && (lifecycleState === "landing" || lifecycleState === "auth")) {
+      setLifecycleState("handshake");
+    }
+  }, [currentUser, lifecycleState]);
 
   // Buffer state to transport custom pre-populated draft templates dynamically to SovereignGmail views
   const [gmailInitialCompose, setGmailInitialCompose] = useState<{
@@ -161,23 +202,32 @@ export default function App() {
         
         const userDocRef = doc(db, "users", fbUser.uid);
         try {
+          // Check if root user profile exists
+          const uDoc = await getDoc(userDocRef);
+          
+          if (!uDoc.exists()) {
+            console.info("🚀 User profile missing. Creating standard profile record...");
+            await setDoc(userDocRef, {
+              uid: fbUser.uid,
+              email: fbUser.email,
+              role: currentRole === "client" ? "client" : "super-admin",
+              plan: currentRole === "client" ? "tactical" : "sovereign",
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            });
+          } else {
+            const uData = uDoc.data();
+            if (uData?.role) setCurrentRole(uData.role as any);
+            if (uData?.plan) setCurrentPlan(uData.plan as any);
+          }
+
           // Check if devices exist under the user
           const testSnap = await getDocs(collection(db, `users/${fbUser.uid}/devices`));
           
           if (testSnap.empty) {
-            console.info("🚀 First-time onboarding detected. Syncing secure, isolated mock datasets...");
+            console.info("🚀 Subcollections missing. Syncing secure, isolated mock datasets...");
             const batch = writeBatch(db);
             
-            // Register standard user parameters
-            batch.set(userDocRef, {
-              uid: fbUser.uid,
-              email: fbUser.email,
-              role: "super-admin",
-              plan: "sovereign",
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            });
-
             // Sync original device nodes
             initialDevices.forEach(d => {
               const dRef = doc(db, `users/${fbUser.uid}/devices`, d.id);
@@ -203,26 +253,25 @@ export default function App() {
             });
 
             await batch.commit();
-            console.info("🎉 Database initialized under strict zero-trust subcollections.");
-          } else {
-            // Already initialized, load state
-            const uDoc = await getDoc(userDocRef);
-            if (uDoc.exists()) {
-              const uData = uDoc.data();
-              if (uData?.role) setCurrentRole(uData.role as any);
-              if (uData?.plan) setCurrentPlan(uData.plan as any);
-            }
+            console.info("🎉 Subcollections database initialized under strict zero-trust.");
           }
         } catch (err) {
-          console.error("Failed to sync client onboarding data:", err);
+          const errMsg = err instanceof Error ? err.message : String(err);
+          if (errMsg.toLowerCase().includes("offline") || errMsg.toLowerCase().includes("network")) {
+            console.warn("Sovereign Offline Fallback Active. Failed to sync client onboarding data:", err);
+          } else {
+            console.error("Failed to sync client onboarding data:", err);
+          }
         }
       } else {
         console.info("ℹ️ Localized session initialized. Real-time stream fallbacks triggered.");
+        setLifecycleState("landing");
       }
+      setIsAuthChecked(true);
     });
 
     return () => unsubAuth();
-  }, []);
+  }, [currentRole]);
 
   // 3. Listen to Firestore real-time collections if user is logged in
   useEffect(() => {
@@ -319,9 +368,15 @@ export default function App() {
         if (payload.dnsRecords) setDnsRecords(payload.dnsRecords);
         if (payload.dnsQueryLogs) setDnsQueryLogs(payload.dnsQueryLogs);
         if (payload.sovereignSettings) setSovereignSettings(payload.sovereignSettings);
+        if (payload.compliance) setCompliance(payload.compliance);
+        window.dispatchEvent(new CustomEvent("sse_sync_all"));
       } catch (err) {
         console.error("SSE initial sync failed:", err);
       }
+    });
+
+    sse.addEventListener("enrollment_requests_update", (e: MessageEvent) => {
+      window.dispatchEvent(new CustomEvent("sse_enrollment_requests_update"));
     });
 
     sse.addEventListener("devices_update", (e: MessageEvent) => {
@@ -396,6 +451,15 @@ export default function App() {
       }
     });
 
+    sse.addEventListener("compliance_update", (e: MessageEvent) => {
+      try {
+        const updated = JSON.parse(e.data);
+        setCompliance(updated);
+      } catch (err) {
+        console.error("SSE compliance update failed:", err);
+      }
+    });
+
     sse.onerror = (err) => {
       console.warn("Real-time stream interrupted. Re-negotiating SSL link socket...", err);
     };
@@ -437,12 +501,12 @@ export default function App() {
   };
 
   // State update handles for subscription role & plan
-  const handleUpdateRole = async (newRole: "super-admin" | "strategist" | "tactician" | "auditor") => {
+  const handleUpdateRole = async (newRole: "super-admin" | "strategist" | "tactician" | "auditor" | "client") => {
     setCurrentRole(newRole);
     if (currentUser) {
       const docRef = doc(db, "users", currentUser.uid);
       try {
-        await updateDoc(docRef, { role: newRole, updatedAt: new Date().toISOString() });
+        await setDoc(docRef, { role: newRole, updatedAt: new Date().toISOString() }, { merge: true });
       } catch (err) {
         handleFirestoreError(err, OperationType.UPDATE, `users/${currentUser.uid}`);
       }
@@ -454,7 +518,7 @@ export default function App() {
     if (currentUser) {
       const docRef = doc(db, "users", currentUser.uid);
       try {
-        await updateDoc(docRef, { plan: newPlan, updatedAt: new Date().toISOString() });
+        await setDoc(docRef, { plan: newPlan, updatedAt: new Date().toISOString() }, { merge: true });
       } catch (err) {
         handleFirestoreError(err, OperationType.UPDATE, `users/${currentUser.uid}`);
       }
@@ -467,6 +531,12 @@ export default function App() {
     deviceId: string, 
     level: "info" | "warning" | "critical" | "success"
   ) => {
+    if (actionName === "OPEN_REMOTE_TERMINAL" || actionName.includes("Tether") || actionName.includes("TERMINAL TETHER")) {
+      setActiveTab("terminal");
+      setSelectedDeviceId(null); // Close sidebar for full width terminal view
+      return;
+    }
+
     let apiAction = "";
     if (actionName.includes("Manual Hard Reboot Requested") || actionName === "reboot") {
       apiAction = "reboot";
@@ -571,6 +641,10 @@ export default function App() {
 
   // Toggle Security Policy on Server or in Firestore
   const handleTogglePolicy = async (policyId: string) => {
+    if (currentRole === "auditor") {
+      console.warn("Write lock active: Policies cannot be modified during active Auditor session.");
+      return;
+    }
     const policy = policies.find(p => p.id === policyId);
     if (policy && currentUser) {
       const docRef = doc(db, `users/${currentUser.uid}/securityPolicies`, policyId);
@@ -594,6 +668,10 @@ export default function App() {
 
   // Mass Rollout Sovereign Desired State
   const handleDeployPoliciesAll = async () => {
+    if (currentRole === "auditor") {
+      console.warn("Write lock active: Global deploy disabled for Auditor sessions.");
+      return;
+    }
     if (currentUser) {
       try {
         for (const p of policies) {
@@ -699,13 +777,18 @@ export default function App() {
     }
   };
 
-  // Navigations Lists with 10 visual-themed preset variant layouts
-  const navigationTabs = [
+  // Navigations Lists with dynamic, adaptive contextual UI modes (Discord-style)
+  const navigationTabs = currentRole === "client" ? [
+    { id: "client-dashboard", label: "01 • GUEST ACCESS HUB", icon: Server },
+    { id: "gmail", label: "02 • SOVEREIGN MAIL", icon: Mail },
+    { id: "platform-gate", label: "03 • PLATFORM OPERATOR", icon: Landmark },
+    { id: "contacts", label: "04 • SOVEREIGN CONTACTS", icon: Users }
+  ] : [
     { id: "dashboard", label: "01 • COMMAND CENTER", icon: Server },
     { id: "health-matrix", label: "02 • HEALTH MATRIX", icon: Activity },
     { id: "data-flow", label: "03 • DATA FLOW", icon: Workflow },
     { id: "quantum-node", label: "04 • QUANTUM NODE", icon: BrainCircuit },
-    { id: "insights", label: "05 • EXEC INSIGHTS", icon: Layers },
+    { id: "insights", label: "05 • VISION ARCHITECTE", icon: Layers },
     { id: "perimeter", label: "06 • SEC PERIMETER", icon: ShieldCheck },
     { id: "terminal", label: "07 • SECURE TERMINAL", icon: TermIcon },
     { id: "timeline", label: "08 • INCIDENT TIMELINE", icon: AlertOctagon },
@@ -713,36 +796,119 @@ export default function App() {
     { id: "settings", label: "10 • SYSTEM ESSENCE", icon: Settings2 },
     { id: "gmail", label: "11 • SOVEREIGN MAIL", icon: Mail },
     { id: "platform-gate", label: "12 • PLATFORM OPERATOR", icon: Landmark },
+    { id: "sovereign-audit", label: "13 • SOVEREIGN AUDIT", icon: ClipboardCheck },
+    { id: "observation-deck", label: "14 • OBSERVATION DECK", icon: Monitor },
+    { id: "appliance-core", label: "15 • APPLIANCE CORE", icon: Sliders },
+    { id: "asset-enrollment", label: "16 • ASSET ENROLLMENT", icon: ShieldAlert },
+    { id: "contacts", label: "17 • SOVEREIGN CONTACTS", icon: Users }
   ];
 
+  if (!isAuthChecked) {
+    return (
+      <div id="sovereign-initial-handshake" className="min-h-screen w-full flex flex-col justify-center items-center bg-[#0a041f] text-cyan-400 font-mono space-y-3">
+        <RefreshCw className="w-8 h-8 animate-spin text-cyan-400" />
+        <span className="text-[10px] font-bold tracking-widest uppercase">Initializing Secure mTLS Handshake...</span>
+      </div>
+    );
+  }
+
+  // Sovereign User Lifecycle Orchestration Funnel
+  if (lifecycleState === "landing" && !currentUser) {
+    return (
+      <PublicLanding 
+        onInitiateLogin={() => setLifecycleState("auth")}
+        onInitiateRegister={() => setLifecycleState("auth")}
+      />
+    );
+  }
+
+  if (lifecycleState === "auth" && !currentUser) {
+    return (
+      <SovereignAuthGate 
+        onAuthSuccess={(uid, role) => {
+          setCurrentRole(role as any);
+          setLifecycleState("handshake");
+        }} 
+      />
+    );
+  }
+
+  if (lifecycleState === "handshake") {
+    return (
+      <NeuralHandshake 
+        currentUser={currentUser}
+        onAnalysisResult={(role, hasSubscription) => {
+          setCurrentRole(role);
+          if (role === "super-admin" || hasSubscription) {
+            setLifecycleState("dashboard");
+          } else {
+            setLifecycleState("pricing");
+          }
+        }}
+      />
+    );
+  }
+
+  if (lifecycleState === "pricing") {
+    return (
+      <SovereignPricingPage 
+        currentUser={currentUser}
+        onPlanActivated={(plan) => {
+          setCurrentPlan(plan);
+          setLifecycleState("dashboard");
+        }}
+      />
+    );
+  }
+
   return (
-    <div id="sovereign-root" className="min-h-screen bg-[#0c0523] text-purple-100 flex flex-col justify-between selection:bg-[#22d3ee] selection:text-indigo-950">
+    <div id="sovereign-root" className={`min-h-screen flex flex-col justify-between selection:bg-cyan-500/30 selection:text-white transition-colors duration-300 ${
+      isLightMode 
+        ? "bg-[#FAF9F5] text-stone-900" 
+        : "bg-[#0c0523] text-purple-100"
+    }`}>
       
       {/* Outer ambient radiant background glows */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.12),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(34,211,238,0.06),transparent_50%)] pointer-events-none z-0" />
+      <div className={`fixed inset-0 pointer-events-none z-0 transition-opacity duration-300 ${
+        isLightMode 
+          ? "bg-[radial-gradient(ellipse_at_top_right,rgba(15,76,129,0.04),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(28,25,23,0.03),transparent_50%)]" 
+          : "bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.12),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(34,211,238,0.06),transparent_50%)]"
+      }`} />
 
       {/* Container segment: Sidebar navbar + Content screen */}
       <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-transparent relative z-10">
         
         {/* Left Sidebar Menu Drawer (Medical Velvet Space Yacht Aesthetic) */}
-        <aside id="sidebar-navigation" className="w-full md:w-68 bg-[#150a36]/90 border-b md:border-b-0 md:border-r border-purple-500/10 py-5 flex flex-col justify-between shrink-0 select-none backdrop-blur-md">
+        <aside id="sidebar-navigation" className={`w-full md:w-68 border-b md:border-b-0 md:border-r py-5 flex flex-col justify-between shrink-0 select-none backdrop-blur-md transition-all duration-300 ${
+          isLightMode 
+            ? "bg-[#F4F2EE] border-stone-200/90 text-stone-800" 
+            : "bg-[#150a36]/90 border-purple-500/10 text-purple-100"
+        }`}>
           <div>
             {/* Title / Launcher Logo */}
-            <div className="px-5 pb-5 border-b border-purple-950/50 flex items-center justify-between">
+            <div className={`px-5 pb-5 border-b flex items-center justify-between ${isLightMode ? "border-stone-200" : "border-purple-950/50"}`}>
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-purple-900/40 border border-[#22d3ee]/30 rounded-xl flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                  <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <div className={`w-9 h-9 border rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                  isLightMode 
+                    ? "bg-white border-stone-300 text-[#0f4c81] shadow-sm" 
+                    : "bg-purple-900/40 border border-[#22d3ee]/30 shadow-[0_0_15px_rgba(34,211,238,0.2)] text-cyan-400"
+                }`}>
+                  <svg className="w-5 h-5 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-[13px] font-black tracking-widest text-white uppercase italic">SANTÉ CORE</h1>
-                  <span className="text-[8.5px] text-[#7c6bb5] block font-mono font-bold tracking-wider uppercase">CLINICAL OPERATING OS</span>
+                  <h1 className={`text-[13px] font-black tracking-widest uppercase italic leading-none ${isLightMode ? "text-stone-900" : "text-white"}`}>SANTÉ CORE</h1>
+                  <span className={`text-[8.5px] block font-mono font-bold tracking-wider uppercase ${isLightMode ? "text-stone-400" : "text-[#7c6bb5]"}`}>CLINICAL OPERATING OS</span>
                 </div>
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-                className="p-1.5 hover:bg-purple-950 md:hidden text-purple-300 hover:text-white rounded-lg border border-purple-800/10 transition-all"
+                className={`p-1.5 md:hidden rounded-lg border transition-all ${
+                  isLightMode 
+                    ? "hover:bg-stone-200 text-stone-600 hover:text-stone-900 border-stone-200" 
+                    : "hover:bg-purple-950 text-purple-300 hover:text-white border-purple-800/10"
+                }`}
               >
                 {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
@@ -762,35 +928,73 @@ export default function App() {
                     }}
                     className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-wider text-left transition-all relative cursor-pointer ${
                       isActive 
-                        ? "bg-[#24175e] text-cyan-400 border border-cyan-400/25 shadow-[0_0_15px_rgba(34,211,238,0.15)] font-extrabold" 
-                        : "text-[#7c6bb5] hover:bg-purple-950/40 hover:text-white border border-transparent"
+                        ? isLightMode
+                          ? "bg-white text-[#0f4c81] border border-stone-300/80 shadow-[0_3px_10px_rgba(0,0,0,0.02)] font-black"
+                          : "bg-[#24175e] text-cyan-400 border border-cyan-400/25 shadow-[0_0_15px_rgba(34,211,238,0.15)] font-extrabold" 
+                        : isLightMode
+                          ? "text-stone-500 hover:bg-stone-200/50 hover:text-stone-900 border border-transparent"
+                          : "text-[#7c6bb5] hover:bg-purple-950/40 hover:text-white border border-transparent"
                     }`}
                   >
-                    <TabIcon className={`w-4 h-4 shrink-0 ${isActive ? "text-cyan-400 drop-shadow-[0_0_5px_#22d3ee]" : "text-[#7c6bb5]"}`} />
+                    <TabIcon className={`w-4 h-4 shrink-0 ${
+                      isActive 
+                        ? isLightMode 
+                          ? "text-[#0f4c81]" 
+                          : "text-cyan-400 drop-shadow-[0_0_3px_#22d3ee]" 
+                        : isLightMode 
+                          ? "text-stone-400" 
+                          : "text-[#7c6bb5]"
+                    }`} />
                     <span>{tab.label}</span>
                     {isActive && (
-                      <div className="absolute right-3.5 top-4.5 w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+                      <div className={`absolute right-3.5 top-4.5 w-1.5 h-1.5 rounded-full ${
+                        isLightMode ? "bg-[#0f4c81]" : "bg-cyan-400 shadow-[0_0_8px_#22d3ee]"
+                      }`} />
                     )}
                   </button>
                 );
               })}
+
+              {/* Global Sign Out Button */}
+              <button
+                onClick={async () => {
+                  const confirmLogout = window.confirm("Terminer la session et verrouiller le terminal de sécurité ?");
+                  if (confirmLogout) {
+                    await logout();
+                  }
+                }}
+                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider text-left transition-all mt-4 cursor-pointer border ${
+                  isLightMode 
+                    ? "text-[#dc2626] hover:bg-red-50/60 border-red-200 hover:border-red-400" 
+                    : "text-[#f43f5e] hover:bg-rose-950/20 border-rose-950/40 hover:border-rose-850"
+                }`}
+              >
+                <LogOut className="w-4 h-4 shrink-0 text-[#f43f5e]" />
+                <span>Verrouiller (Sign Out)</span>
+              </button>
             </nav>
           </div>
 
           {/* Quick Stats system cards on lower Sidebar boundary */}
-          <div className="px-4 pt-4 border-t border-purple-950/50 hidden md:block space-y-3.5">
-            <div className="bg-[#1a0e41]/60 p-4 rounded-2xl border border-purple-500/10 text-[10px] font-mono leading-relaxed space-y-1.5">
-              <span className="text-[#7c6bb5] font-bold block uppercase tracking-wider">HOSPITAL INTEGRATION</span>
-              <div className="flex justify-between text-purple-200">
+          <div className={`px-4 pt-4 border-t hidden md:block space-y-3.5 ${isLightMode ? "border-stone-200" : "border-purple-950/50"}`}>
+            <div className={`p-4 rounded-2xl border text-[10px] font-mono leading-relaxed space-y-1.5 transition-all duration-300 ${
+              isLightMode 
+                ? "bg-white border-stone-200 text-stone-600" 
+                : "bg-[#1a0e41]/60 border-purple-500/10 text-purple-200"
+            }`}>
+              <span className={`font-bold block uppercase tracking-wider ${isLightMode ? "text-stone-400" : "text-[#7c6bb5]"}`}>HOSPITAL INTEGRATION</span>
+              <div className="flex justify-between">
                 <span>Enforcement Deck:</span>
-                <span className="text-cyan-400 font-extrabold">Active (HR-V2)</span>
+                <span className={`font-extrabold ${isLightMode ? "text-[#0f4c81]" : "text-cyan-400"}`}>Active (HR-V2)</span>
               </div>
-              <div className="flex justify-between text-purple-200">
+              <div className="flex justify-between">
                 <span>Secure Tunneling:</span>
-                <span className="text-teal-400 font-extrabold">Encrypted Port</span>
+                <span className={`font-extrabold ${isLightMode ? "text-emerald-600" : "text-teal-400"}`}>Encrypted Port</span>
               </div>
             </div>
-            <div className="text-center font-mono text-[8px] text-purple-500 font-bold tracking-widest uppercase">
+            <div className={`text-center font-mono text-[8px] font-bold tracking-widest uppercase ${
+              isLightMode ? "text-stone-400" : "text-purple-500"
+            }`}>
               UNIVERSITE DE RABAT V2
             </div>
           </div>
@@ -801,28 +1005,69 @@ export default function App() {
           <div className="flex-1 overflow-y-auto p-5 md:p-8 pb-12">
             
             {/* Header Telemetry Ticker of active tab */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-4 border-b border-purple-950/40 gap-3">
+            <div className={`flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-4 border-b gap-3 transition-colors duration-300 ${
+              isLightMode ? "border-stone-200" : "border-purple-950/40"
+            }`}>
               <div>
-                <span className="text-[#7c6bb5] font-mono text-[9px] font-bold tracking-widest uppercase block mb-1">SOVEREIGN HEALTH & SECURITY INTERACTION</span>
-                <h2 className="text-lg font-black text-white tracking-widest uppercase italic leading-none">
+                <span className={`font-mono text-[9px] font-bold tracking-widest uppercase block mb-1 ${
+                  isLightMode ? "text-stone-400" : "text-[#7c6bb5]"
+                }`}>SOVEREIGN HEALTH & SECURITY INTERACTION</span>
+                <h2 className={`text-lg font-black tracking-widest uppercase italic leading-none transition-colors duration-350 ${
+                  isLightMode ? "text-stone-900" : "text-white"
+                }`}>
                   {navigationTabs.find(t => t.id === activeTab)?.label}
                 </h2>
               </div>
               <div className="flex flex-wrap items-center gap-2 font-mono text-[9px]">
-                <div className="flex items-center gap-2 bg-[#1a0e41]/80 border border-purple-500/10 px-3.5 py-2 rounded-xl text-purple-300">
-                  <Bot className="w-3.5 h-3.5 text-cyan-400" />
+                {/* Global Theme Preset Toggles inside the telemetry dashboard perimeter */}
+                <button
+                  onClick={() => setIsLightMode(!isLightMode)}
+                  className={`px-3 py-1.5 border rounded-xl font-mono text-[9px] uppercase tracking-widest font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                    isLightMode 
+                      ? "bg-white border-stone-200 text-stone-700 hover:bg-stone-50 shadow-sm" 
+                      : "bg-[#1a0e41]/80 border-purple-500/10 text-cyan-400 hover:bg-[#24175e]/70"
+                  }`}
+                  title="Toggle Global Presentation Preset"
+                >
+                  {isLightMode ? (
+                    <>
+                      <Moon className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                      <span>DARK THEME</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                      <span>LIGHT THEME</span>
+                    </>
+                  )}
+                </button>
+
+                <div className={`flex items-center gap-2 border px-3.5 py-2 rounded-xl transition-all duration-300 ${
+                  isLightMode 
+                    ? "bg-white border-stone-200 text-stone-600" 
+                    : "bg-[#1a0e41]/80 border-purple-500/10 text-purple-300"
+                }`}>
+                  <Bot className={`w-3.5 h-3.5 ${isLightMode ? "text-[#0f4c81]" : "text-cyan-400"}`} />
                   <span>MONITORING:</span>
-                  <strong className="text-cyan-400 uppercase font-black tracking-widest">NOMINAL</strong>
+                  <strong className={`uppercase font-black tracking-widest ${isLightMode ? "text-[#0f4c81]" : "text-cyan-400"}`}>NOMINAL</strong>
                 </div>
 
-                <div className="flex items-center gap-1.5 bg-cyan-950/45 border border-cyan-500/25 px-3.5 py-2 rounded-xl text-cyan-400">
+                <div className={`flex items-center gap-1.5 border px-3.5 py-2 rounded-xl transition-all duration-300 ${
+                  isLightMode 
+                    ? "bg-[#0f4c81]/5 border-[#0f4c81]/15 text-[#0f4c81]" 
+                    : "bg-cyan-950/45 border border-cyan-500/25 text-cyan-400"
+                }`}>
                   <span>TIER:</span>
-                  <strong className="text-white uppercase font-black tracking-wider">{currentPlan}</strong>
+                  <strong className={`${isLightMode ? "text-stone-900" : "text-white"} uppercase font-black tracking-wider`}>{currentPlan}</strong>
                 </div>
 
-                <div className="flex items-center gap-1.5 bg-[#120732] border border-purple-500/20 px-3.5 py-2 rounded-xl text-[#ff5c00]">
+                <div className={`flex items-center gap-1.5 border px-3.5 py-2 rounded-xl transition-all duration-300 ${
+                  isLightMode 
+                    ? "bg-amber-500/5 border-amber-500/20 text-[#a0522d]" 
+                    : "bg-[#120732] border border-purple-500/20 text-[#ff5c00]"
+                }`}>
                   <span>ROLE:</span>
-                  <strong className="text-white uppercase font-black tracking-wider">{currentRole}</strong>
+                  <strong className={`${isLightMode ? "text-stone-900" : "text-white"} uppercase font-black tracking-wider`}>{currentRole}</strong>
                 </div>
               </div>
             </div>
@@ -835,6 +1080,8 @@ export default function App() {
                 onSelectDevice={(dev) => setSelectedDeviceId(dev ? dev.id : null)} 
                 onClearAlert={handleClearAlert}
                 onNavigateToTab={(tabId) => setActiveTab(tabId)}
+                isLightMode={isLightMode}
+                onToggleLightMode={() => setIsLightMode(!isLightMode)}
               />
             )}
 
@@ -851,11 +1098,11 @@ export default function App() {
             )}
 
             {activeTab === "quantum-node" && (
-              <QuantumNode />
+              <QuantumNode devices={devices} />
             )}
 
             {activeTab === "insights" && (
-              <ExecutiveInsights />
+              <VisionArchitecte devices={devices} logs={logs} isLightMode={isLightMode} />
             )}
 
             {activeTab === "perimeter" && (
@@ -888,6 +1135,17 @@ export default function App() {
               />
             )}
 
+            {activeTab === "client-dashboard" && (
+              <ClientDashboard 
+                devices={devices} 
+                logs={logs} 
+                onAddLog={handleAddLog} 
+                isLightMode={isLightMode} 
+                onModifyDeviceStatus={handleModifyDeviceStatus}
+                onActionTriggered={handleActionTriggered}
+              />
+            )}
+
             {activeTab === "gmail" && (
               <SovereignGmail 
                 initialCompose={gmailInitialCompose}
@@ -902,6 +1160,45 @@ export default function App() {
                 currentPlan={currentPlan}
                 onChangePlan={handleUpdatePlan}
                 onAddLog={handleAddLog}
+              />
+            )}
+
+            {activeTab === "sovereign-audit" && (
+              <SovereignAudit 
+                currentRole={currentRole}
+                onChangeRole={handleUpdateRole}
+                devices={devices}
+                policies={policies}
+              />
+            )}
+
+            {activeTab === "observation-deck" && (
+              <ObservationDeck 
+                devices={devices} 
+                currentRole={currentRole}
+              />
+            )}
+
+            {activeTab === "appliance-core" && (
+              <ApplianceCore 
+                currentRole={currentRole}
+                devices={devices}
+              />
+            )}
+
+            {activeTab === "asset-enrollment" && (
+              <AssetEnrollment 
+                currentRole={currentRole}
+                devices={devices}
+                onAddLog={handleAddLog}
+              />
+            )}
+
+            {activeTab === "contacts" && (
+              <SovereignContacts 
+                currentRole={currentRole}
+                onChangeRole={handleUpdateRole}
+                isLightMode={isLightMode}
               />
             )}
 
@@ -955,7 +1252,7 @@ export default function App() {
       </div>
 
       {/* System Telemetry Lower Deck status bar */}
-      <SystemStatusBar logs={logs} isConnected={true} />
+      <SystemStatusBar logs={logs} isConnected={true} isLightMode={isLightMode} />
     </div>
   );
 }
