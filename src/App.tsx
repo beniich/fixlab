@@ -157,7 +157,7 @@ export default function App() {
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-  const [lifecycleState, setLifecycleState] = useState<"landing" | "auth" | "handshake" | "pricing" | "dashboard">("landing");
+  const [lifecycleState, setLifecycleState] = useState<"landing" | "auth" | "handshake" | "pricing" | "dashboard">("dashboard");
 
   // Multi-state automatic redirection to handshake on active sessions
   useEffect(() => {
@@ -265,7 +265,7 @@ export default function App() {
         }
       } else {
         console.info("ℹ️ Localized session initialized. Real-time stream fallbacks triggered.");
-        setLifecycleState("landing");
+        setLifecycleState("dashboard");
       }
       setIsAuthChecked(true);
     });

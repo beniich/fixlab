@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
+import { GoogleGenAI } from "@google/genai";
 
 // Interfaces mirroring the client-side types
 interface Device {
@@ -142,6 +143,75 @@ interface ApplianceConfig {
     vncStreamer: boolean;
   };
 }
+
+interface VisionTransmission {
+  id: string;
+  timestamp: string;
+  vector: string;
+  data: string;
+  status: string;
+}
+
+interface VisionJournal {
+  id: string;
+  title: string;
+  category: string;
+  author: string;
+  timestamp: string;
+  content: string;
+}
+
+interface UserBadge {
+  id: string;
+  name: string;
+  email: string;
+  keyCode: string;
+  clearance: string;
+  avatarColor: string;
+  regDate: string;
+}
+
+let visionTransmissions: VisionTransmission[] = [
+  { id: "TX-4402", timestamp: "08:14:00", vector: "Secure Satellite", data: "Nexus primary foundations alignment complete.", status: "DELIVERED" },
+  { id: "TX-4401", timestamp: "07:30:11", vector: "Quantum Wire", data: "Solar deflection arrays telemetry normal.", status: "DELIVERED" }
+];
+
+let visionJournals: VisionJournal[] = [
+  {
+    id: "J-04",
+    title: "La Synthèse de Verre Réfractif",
+    category: "Optique",
+    author: "Elara Vance",
+    timestamp: "2026-06-03 10:45",
+    content: "L'Atrium intègre désormais les nouvelles dalles de silice carbonée à taux élevé de réfraction lumineus. Les tests d'atténuation aux ultra-violets révèlent un filtrage passif à 99.4%, tout en maintenant une diffusion diffuse du spectre visible à 82%."
+  },
+  {
+    id: "J-03",
+    title: "Dynamique des Fluides en Façades Doubles",
+    category: "Structure",
+    author: "Marcus Aurelius",
+    timestamp: "2026-06-02 14:12",
+    content: "L'analyse des contraintes dynamiques sur l'enveloppe du Terminal Alpha indique une dispersion optimale des turbulences. Notre modèle de déviation par lames paraboliques réduit la friction de surface de près de 18.5%."
+  },
+  {
+    id: "J-02",
+    title: "Béton Translucide Autonettoyant",
+    category: "Matériaux",
+    author: "Diana Prince",
+    timestamp: "2026-06-01 09:30",
+    content: "Des dalles prototypes de béton cellulaire renforcé aux micro-fibres transmettant la lumière ont été soumises à un ancrage sismique d'essai. La structure micro-cristalline prévient la fissuration capillaire."
+  }
+];
+
+let visionBadge: UserBadge = {
+  id: "ARC-849-V2",
+  name: "Elara Vance",
+  email: "e.vance@vision-architecte.com",
+  keyCode: "OMEGA-SYS-99",
+  clearance: "CLEARANCE OMEGA",
+  avatarColor: "from-cyan-500 to-emerald-500",
+  regDate: "2026-06-03 09:12:00"
+};
 
 // Global In-Memory Database State
 let sovereignSettings: SovereignSettings = {
@@ -810,6 +880,41 @@ async function startServer() {
 
   app.use(express.json());
 
+  // 0. Server-Side Gemini API Route for structural generation
+  app.post("/api/gemini/generate-structure", async (req, res) => {
+    const { prompt } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required" });
+    }
+
+    try {
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("GEMINI_API_KEY is not defined");
+      }
+
+      const ai = new GoogleGenAI({
+        apiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          }
+        }
+      });
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: `Tu es un assistant architectural expert pour le système 'Vision Architecte'. Voici la demande de l'utilisateur : ${prompt}. Fournis une analyse structurelle condensée, suggère des matériaux éco-dynamiques (comme le béton de graphène ou la silice translucide), estime l'efficacité solaire et le comportement sismique. Formate ton retour sur 4-5 lignes maximum, de manière technique et futuriste. Ne mets pas de blabla d'introduction ou de conclusion.`,
+      });
+
+      const text = response.text || "Erreur de génération textuelle.";
+      res.json({ result: text });
+    } catch (err: any) {
+      console.warn("Gemini API call warning, fallback to static structure templates", err.message);
+      res.status(500).json({ error: "Gemini server fallback invoked." });
+    }
+  });
+
   // 1. SSE Real-Time Stream route
   app.get("/api/events", (req, res) => {
     res.setHeader("Content-Type", "text/event-stream");
@@ -838,6 +943,72 @@ async function startServer() {
   app.get("/api/dns/records", (req, res) => res.json(dnsRecords));
   app.get("/api/dns/logs", (req, res) => res.json(dnsQueryLogs));
   app.get("/api/settings", (req, res) => res.json(sovereignSettings));
+
+  // --- VISION ARCHITECTE PERSISTENCE ENDPOINTS ---
+  app.get("/api/vision-architecte/journals", (req, res) => {
+    res.json(visionJournals);
+  });
+
+  app.post("/api/vision-architecte/journals", (req, res) => {
+    const { title, category, author, timestamp, content } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: "Title and content are required" });
+    }
+    const newJ: VisionJournal = {
+      id: `J-${Math.floor(10 + Math.random() * 90)}`,
+      title,
+      category: category || "Matériaux",
+      author: author || "Elara Vance",
+      timestamp: timestamp || new Date().toISOString().replace("T", " ").substring(0, 16),
+      content
+    };
+    visionJournals = [newJ, ...visionJournals];
+    appendLog(`Nouvelle observation enregistrée : ${title} par ${author}`, "info", "Observatoire Spatial");
+    res.status(201).json(newJ);
+  });
+
+  app.get("/api/vision-architecte/transmissions", (req, res) => {
+    res.json(visionTransmissions);
+  });
+
+  app.post("/api/vision-architecte/transmissions", (req, res) => {
+    const { id, timestamp, vector, data, status } = req.body;
+    if (!data) {
+      return res.status(400).json({ error: "Transmission data is required" });
+    }
+    const newTx: VisionTransmission = {
+      id: id || `TX-${Math.floor(4400 + Math.random() * 1000)}`,
+      timestamp: timestamp || new Date().toLocaleTimeString("en-GB", { hour12: false }),
+      vector: vector || "Satellite Secure-B",
+      data,
+      status: status || "DELIVERED"
+    };
+    visionTransmissions = [newTx, ...visionTransmissions].slice(0, 50);
+    appendLog(`Uplink satellite souverain : ${data.substring(0, 50)}...`, "success", "Satellite Ground Terminal");
+    res.status(201).json(newTx);
+  });
+
+  app.get("/api/vision-architecte/badge", (req, res) => {
+    res.json(visionBadge);
+  });
+
+  app.post("/api/vision-architecte/badge", (req, res) => {
+    const { name, email, keyCode, clearance, avatarColor, regDate } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and email are required" });
+    }
+    visionBadge = {
+      id: req.body.id || `ARC-${Math.floor(100 + Math.random() * 900)}-V${Math.floor(1 + Math.random() * 9)}`,
+      name,
+      email,
+      keyCode: keyCode || "VA-KEY-LUCK33",
+      clearance: clearance || "CLEARANCE OXYGENE",
+      avatarColor: avatarColor || "from-cyan-500 to-emerald-500",
+      regDate: regDate || new Date().toISOString().replace("T", " ").substring(0, 19)
+    };
+    appendLog(`Opérateur de liaison enregistré : ${name} (${clearance})`, "success", "Sécurité Centrale");
+    res.json(visionBadge);
+  });
 
   // --- SOVEREIGN AUDIT CONTINUOUS COMPLIANCE ENDPOINTS ---
   app.get("/api/compliance", (req, res) => {
