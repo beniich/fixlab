@@ -70,7 +70,7 @@ export function NexusLaboratoire({
             <div 
               onClick={() => {
                 setActiveSchemaFlow("agent");
-                showToast("Simulateur d'Agent Local calibré.");
+                showToast("Simulated Local Agent calibrated.");
               }}
               className={`p-6 rounded-full w-48 h-48 mx-auto flex flex-col items-center justify-center border-3 transition-all duration-300 cursor-pointer ${
                 activeSchemaFlow === "agent" 
@@ -91,7 +91,7 @@ export function NexusLaboratoire({
             <div 
               onClick={() => {
                 setActiveSchemaFlow("server");
-                showToast("Dépôt serveur sécurisé sollicité.");
+                showToast("Secure server repository requested.");
               }}
               className={`p-6 rounded-full w-48 h-48 mx-auto flex flex-col items-center justify-center border-3 transition-all duration-300 cursor-pointer ${
                 activeSchemaFlow === "server" 
@@ -112,7 +112,7 @@ export function NexusLaboratoire({
             <div 
               onClick={() => {
                 setActiveSchemaFlow("dashboard");
-                showToast("Interface de contrôle des alertes connectée.");
+                showToast("Alert control interface connected.");
               }}
               className={`p-6 rounded-full w-48 h-48 mx-auto flex flex-col items-center justify-center border-3 transition-all duration-300 cursor-pointer ${
                 activeSchemaFlow === "dashboard" 
@@ -157,10 +157,10 @@ export function NexusLaboratoire({
 
         {/* Output explanation for dynamic schema selection */}
         <div className="mt-4 p-4 bg-black/60 rounded-2xl border border-neutral-900 inline-block font-mono text-[10.5px] max-w-lg mx-auto text-stone-400">
-          {activeSchemaFlow === "none" && "💡 CLIQUEZ SUR UN COMPOSANT DE L'ARCHITECTURE POUR MODÉLISER LE TRAJET DU SIGNAL."}
-          {activeSchemaFlow === "agent" && "⚡ AGENT EMITS: Les puces locales procèdent à l'injection de signatures QKD avant de transmettre les rapports chiffrés."}
-          {activeSchemaFlow === "server" && "🔐 SERVER ROUTING: Le pool fédère la validation multipoint, stocke l'historique et déploie l'inférence prédictive."}
-          {activeSchemaFlow === "dashboard" && "📊 DASHBOARD READOUTS: Le centre affiche l'état d'intégrité de la flotte et déploie les contre-mesures instantanées."}
+          {activeSchemaFlow === "none" && "💡 CLICK ON AN ARCHITECTURE COMPONENT TO SHAPE THE SIGNAL PATH."}
+          {activeSchemaFlow === "agent" && "⚡ AGENT EMITS: Local microchips inject QKD signatures before transmitting encrypted reports."}
+          {activeSchemaFlow === "server" && "🔐 SERVER ROUTING: The pool federates multi-point validation, stores history, and deploys predictive inference."}
+          {activeSchemaFlow === "dashboard" && "📊 DASHBOARD READOUTS: The core displays fleet health status and triggers instantaneous countermeasures."}
         </div>
       </div>
 
@@ -250,11 +250,10 @@ export function NexusLaboratoire({
               Start your journey with Sovereign Device Nexus today.
             </p>
           </div>
-          
           <button
             onClick={() => {
               onNavigate("client");
-              showToast("Consultation de la grille d'affiliations.");
+              showToast("Viewing subscription matrix.");
             }}
             className="shrink-0 bg-gradient-to-r from-[#ff7e00] to-[#ff5a00] hover:from-[#ff8c16] hover:to-[#ff6107] text-white font-mono text-[10px] font-black uppercase tracking-widest px-6 py-4 rounded-xl shadow-lg hover:shadow-[0_4px_25px_rgba(255,90,0,0.3)] transition-all cursor-pointer flex items-center gap-2 group"
           >
@@ -270,11 +269,11 @@ export function NexusLaboratoire({
         <button
           onClick={() => {
             setShowSandbox(!showSandbox);
-            showToast(showSandbox ? "Sandbox fermée." : "Console de simulation avancée connectée.");
+            showToast(showSandbox ? "Sandbox closed." : "Advanced simulation console connected.");
           }}
           className="w-full font-mono text-[10px] font-black uppercase tracking-widest text-[#ff5a00] bg-neutral-900/30 border border-[#ff5a00]/20 hover:bg-neutral-900/50 py-3 rounded-2xl flex items-center justify-center gap-2 transition-all"
         >
-          {showSandbox ? "[-] MASQUER LA CONSOLE AVANCÉE DU LAB" : "[+] OUVRIR LA CONSOLE AVANCÉE DU LAB (AI CONCEPT, QUANTUM FORGE & BIOMETRICS)"}
+          {showSandbox ? "[-] HIDE ADVANCED LAB CONSOLE" : "[+] OPEN ADVANCED LAB CONSOLE (AI CONCEPT, QUANTUM FORGE & BIOMETRICS)"}
         </button>
 
         {showSandbox && (
@@ -283,19 +282,19 @@ export function NexusLaboratoire({
             {/* COLUMN 1: INTENSITE NEURONALE (AI ASSISTANT GENERATION) */}
             <div className="p-6 rounded-3xl border border-neutral-900 bg-neutral-950/80 flex flex-col justify-between">
               <div>
-                <span className="text-[8.5px] font-mono text-[#ff5a00] font-extrabold uppercase tracking-wider block mb-2">[ ANALYSE DES MATÉRIAUX PAR IA ]</span>
+                <span className="text-[8.5px] font-mono text-[#ff5a00] font-extrabold uppercase tracking-wider block mb-2">[ AI MATERIAL ANALYSIS ]</span>
                 <h3 className="text-sm font-black text-white uppercase tracking-tight flex items-center gap-2">
-                  <Cpu className="w-5 h-5 text-[#ff5a00]" /> INTENSITÉ NEURONALE (GEMINI)
+                  <Cpu className="w-5 h-5 text-[#ff5a00]" /> NEURONAL INTENSITY (GEMINI)
                 </h3>
                 <p className="text-stone-500 text-[11px] mt-2 leading-relaxed">
-                  Consultez notre moteur d'intelligence générative Gemini pour synthétiser un rapport structural ou de suggestions de matériaux sur mesure.
+                  Consult our Gemini generative intelligence engine to synthesize a structural report or custom material recommendations.
                 </p>
 
                 <div className="mt-4 space-y-3">
                   <div className="text-left">
-                    <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">Guide formel de structure / Style architectural</label>
+                    <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">Formal structural guide / Architectural style</label>
                     <textarea
-                      placeholder="Ex: dôme brutaliste en béton translucide à isolation thermique passive..."
+                      placeholder="E.g. brutalist translucent concrete dome with passive thermal insulation..."
                       rows={3}
                       value={aiPromptInput}
                       onChange={(e) => setAiPromptInput(e.target.value)}
@@ -310,11 +309,11 @@ export function NexusLaboratoire({
                   >
                     {isAiLoading ? (
                       <>
-                        <RefreshCw className="w-4 h-4 animate-spin" /> SYNTHÉTISE EN COURS...
+                        <RefreshCw className="w-4 h-4 animate-spin" /> SYNTHESIZING...
                       </>
                     ) : (
                       <>
-                        <Play className="w-3.5 h-3.5" /> GÉNÉRER LE CONCEPT PAR GEMINI
+                        <Play className="w-3.5 h-3.5" /> GENERATE CONCEPT WITH GEMINI
                       </>
                     )}
                   </button>
@@ -325,7 +324,7 @@ export function NexusLaboratoire({
               {aiResponseText && (
                 <div className="mt-4 bg-black border border-neutral-900 rounded-2xl p-4 text-left">
                   <div className="flex justify-between items-center border-b border-rose-950/20 pb-2 mb-2">
-                    <span className="text-[8px] font-mono text-[#ff8c00] uppercase">RAPPORT SOUVERAIN GÉNÉRÉ</span>
+                    <span className="text-[8px] font-mono text-[#ff8c00] uppercase">GENERATED SOVEREIGN REPORT</span>
                     <CheckSquare className="w-3.5 h-3.5 text-emerald-400" />
                   </div>
                   <p className="text-[10px] font-mono leading-relaxed text-slate-300 whitespace-pre-line">
@@ -338,12 +337,12 @@ export function NexusLaboratoire({
             {/* COLUMN 2: CHIFFREMENT QUANTIQUE */}
             <div className="p-6 rounded-3xl border border-neutral-900 bg-neutral-950/80 flex flex-col justify-between">
               <div>
-                <span className="text-[8.5px] font-mono text-purple-400 font-extrabold uppercase tracking-wider block mb-2">[ SÉCURISATEUR DE CANAL ]</span>
+                <span className="text-[8.5px] font-mono text-purple-400 font-extrabold uppercase tracking-wider block mb-2">[ CHANNEL SECUREGUARD ]</span>
                 <h3 className="text-sm font-black text-white uppercase tracking-tight flex items-center gap-2">
-                  <KeyRound className="w-5 h-5 text-purple-400" /> FORGE QUANTIQUE QKD
+                  <KeyRound className="w-5 h-5 text-purple-400" /> QKD QUANTUM FORGE
                 </h3>
                 <p className="text-stone-500 text-[11px] mt-2 leading-relaxed">
-                  Générez des jetons de cryptosignature cryptocristalline sur la trame pour blinder l'échange des relevés spatiaux.
+                  Generate cryptocrystalline cryptosignature tokens on the frame to reinforce spatial readings exchanges.
                 </p>
 
                 <div className="mt-6 space-y-4">
@@ -354,7 +353,7 @@ export function NexusLaboratoire({
                     </span>
                   </div>
                   <p className="text-[10px] text-zinc-500 leading-normal">
-                    La liaison cryptographique utilise les inégalités d'orbitographie atomique pour invalider toute interception passive sur la liaison satellite.
+                    The cryptographic link leverages atomic orbitography inequalities to invalidate passive interception on the satellite link.
                   </p>
                 </div>
               </div>
@@ -362,15 +361,15 @@ export function NexusLaboratoire({
               <button
                 onClick={handleQuantumKeyRegen}
                 disabled={isGeneratingKey}
-                className="w-full font-mono text-[9px] font-black uppercase tracking-widest bg-purple-900/15 text-purple-300 border border-purple-500/20 py-3 rounded-xl hover:bg-purple-900/30 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full font-mono text-[9px] font-black uppercase tracking-widest bg-purple-900/15 text-purple-300 border border-purple-500/20 py-3 rounded-xl hover:bg-purple-950/30 transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
                 {isGeneratingKey ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> ALIGNEMENT ORBITAL...
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> ORBITAL ALIGNMENT...
                   </>
                 ) : (
                   <>
-                    <Fingerprint className="w-3.5 h-3.5" /> FORGER SIGNATURE QUANTIQUE
+                    <Fingerprint className="w-3.5 h-3.5" /> FORGE QUANTUM SIGNATURE
                   </>
                 )}
               </button>
@@ -379,18 +378,18 @@ export function NexusLaboratoire({
             {/* COLUMN 3: BIOMETRIC SIMULATION CONTROL */}
             <div className="p-6 rounded-3xl border border-neutral-900 bg-neutral-950/80 flex flex-col justify-between">
               <div>
-                <span className="text-[8.5px] font-mono text-emerald-400 font-extrabold uppercase tracking-wider block mb-2">[ INTÉGRATION BIO-CELLULAIRE ]</span>
+                <span className="text-[8.5px] font-mono text-emerald-400 font-extrabold uppercase tracking-wider block mb-2">[ BIO-CELLULAR INTEGRATION ]</span>
                 <h3 className="text-sm font-black text-white uppercase tracking-tight flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-emerald-400" /> SEUIL BIOMÉTRIQUE
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" /> BIOMETRIC THRESHOLD
                 </h3>
                 <p className="text-stone-500 text-[11px] mt-2 leading-relaxed">
-                  Surveillez les indices cellulaires d'intégration physique des ancrages sur le dôme résidentiel.
+                  Monitor biological and cellular indices of physical anchor integration on the residential dome.
                 </p>
 
                 <div className="mt-6 space-y-4">
                   <div>
                     <div className="flex justify-between items-center text-[10px] font-mono text-neutral-400 mb-1">
-                      <span>SEUIL DE SÉCURITÉ CONDUIT</span>
+                      <span>CONDUIT SECURITY THRESHOLD</span>
                       <span className="font-bold text-emerald-400">{biometricThreshold}%</span>
                     </div>
                     <input
@@ -401,7 +400,7 @@ export function NexusLaboratoire({
                       onChange={(e) => {
                         setBiometricThreshold(Number(e.target.value));
                         if(Number(e.target.value) < 70) {
-                          showToast("Alerte: Indice de liaison biométrique critique sous les dômes.");
+                          showToast("Alert: Critical biometric link index under the domes.");
                         }
                       }}
                       className="w-full accent-[#ff5a00] cursor-pointer"
@@ -410,11 +409,11 @@ export function NexusLaboratoire({
 
                   <div className="space-y-2 mt-2">
                     <div className="p-3 bg-black/50 rounded-xl border border-neutral-900 flex justify-between items-center">
-                      <span className="text-[9px] font-mono text-stone-400">SONDE O2 RESIDENTIEL 01</span>
+                      <span className="text-[9px] font-mono text-stone-400">RESIDENTIAL O2 SENSOR 01</span>
                       <span className="text-[9px] font-mono text-emerald-500 font-bold">NOMINAL ({biometricThreshold}%)</span>
                     </div>
                     <div className="p-3 bg-black/50 rounded-xl border border-neutral-900 flex justify-between items-center">
-                      <span className="text-[9px] font-mono text-stone-400">SONDE CO2 BIO_LAB</span>
+                      <span className="text-[9px] font-mono text-stone-400">BIO_LAB CO2 SENSOR</span>
                       <span className="text-[9px] font-mono text-cyan-400 font-bold">NOMINAL (100%)</span>
                     </div>
                   </div>
@@ -422,10 +421,9 @@ export function NexusLaboratoire({
               </div>
 
               <div className="bg-black/60 p-3 rounded-xl border border-neutral-900 mt-6 text-center">
-                <span className="text-[8px] font-mono text-[#00ffff] block uppercase font-bold">SYSTÈMES QUANTUM NOMINAUX</span>
+                <span className="text-[8px] font-mono text-[#00ffff] block uppercase font-bold">NOMINAL QUANTUM SYSTEMS</span>
               </div>
             </div>
-
           </div>
         )}
       </div>

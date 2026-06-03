@@ -191,7 +191,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
 
   const handleApproveRequest = async (requestId: string) => {
     if (currentRole === "auditor" || currentRole === "spectator") {
-      alert("🔒 DROITS INSUFFISANTS: Seul un Administrateur ou Officier Supérieur peut approuver de nouveaux actifs.");
+      alert("🔒 INSUFFICIENT RIGHTS: Only an Administrator or Senior Officer can approve new assets.");
       return;
     }
 
@@ -237,7 +237,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
   // Run simulated script execution on the integrated Bash console
   const runSimulatorTerminal = async () => {
     if (!bashTokenInput) {
-      setTerminalLogs(prev => [...prev, ">> ERREUR: Token d'enrôlement requis."]);
+      setTerminalLogs(prev => [...prev, ">> ERROR: Enrollment Token required."]);
       return;
     }
 
@@ -272,13 +272,13 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             "[agent-daemon] Downloading client binary: nexus-agent-linux-amd64... [OK]",
             "[agent-daemon] Installing local systemd supervisor daemon...",
             "[systemctl] Initializing core service: systemctl start nexus-agent",
-            "SOUVERAINETÉ ETABLIE. Cet actif tactique est désormais SYNCHRONISÉ sous commandement militaire."
+            "SOVEREIGNTY ESTABLISHED. This tactical asset is now SYNCHRONIZED under defense command."
           ]);
         } else {
           setTerminalLogs(prev => [
             ...prev,
-            `[FAILURE] SÉLECTEUR ARRÊTÉ : ${errMsg || "Authentication Refused."}`,
-            "Veuillez vérifier vos permissions d'approbation ou la validité du Token."
+            `[FAILURE] SELECTOR STOPPED: ${errMsg || "Authentication Refused."}`,
+            "Please verify your approval permissions or the token's validity."
           ]);
         }
         setIsExecutingScript(false);
@@ -318,7 +318,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
   const handleGenerateVolatile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!googleProfile.isAuthenticated) {
-      alert("🔒 ACCÈS COMBAT INTERDIT : Vous devez prouver votre identité via l'authentification Google avant d'émettre des tokens.");
+      alert("🔒 COMBAT ACCESS DENIED: You must verify your identity via Google Authentication before issuing tokens.");
       return;
     }
 
@@ -433,8 +433,8 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
           "[ramfs] CLEARED: All files on `/dev/shm` have been physically destroyed.",
           "[system] Reboot complete. System rebooted cleanly.",
           "----------------------------------------------------------------",
-          "❌ CERTIFICATION ABSENTE : La clé d'habilitation a disparu au redémarrage !",
-          "Statut de l'actif: RETIRÉ ET ISOLÉ DU NEXUS."
+          "❌ MISSING CERTIFICATION: The authorization key vanished upon reboot!",
+          "Asset Status: REMOVED AND ISOLATED FROM THE NEXUS."
         ]);
         if (onAddLog) {
           onAddLog(`PHYSICAL REBOOT executed on host: ${session.subscriberName}. RAM storage for ${session.id} cleared. Link disconnected.`, "critical", "Volatile Link");
@@ -524,10 +524,10 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
           </span>
           <h2 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
             <ShieldAlert className="w-4.5 h-4.5 text-[#ff5c00]" />
-            Provisioning de l'Actif / Asset Security Protocol
+            Asset Provisioning / Asset Security Protocol
           </h2>
           <p className="text-[10px] text-stone-400">
-            Intégrer de nouvelles infrastructures au Sovereign Nexus de manière définitive ou volatile.
+            Integrate new infrastructure elements into the Sovereign Nexus on a permanent or volatile basis.
           </p>
         </div>
 
@@ -538,7 +538,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             className={`px-4 py-2 rounded-lg font-black uppercase transition-all tracking-wider flex items-center gap-1.5 ${provisionType === "volatile" ? "bg-orange-500 text-stone-950 font-black shadow-lg shadow-orange-500/25" : "text-stone-400 hover:text-stone-200"}`}
           >
             <QrCode className="w-3.5 h-3.5" />
-            🔗 PROVISIONNING ÉPHÉMÈRE (Volatile RAM)
+            🔗 EPHEMERAL PROVISIONING (Volatile RAM)
           </button>
           
           <button
@@ -546,7 +546,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             className={`px-4 py-2 rounded-lg font-black uppercase transition-all tracking-wider flex items-center gap-1.5 ${provisionType === "standard" ? "bg-[#7c6bb5] text-white shadow-lg" : "text-stone-400 hover:text-stone-200"}`}
           >
             <Shield className="w-3.5 h-3.5" />
-            🛡️ ENRÔLEMENT MILITAIRE (Permanent mTLS)
+            🛡️ TACTICAL ENROLLMENT (Permanent mTLS)
           </button>
         </div>
       </div>
@@ -559,7 +559,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             onClick={() => setActiveTab("form")}
             className={`px-3 py-1.5 rounded-lg font-extrabold uppercase transition-all ${activeTab === "form" ? "bg-[#7c6bb5]/10 text-[#7c6bb5] border border-[#7c6bb5]/30" : "text-stone-400 hover:text-stone-200"}`}
           >
-            I. Demande d'Enrôlement
+            I. Enrollment Request
           </button>
           <button
             onClick={() => setActiveTab("registry")}
@@ -587,7 +587,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
               onClick={() => setVolatileTab("generate")}
               className={`px-3 py-1.5 rounded-lg font-extrabold uppercase transition-all ${volatileTab === "generate" ? "bg-orange-500/10 text-orange-400 border border-orange-500/20" : "text-stone-400 hover:text-stone-200"}`}
             >
-              I. Générateur de Liens QR
+              I. QR Link Generator
             </button>
             <button
               onClick={() => setVolatileTab("monitor")}
@@ -661,21 +661,21 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
 
                     <div className="text-center border-b border-stone-900 pb-5">
                       <h1 className="text-sm font-black uppercase tracking-[0.5em] text-[#ff8000]">Sovereign Volatile Link</h1>
-                      <p className="text-[9px] font-bold text-stone-500 mt-1 uppercase tracking-tight">Système de Provisioning Éphémère (Allocation RAM -tmpfs sans persistance physique)</p>
+                      <p className="text-[9px] font-bold text-stone-500 mt-1 uppercase tracking-tight">Ephemeral Provisioning System (RAM Allocation - tmpfs without physical persistence)</p>
                     </div>
 
                     {!googleProfile.isAuthenticated ? (
                       <div className="p-10 border border-stone-900 rounded-2xl bg-black/40 text-center space-y-4">
                         <Lock className="w-8 h-8 text-rose-500 mx-auto animate-pulse" />
-                        <h3 className="text-xs font-black uppercase text-rose-400 font-mono">⚠️ ACCÈS SÉCURISÉ REQUIS (OAUTH 2.0)</h3>
+                        <h3 className="text-xs font-black uppercase text-rose-400 font-mono">⚠️ SECURE ACCESS REQUIRED (OAUTH 2.0)</h3>
                         <p className="text-[10px] text-stone-500 max-w-sm mx-auto leading-relaxed">
-                          La génération d'empreintes éphémères pour de nouveaux abonnés nécessite des permissions de commandement d'un administrateur certifié. Activez l'authentification Google en haut à droite.
+                          Generating ephemeral prints for new subscribers requires command credentials of a certified administrator. Activate Google Authentication in the top right.
                         </p>
                         <button
                           onClick={toggleGoogleAuth}
                           className="px-5 py-2 bg-orange-500 hover:bg-orange-400 text-stone-950 font-black text-[9px] tracking-widest uppercase rounded shadow-[0_0_15px_rgba(239,104,18,0.2)]"
                         >
-                          Simuler l'Authentification Google Admin
+                          Simulate Google Admin Authentication
                         </button>
                       </div>
                     ) : (
@@ -683,13 +683,13 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                         {/* Interactive generation Form */}
                         <form onSubmit={handleGenerateVolatile} className="space-y-4.5">
                           <h2 className="bg-stone-900/60 p-2 text-[10px] font-extrabold uppercase border-l-4 border-orange-500 tracking-wider flex items-center justify-between">
-                            <span>I. Paramètres de l'abonné</span>
+                            <span>I. Subscriber Parameters</span>
                             <span className="text-[8px] text-orange-400">RAM_DISK_PARAM</span>
                           </h2>
 
                           <div className="space-y-3 pt-1 text-[10px]">
                             <div className="flex flex-col gap-1">
-                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Désignation du client abonnitaire</label>
+                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Subscriber Client ID / Designation</label>
                               <input
                                 value={subName}
                                 onChange={(e) => setSubName(e.target.value.toUpperCase())}
@@ -699,7 +699,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             </div>
 
                             <div className="flex flex-col gap-1">
-                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Adresse IP Statique affectée</label>
+                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Assigned Static IP Address</label>
                               <input
                                 value={subIp}
                                 onChange={(e) => setSubIp(e.target.value)}
@@ -709,7 +709,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             </div>
 
                             <div className="flex flex-col gap-1">
-                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Rôle / Habilitation octroyée</label>
+                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Role / Authorization Granted</label>
                               <select
                                 value={subRole}
                                 onChange={(e) => setSubRole(e.target.value)}
@@ -723,7 +723,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             </div>
 
                             <div className="flex flex-col gap-1">
-                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Session TTL d'expiration volatile : {subTtl} secondes</label>
+                              <label className="text-[8.5px] text-stone-500 uppercase font-black">Volatile Expiration Session TTL: {subTtl} seconds</label>
                               <div className="flex items-center gap-3">
                                 <input
                                   type="range"
@@ -739,7 +739,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                 </span>
                               </div>
                               <span className="text-[7.5px] text-stone-500 leading-normal uppercase">
-                                Note : un TTL court d'environ 120s est optimal pour observer la synchronisation de fin de vie en temps-réel.
+                                Note: A short TTL of around 120s is optimal for observing real-time end-of-life synchronization.
                               </span>
                             </div>
                           </div>
@@ -756,7 +756,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                   GENERATING VAULT CREDENTIALS...
                                 </>
                               ) : (
-                                "ACTIVER & SYNCHRONISER SANS DISQUE"
+                                "ACTIVATE & SYNCHRONIZE DISKLESS"
                               )}
                             </button>
                           </div>
@@ -794,14 +794,14 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                 }}
                                 className="text-[9px] text-[#2cb5ff] hover:underline flex items-center gap-1 font-bold"
                               >
-                                Injecter vers le simulateur client →
+                                Inject to Client Simulator →
                               </button>
                             </>
                           ) : (
                             <div className="text-center p-6 space-y-2">
                               <QrCode className="w-14 h-14 text-stone-850 mx-auto animate-pulse" />
                               <p className="text-stone-500 text-[9.5px] max-w-[200px] mx-auto leading-normal">
-                                Définissez les coordonnées de l'actif à gauche puis soumettez pour générer la liaison d'enrôlement par QR code.
+                                Define target asset coordinates on the left and submit to generate the volatile QR enrollment link.
                               </p>
                             </div>
                           )}
@@ -811,7 +811,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                   </div>
                 )}
 
-                {/* SUBTAB 2: SUBSCRIBER RAM MONITOR & CLIENT REDÉMARRER */}
+                {/* SUBTAB 2: SUBSCRIBER RAM MONITOR & CLIENT REBOOT */}
                 {volatileTab === "monitor" && (
                   <div className="space-y-6">
                     
@@ -828,7 +828,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                         </div>
 
                         <p className="text-stone-500 leading-normal text-[9.5px]">
-                          Vérifiez la liaison de l'agent. Le client écrit l'ID de session crypté uniquement sur un stockage en RAM (`/dev/shm`).
+                          Verify the agent connection. The client logs the encrypted session ID exclusively to RAM memory storage (`/dev/shm`).
                         </p>
 
                         <div className="space-y-3.5">
@@ -836,7 +836,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             <input
                               value={claimTokenInput}
                               onChange={(e) => setClaimTokenInput(e.target.value.toUpperCase())}
-                              placeholder="Key de Liaison volatile (ex: LNK-XXXX-XXXX)"
+                              placeholder="Volatile Liaison Key (e.g., LNK-XXXX-XXXX)"
                               className="flex-1 bg-black text-orange-400 font-bold tracking-widest p-2 border border-stone-800 text-xs rounded outline-none w-full"
                             />
                             
@@ -845,7 +845,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                               disabled={isClaiming || !claimTokenInput}
                               className="px-4 bg-[#7c6bb5] hover:bg-[#8d7dc5] text-white font-black uppercase text-[9.5px] tracking-wider rounded transition-all cursor-pointer disabled:opacity-35"
                             >
-                              {isClaiming ? "CONNECTING..." : "Lier l'agent"}
+                              {isClaiming ? "CONNECTING..." : "Bind Agent"}
                             </button>
                           </div>
 
@@ -872,7 +872,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                           <div className="flex items-center justify-between border-b border-stone-900 pb-2.5">
                             <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-1.5">
                               <Cpu className="w-4 h-4 text-orange-400" />
-                              Registre des Sessions Volatiles
+                              Volatile Session Registry
                             </h3>
                             <span className="text-[8px] text-stone-500 font-black">{volatileSessions.length} TRACKED</span>
                           </div>
@@ -880,7 +880,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                           <div className="space-y-2.5 max-h-[220px] overflow-y-auto">
                             {volatileSessions.length === 0 ? (
                               <div className="p-10 text-center text-stone-600 uppercase font-bold text-[9.5px]">
-                                Aucune session active répertoriée dans la table d'allocation de vol.
+                                No active sessions listed in the volatile allocation table.
                               </div>
                             ) : (
                               volatileSessions.map((sess) => (
@@ -921,7 +921,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
 
                         <div className="text-[8px] text-stone-500 uppercase flex items-center gap-1 pt-2">
                           <AlertTriangle className="w-3.5 h-3.5 text-orange-500 border border-transparent shrink-0" />
-                          <span>Les cookies et le disque dur local de ces abonnés ne conservent AUCUNE clé pour des raisons de classification militaire.</span>
+                          <span>The cookies and local hard drives of these subscriber machines store NO files or keys for military classification reasons.</span>
                         </div>
                       </GlassCard>
 
@@ -954,13 +954,13 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
 
                     <div className="text-center border-b border-stone-800 pb-5">
                       <h1 className="text-sm font-black uppercase tracking-[0.5em] text-white">Sovereign Nexus Command</h1>
-                      <p className="text-[9px] font-bold text-stone-500 mt-1 uppercase tracking-tight">Formulaire d'Enrôlement d'Actif Tactique - Niveau de Clearance 4</p>
+                      <p className="text-[9px] font-bold text-stone-500 mt-1 uppercase tracking-tight">Tactical Asset Enrollment Form - Clearance Level 4</p>
                       <button
                         type="button"
                         onClick={fillDemoData}
                         className="mt-3 px-3 py-1 bg-stone-900 border border-stone-800 hover:bg-[#7c6bb5]/10 hover:border-[#7c6bb5]/50 text-stone-400 hover:text-[#7c6bb5] text-[8px] rounded-md transition-all font-mono tracking-widest uppercase"
                       >
-                        ⚡ [ Remplir avec exemples tactiques ]
+                        ⚡ [ Fill with tactical examples ]
                       </button>
                     </div>
 
@@ -970,13 +970,13 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                         {/* Section I */}
                         <div className="space-y-4">
                           <h2 className="bg-stone-900/60 p-2 text-[10.5px] font-extrabold uppercase border-l-4 border-cyan-500 tracking-wider flex items-center justify-between">
-                            <span>I. Identification de l'Actif</span>
+                            <span>I. Asset Identification</span>
                             <span className="text-[8px] text-cyan-400">UNIT_RECORDS</span>
                           </h2>
 
                           <div className="space-y-3 pt-1">
                             <div className="flex flex-col gap-1.5">
-                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Désignation de l'unité (ID unique)</label>
+                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Unit Designation (Unique ID)</label>
                               <input 
                                 value={designation}
                                 onChange={(e) => setDesignation(e.target.value.toUpperCase())}
@@ -987,20 +987,20 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Secteur de Déploiement</label>
+                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Deployment Sector</label>
                               <select 
                                 value={sector}
                                 onChange={(e) => setSector(e.target.value)}
                                 className="bg-black border border-stone-800 outline-none p-2 rounded text-xs text-stone-300 font-mono"
                               >
-                                <option value="Secteur Nord (Commandement)">Secteur Nord (Commandement)</option>
-                                <option value="Secteur Sud (Logistique)">Secteur Sud (Logistique)</option>
-                                <option value="Périmètre Externe (Edge)">Périmètre Externe (Edge)</option>
+                                <option value="Secteur Nord (Commandement)">Northern Sector (Command)</option>
+                                <option value="Secteur Sud (Logistique)">Southern Sector (Logistics)</option>
+                                <option value="Périmètre Externe (Edge)">External Perimeter (Edge)</option>
                               </select>
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Adresse IP Statique Cible</label>
+                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Target Static IP Address</label>
                               <input 
                                 value={ipAddress}
                                 onChange={(e) => setIpAddress(e.target.value)}
@@ -1011,7 +1011,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Operating System de l'Actif</label>
+                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Asset Operating System</label>
                               <div className="grid grid-cols-2 gap-2 mt-0.5">
                                 {(["SovereignOS", "Linux", "Windows", "macOS"] as const).map((os) => (
                                   <button
@@ -1032,7 +1032,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                         {/* Section II */}
                         <div className="space-y-4">
                           <h2 className="bg-stone-900/60 p-2 text-[10.5px] font-extrabold uppercase border-l-4 border-amber-500 tracking-wider flex items-center justify-between">
-                            <span>II. Habilitations & Accès</span>
+                            <span>II. Clearances & Credentials</span>
                             <span className="text-[8px] text-amber-500">PRIVILEGE_MATRIX</span>
                           </h2>
 
@@ -1050,7 +1050,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                 className="accent-amber-500 cursor-pointer pointer-events-none" 
                               />
                               <div className="flex flex-col">
-                                <span className="text-[9.5px] uppercase font-black">Accès Root / Administrateur</span>
+                                <span className="text-[9.5px] uppercase font-black">Root / Administrator Access</span>
                                 <span className="text-[8px] text-stone-500">Allows complete command orchestrations.</span>
                               </div>
                             </button>
@@ -1067,13 +1067,13 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                 className="accent-amber-500 cursor-pointer pointer-events-none" 
                               />
                               <div className="flex flex-col">
-                                <span className="text-[9.5px] uppercase font-black">Lecture Seule (Auditeur)</span>
+                                <span className="text-[9.5px] uppercase font-black">Read Only (Auditor)</span>
                                 <span className="text-[8px] text-stone-500">Freezes all actions. Stream analytics.</span>
                               </div>
                             </button>
 
                             <div className="flex flex-col gap-1.5 pt-1">
-                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Niveau de Clearance requis (0 - 5)</label>
+                              <label className="text-[9px] text-stone-400 uppercase font-bold tracking-tight">Required Clearance Level (0 - 5)</label>
                               <div className="flex items-center gap-2">
                                 <input 
                                   type="range"
@@ -1088,7 +1088,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                 </span>
                               </div>
                               <span className="text-[8px] text-stone-500 uppercase mt-1 leading-normal">
-                                Note : Un niveau supérieur à 3 requiert une clé MFA enrôlée.
+                                Note: A level higher than 3 requires an enrolled MFA key.
                               </span>
                             </div>
                           </div>
@@ -1108,14 +1108,14 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                               className="bg-transparent text-center text-xs font-bold font-mono outline-none w-full text-[#7c6bb5] tracking-widest placeholder-stone-700 uppercase"
                             />
                           </div>
-                          <p className="text-[8px] uppercase tracking-wider text-stone-500 font-bold">Signature de l'Opérateur enrôlant</p>
+                          <p className="text-[8px] uppercase tracking-wider text-stone-500 font-bold">Signature of enrolling Operator</p>
                         </div>
 
                         <div className="text-center space-y-2 select-none opacity-45">
                           <div className="border-b border-stone-800 h-11 flex items-end justify-center pb-1">
                             <span className="text-[10px] text-stone-700 italic font-mono tracking-widest">AWAITING LEGISLATURE</span>
                           </div>
-                          <p className="text-[8px] uppercase tracking-wider text-stone-500 font-bold">Approbation Commandement (Sovereign Admin)</p>
+                          <p className="text-[8px] uppercase tracking-wider text-stone-500 font-bold">Command Approval (Sovereign Admin)</p>
                         </div>
                       </div>
 
@@ -1229,7 +1229,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                                       onClick={() => {
                                         copyToClipboard(req.token || "");
                                         setBashTokenInput(req.token || "");
-                                        alert("Clé OTP copiée. Collez le jeton dans le module 'Host shell' !");
+                                        alert("OTP Key copied. Paste the token into the 'Host shell' module!");
                                       }}
                                       className="text-stone-500 hover:text-cyan-400 p-1 shrink-0"
                                       title="Copy key"
@@ -1270,7 +1270,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
 
                     <div className="my-4 p-4.5 bg-stone-900 border border-stone-800 rounded-xl space-y-4">
                       <p className="text-[10px] leading-relaxed text-stone-400 font-sans">
-                        Simulez l'exécution du script d'onboarding sur la machine de destination. Obtenez le token JIT d'une demande approuvée (onglet 2), collez-le ci-dessous, puis initiez la signature cryptographique pour inscrire le nœud.
+                        Simulate the execution of the onboarding script on the destination machine. Obtain the JIT token of an approved request (tab 2), paste it below, then initiate the cryptographic signature to register the node.
                       </p>
 
                       <div className="flex flex-col md:flex-row gap-3">
@@ -1282,7 +1282,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                             type="text"
                             value={bashTokenInput}
                             onChange={(e) => setBashTokenInput(e.target.value.toUpperCase())}
-                            placeholder="Entrez le Token validé (ex: SOV-XXXXX-XXXX)"
+                            placeholder="Enter the validated Token (e.g., SOV-XXXXX-XXXX)"
                             className="flex-1 bg-black text-cyan-300 font-bold tracking-widest p-2 border border-stone-800 focus:border-cyan-500/40 rounded outline-none w-full text-xs"
                           />
                         </div>
@@ -1300,7 +1300,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                           ) : (
                             <>
                               <Play className="w-3.5 h-3.5 shrink-0" />
-                              APPROVISIONNER L'AGENT
+                              PROVISION AGENT
                             </>
                           )}
                         </button>
@@ -1346,72 +1346,72 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             <GlassCard className="p-5 space-y-4">
               <h3 className="text-xs font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1.5">
                 <HardDrive className="w-4 h-4 text-orange-400" />
-                Détails du Provisioning Volatile
+                Volatile Provisioning Details
               </h3>
               
               <p className="text-stone-500 leading-normal">
-                Afin de garantir que les informations sensibles ne persistent pas sur de la mémoire flash (compromissions matérielles), le <strong>Sovereign Volatile Link</strong> met en oeuvre des concepts défensifs stricts :
+                To ensure that sensitive information does not persist on flash memory (preventing physical hardware compromise), the <strong>Sovereign Volatile Link</strong> implements strict defensive protocols:
               </p>
 
               <div className="space-y-3 pt-1 text-[9.5px]">
                 <div className="flex gap-2">
                   <span className="w-4 h-4 rounded bg-orange-950 text-orange-400 font-bold shrink-0 flex items-center justify-center text-[8.5px]">A</span>
                   <div>
-                    <p className="font-bold text-zinc-300 uppercase">Google Authentification Auth</p>
-                    <p className="text-stone-500 text-[8px] mt-0.5 leading-normal">Uniquement les officiels validés par l'ID Token de Google Workspace peuvent commander la table des sessions.</p>
+                    <p className="font-bold text-zinc-300 uppercase">Google Auth Authentication</p>
+                    <p className="text-stone-500 text-[8px] mt-0.5 leading-normal">Only authorized administrators validated by a Google Workspace ID Token can manage the volatile session table.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-2">
                   <span className="w-4 h-4 rounded bg-orange-950 text-orange-400 font-bold shrink-0 flex items-center justify-center text-[8.5px]">B</span>
                   <div>
-                    <p className="font-bold text-zinc-300 uppercase">Stockage RAM exclusif (tmpfs)</p>
-                    <p className="text-stone-500 text-[8px] mt-0.5 leading-normal">La clé RSA/mTLS d'alliance est localisée à l'adresse logique <code>/dev/shm/nexus_session_*.key</code>.</p>
+                    <p className="font-bold text-zinc-300 uppercase">Exclusive RAM Storage (tmpfs)</p>
+                    <p className="text-stone-500 text-[8px] mt-0.5 leading-normal">The session RSA/mTLS alliance key is located strictly at the logical path <code>/dev/shm/nexus_session_*.key</code>.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-2">
                   <span className="w-4 h-4 rounded bg-orange-950 text-orange-400 font-bold shrink-0 flex items-center justify-center text-[8.5px]">C</span>
                   <div>
-                    <p className="font-bold text-zinc-300 uppercase">Perte de Session Naturelle</p>
-                    <p className="text-stone-500 text-[8px] mt-0.5 leading-normal">Chaque reboot physique ou coupure d'énergie purge immédiatement les transistors de la RAM, isolant l'ordinateur.</p>
+                    <p className="font-bold text-zinc-300 uppercase">Natural Session Void</p>
+                    <p className="text-stone-500 text-[8px] mt-0.5 leading-normal">Each physical reboot or power loss immediately de-energizes the RAM transistors, instantly isolating the node.</p>
                   </div>
                 </div>
               </div>
             </GlassCard>
           ) : (
             <GlassCard className="p-5 space-y-4">
-              <h3 className="text-xs font-bold text-zinc-100 uppercase tracking-widest flex items-center gap-1.5">
+              <h3 className="text-xs font-bold text-zinc-100 uppercase tracking-widest flex items-center gap-1.55">
                 <HardDrive className="w-4 h-4 text-[#7c6bb5]" />
-                Guide d'Enrôlement Militaire
+                Tactical Enrollment Guide
               </h3>
               
               <p className="text-stone-500 leading-normal">
-                Suivez la procédure de commandement tactique pour intégrer durablement l'ordinateur au sein du périmètre défensif :
+                Follow the tactical command procedure to permanently enroll the computer into the defensive perimeter:
               </p>
 
               <div className="space-y-3.5 pt-1 text-[9.5px]">
                 <div className="flex gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-400/30 text-cyan-400 font-black shrink-0 flex items-center justify-center text-[9px]">1</span>
                   <div>
-                    <p className="font-bold text-zinc-300 uppercase">Filing de la Requête</p>
-                    <p className="text-stone-500 text-[8.5px] mt-0.5 leading-snug">Remettez le bulletin formel avec la désignation d'unité tactique et l'IPV4 fixe.</p>
+                    <p className="font-bold text-zinc-300 uppercase">Submit Request</p>
+                    <p className="text-stone-500 text-[8.5px] mt-0.5 leading-snug">Deliver the formal enrollment form specifying the tactical unit designation and static IPV4.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-400/30 text-cyan-400 font-black shrink-0 flex items-center justify-center text-[9px]">2</span>
                   <div>
-                    <p className="font-bold text-zinc-300 uppercase">Approbation & OTP</p>
-                    <p className="text-stone-500 text-[8.5px] mt-0.5 leading-snug">La hiérarchie appose son visa et génère un jeton temporaire Single-use JIT.</p>
+                    <p className="font-bold text-zinc-300 uppercase">Approval & OTP Grant</p>
+                    <p className="text-stone-500 text-[8.5px] mt-0.5 leading-snug">The hierarchy reviews the request, approves it, and generates a single-use JIT token.</p>
                   </div>
                 </div>
 
                 <div className="flex gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-400/30 text-cyan-400 font-black shrink-0 flex items-center justify-center text-[9px]">3</span>
                   <div>
-                    <p className="font-bold text-zinc-300 uppercase">Liaison Cryptographique</p>
-                    <p className="text-stone-500 text-[8.5px] mt-0.5 leading-snug">Le script d'onboarding s'exécute localement et installe le démon superviseur mTLS.</p>
+                    <p className="font-bold text-zinc-300 uppercase">Cryptographic Coupling</p>
+                    <p className="text-stone-500 text-[8.5px] mt-0.5 leading-snug">The onboarding script executes locally and installs the background mTLS supervisor daemon.</p>
                   </div>
                 </div>
               </div>
@@ -1426,7 +1426,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             </h3>
 
             <p className="text-stone-500 leading-normal">
-              Les nœuds de communication actifs répertoriés sont décrits ci-dessous :
+              Completed and currently active communication nodes are listed below:
             </p>
 
             <div className="space-y-2 pt-1 font-mono text-[9px] max-h-[170px] overflow-y-auto">

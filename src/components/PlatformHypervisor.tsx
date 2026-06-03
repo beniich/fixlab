@@ -332,11 +332,11 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
             <h3 className="text-xs font-black uppercase tracking-widest text-[#22d3ee]">
-              Passerelle d'Abonnement et d'Enrôlement Rapide (Active Gate)
+              Subscription & Fast Enrollment Gateway (Active Gate)
             </h3>
           </div>
           <p className="text-[10px] text-[#7c6bb5] leading-relaxed">
-            Abonnez-vous ou changez de statut d'accréditation en un clic ci-dessous pour contrôler efficacement vos nœuds et terminaux à distance. Les privilèges d'accès réseau seront reconfigurés en temps réel dans votre profil de base de données.
+            Subscribe or switch your credential status in one click below to efficiently control your remote nodes and terminals. Network privileges will be reconfigured in real time in your database profile.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
             
@@ -353,7 +353,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
               )}
               <div className="space-y-1.5">
                 <h4 className="text-[11px] font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-                  👑 Statut Administrateur
+                  👑 Administrator Clearance Status
                 </h4>
                 <p className="text-[9px] text-[#7c6bb5] leading-normal uppercase font-semibold">
                   Sovereign Executive — Full Terminal Control and SOC2 Stream auditing.
@@ -373,7 +373,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
                       message: "User subscribed and elevated profile to Administrator level"
                     });
                   }
-                  alert("Abonnement Administrateur validé ! Accès souverain complet assigné dans Firebase.");
+                  alert("Administrator subscription validated! Complete sovereign access assigned in Firebase.");
                 }}
                 className={`w-full mt-4 py-2.5 rounded-xl text-[8.5px] font-extrabold uppercase tracking-widest transition-all ${
                   currentRole === "super-admin"
@@ -381,7 +381,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
                     : "bg-purple-950/40 text-purple-300 border border-purple-500/20 hover:bg-purple-900/40 hover:text-white cursor-pointer"
                 }`}
               >
-                {currentRole === "super-admin" ? "✓ Abonné (Sovereign Executive)" : "S'abonner comme Admin (Sovereign)"}
+                {currentRole === "super-admin" ? "✓ Subscribed (Sovereign Executive)" : "Subscribe as Admin (Sovereign)"}
               </button>
             </div>
 
@@ -398,7 +398,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
               )}
               <div className="space-y-1.5">
                 <h4 className="text-[11px] font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-                  ⚡ Statut Client Membre
+                  ⚡ Member Client Status
                 </h4>
                 <p className="text-[9px] text-[#7c6bb5] leading-normal uppercase font-semibold">
                   Subscriber Node — Courtesy access, core metrics reader & device sync.
@@ -418,7 +418,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
                       message: "User subscribed and toggled profile to Subscriber Client node"
                     });
                   }
-                  alert("Abonnement Client activé ! Rôle Client / Subscriber Node configuré dans Firebase.");
+                  alert("Client subscription activated! Client / Subscriber Node role configured in Firebase.");
                 }}
                 className={`w-full mt-4 py-2.5 rounded-xl text-[8.5px] font-extrabold uppercase tracking-widest transition-all ${
                   currentRole === "client"
@@ -426,7 +426,7 @@ export const PlatformHypervisor: React.FC<PlatformHypervisorProps> = ({
                     : "bg-purple-950/40 text-emerald-400 border border-emerald-500/20 hover:bg-[#10b981]/20 hover:text-white cursor-pointer"
                 }`}
               >
-                {currentRole === "client" ? "✓ Abonné (Subscriber Node)" : "S'abonner comme Client (Tactical)"}
+                {currentRole === "client" ? "✓ Subscribed (Subscriber Node)" : "Subscribe as Client (Tactical)"}
               </button>
             </div>
 

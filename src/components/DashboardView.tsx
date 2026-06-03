@@ -6,6 +6,7 @@
 import React from "react";
 import { ShieldCheck, HardDrive, Cpu, AlertOctagon, RefreshCw, Layers, Server, Activity, ArrowRight, ShieldAlert } from "lucide-react";
 import { Device, SystemLog } from "../types";
+import { useTranslation } from "../hooks/useTranslation";
 
 interface DashboardProps {
   devices: Device[];
@@ -15,6 +16,7 @@ interface DashboardProps {
 }
 
 export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelectDevice, onClearAlert }) => {
+  const { t } = useTranslation();
   const onlineCount = devices.filter(d => d.status === "online").length;
   const warningCount = devices.filter(d => d.status === "warning").length;
   const offlineCount = devices.filter(d => d.status === "offline").length;
@@ -40,12 +42,12 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
         {/* Metric 1 */}
         <div className="bg-[#0b0f19]/70 border border-emerald-500/15 p-4 rounded-lg relative overflow-hidden backdrop-blur-sm shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-zinc-400 text-xs tracking-wider">TOTAL HOST NODES</span>
+            <span className="font-mono text-zinc-400 text-xs tracking-wider">{t("dashboard.metrics.total_hosts")}</span>
             <Server className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-3xl font-extrabold text-zinc-100">{devices.length}</span>
-            <span className="font-mono text-[10px] text-zinc-500">100% catalogued</span>
+            <span className="font-mono text-[10px] text-zinc-500">{t("dashboard.metrics.catalogued")}</span>
           </div>
           <div className="absolute top-0 right-0 h-1 md:h-1.5 w-16 bg-emerald-500/20" />
         </div>
@@ -53,12 +55,12 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
         {/* Metric 2 */}
         <div className="bg-[#0b0f19]/70 border border-emerald-500/15 p-4 rounded-lg relative overflow-hidden backdrop-blur-sm shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-zinc-400 text-xs tracking-wider">ONLINE CHANNELS</span>
+            <span className="font-mono text-zinc-400 text-xs tracking-wider">{t("dashboard.metrics.online_channels")}</span>
             <Activity className="w-4 h-4 text-emerald-400 animate-pulse" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-3xl font-extrabold text-emerald-400">{onlineCount}</span>
-            <span className="font-mono text-[10px] text-zinc-500">Active telemetry</span>
+            <span className="font-mono text-[10px] text-zinc-500">{t("dashboard.metrics.active_telemetry")}</span>
           </div>
           <div className="absolute top-0 right-0 h-1 md:h-1.5 w-16 bg-emerald-400/20" />
         </div>
@@ -66,12 +68,12 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
         {/* Metric 3 */}
         <div className="bg-[#0b0f19]/70 border border-amber-500/15 p-4 rounded-lg relative overflow-hidden backdrop-blur-sm shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-zinc-400 text-xs tracking-wider">WARNING DRIFTS</span>
+            <span className="font-mono text-zinc-400 text-xs tracking-wider">{t("dashboard.metrics.warning_drifts")}</span>
             <AlertOctagon className="w-4 h-4 text-amber-400" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-3xl font-extrabold text-amber-400">{warningCount}</span>
-            <span className="font-mono text-[10px] text-zinc-500">Requires check</span>
+            <span className="font-mono text-[10px] text-zinc-500">{t("dashboard.metrics.requires_check")}</span>
           </div>
           <div className="absolute top-0 right-0 h-1 md:h-1.5 w-16 bg-amber-500/20" />
         </div>
@@ -79,12 +81,12 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
         {/* Metric 4 */}
         <div className="bg-[#0b0f19]/70 border border-zinc-800 p-4 rounded-lg relative overflow-hidden backdrop-blur-sm shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-zinc-400 text-xs tracking-wider">OFFLINE STALLS</span>
+            <span className="font-mono text-zinc-400 text-xs tracking-wider">{t("dashboard.metrics.offline_stalls")}</span>
             <RefreshCw className="w-4 h-4 text-zinc-500" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="font-mono text-3xl font-extrabold text-zinc-500">{offlineCount}</span>
-            <span className="font-mono text-[10px] text-zinc-600">Zero heartbeat</span>
+            <span className="font-mono text-[10px] text-zinc-650">{t("dashboard.metrics.zero_heartbeat")}</span>
           </div>
           <div className="absolute top-0 right-0 h-1 md:h-1.5 w-16 bg-zinc-700/25" />
         </div>
@@ -92,7 +94,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
 
       {/* Gauges Row : SVG progress gauges (Image 5 spec) */}
       <div className="bg-[#0b0f19]/40 border border-zinc-900 rounded-lg p-5">
-        <h3 className="font-mono text-[11px] text-zinc-500 tracking-wider mb-4 uppercase font-bold border-b border-zinc-900 pb-2">SUITE SOVEREIGNTY INTEGRITY CONTROLS</h3>
+        <h3 className="font-mono text-[11px] text-zinc-500 tracking-wider mb-4 uppercase font-bold border-b border-zinc-900 pb-2">{t("dashboard.controls_title")}</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           {/* Circle Gauge 1: Policy compliance */}
@@ -114,11 +116,11 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center mt-1">
                 <span className="font-mono text-2xl font-black text-zinc-100">{totalCompliantPercent}%</span>
-                <span className="text-[9px] text-zinc-500 font-bold tracking-wider">COMPLIANCE</span>
+                <span className="text-[9px] text-zinc-500 font-bold tracking-wider">{t("dashboard.gauges.compliance")}</span>
               </div>
             </div>
-            <p className="font-mono text-xs text-zinc-300 mt-3 font-semibold">SOV POLICIES RATING</p>
-            <span className="font-mono text-[10px] text-zinc-500 leading-normal mt-1 max-w-[190px]">Kernel constraints and firewall integrity average score.</span>
+            <p className="font-mono text-xs text-zinc-300 mt-3 font-semibold">{t("dashboard.gauges.policies_rating")}</p>
+            <span className="font-mono text-[10px] text-zinc-500 leading-normal mt-1 max-w-[190px]">{t("dashboard.gauges.policies_desc")}</span>
           </div>
 
           {/* Circle Gauge 2: Mean CPU */}
@@ -140,11 +142,11 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center mt-1">
                 <span className="font-mono text-2xl font-black text-cyan-400">{meanCpu}%</span>
-                <span className="text-[9px] text-zinc-500 font-bold tracking-wider">LOAD MEAN</span>
+                <span className="text-[9px] text-zinc-500 font-bold tracking-wider">{t("dashboard.gauges.load_mean")}</span>
               </div>
             </div>
-            <p className="font-mono text-xs text-zinc-300 mt-3 font-semibold">CPU NET CAPACITY</p>
-            <span className="font-mono text-[10px] text-zinc-500 leading-normal mt-1 max-w-[190px]">Mean central compute index of all operational server machines.</span>
+            <p className="font-mono text-xs text-zinc-300 mt-3 font-semibold">{t("dashboard.gauges.cpu_capacity")}</p>
+            <span className="font-mono text-[10px] text-zinc-500 leading-normal mt-1 max-w-[190px]">{t("dashboard.gauges.cpu_desc")}</span>
           </div>
 
           {/* Circle Gauge 3: Mean RAM */}
@@ -166,11 +168,11 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center mt-1">
                 <span className="font-mono text-2xl font-black text-violet-400">{meanRam}%</span>
-                <span className="text-[9px] text-zinc-500 font-bold tracking-wider">MEMORY MEM</span>
+                <span className="text-[9px] text-zinc-500 font-bold tracking-wider">{t("dashboard.gauges.memory_mem")}</span>
               </div>
             </div>
-            <p className="font-mono text-xs text-zinc-300 mt-3 font-semibold">UNIFIED MEMORY LOAD</p>
-            <span className="font-mono text-[10px] text-zinc-500 leading-normal mt-1 max-w-[190px]">Resource metrics map averaging physical DDR modules.</span>
+            <p className="font-mono text-xs text-zinc-300 mt-3 font-semibold">{t("dashboard.gauges.memory_load")}</p>
+            <span className="font-mono text-[10px] text-zinc-500 leading-normal mt-1 max-w-[190px]">{t("dashboard.gauges.memory_desc")}</span>
           </div>
 
         </div>
@@ -183,17 +185,17 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
         <div className="bg-[#0b0f19]/70 border border-zinc-950 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between border-b border-zinc-950 pb-3 mb-3">
             <span className="font-mono text-xs text-zinc-100 font-bold tracking-wider flex items-center gap-1.5 uppercase">
-              <ShieldAlert className="w-4 h-4 text-rose-500" /> SEC-AUDIT ACTIONABLE INCIDENTS
+              <ShieldAlert className="w-4 h-4 text-rose-500" /> {t("dashboard.alerts.title")}
             </span>
-            <span className="font-mono text-[10px] text-zinc-500 font-bold bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">REAL-TIME CONTROLS</span>
+            <span className="font-mono text-[10px] text-zinc-500 font-bold bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded">{t("dashboard.alerts.realtime_label")}</span>
           </div>
 
           <div className="flex-1 space-y-2.5">
             {logs.filter(log => log.level === "critical" || log.level === "warning").length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-center text-zinc-500 font-mono">
                 <ShieldCheck className="w-10 h-10 text-emerald-500 mb-2 animate-bounce" />
-                <span className="text-sm font-semibold text-emerald-400">Zero active security alerts</span>
-                <p className="text-xs text-zinc-600 mt-1">Host system layers are completely protected under Sovereign policy.</p>
+                <span className="text-sm font-semibold text-emerald-400">{t("dashboard.alerts.zero_alerts")}</span>
+                <p className="text-xs text-zinc-600 mt-1">{t("dashboard.alerts.protected_desc")}</p>
               </div>
             ) : (
               logs.filter(log => log.level === "critical" || log.level === "warning").map((log) => {
@@ -212,7 +214,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
                           onClick={() => onSelectDevice(assocDevice)}
                           className="mt-1.5 font-mono text-[10px] text-emerald-400 hover:underline flex items-center gap-1 text-left"
                         >
-                          Trace host target ({assocDevice.name}) <ArrowRight className="w-3 h-3" />
+                          {t("dashboard.alerts.trace_target")} ({assocDevice.name}) <ArrowRight className="w-3 h-3" />
                         </button>
                       )}
                     </div>
@@ -220,7 +222,7 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
                       onClick={() => onClearAlert(log.id)}
                       className="text-[10px] font-mono tracking-wider bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border border-zinc-800 hover:border-zinc-700 px-2.5 py-1.5 rounded transition-all cursor-pointer self-start sm:self-center uppercase shrink-0"
                     >
-                      Acknowledge
+                      {t("dashboard.alerts.acknowledge")}
                     </button>
                   </div>
                 );
@@ -233,9 +235,9 @@ export const DashboardView: React.FC<DashboardProps> = ({ devices, logs, onSelec
         <div className="bg-[#0b0f19]/70 border border-zinc-950 rounded-lg p-4">
           <div className="flex items-center justify-between border-b border-zinc-950 pb-3 mb-3">
             <span className="font-mono text-xs text-zinc-100 font-bold tracking-wider flex items-center gap-1.5 uppercase">
-              <Layers className="w-4 h-4 text-emerald-400" /> RECENT CONSOLE INCIDENT LEDGER
+              <Layers className="w-4 h-4 text-[#10b981]" /> {t("dashboard.ledger.title")}
             </span>
-            <span className="font-mono text-[9px] text-slate-500 font-semibold uppercase">Continuous streaming</span>
+            <span className="font-mono text-[9px] text-zinc-500 font-semibold uppercase">{t("dashboard.ledger.continuous_label")}</span>
           </div>
 
           <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">

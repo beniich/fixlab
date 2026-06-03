@@ -92,9 +92,9 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
         const data = doc.data();
         list.push({
           resourceName: `firestore/${doc.id}`,
-          name: data.name || "Contact sans nom",
-          email: data.email || "Non renseigné",
-          phone: data.phone || "Non renseigné",
+          name: data.name || "Unnamed Contact",
+          email: data.email || "Not specified",
+          phone: data.phone || "Not specified",
           photoUrl: data.photoUrl,
           organization: data.organization || "Sovereign Operations Hub",
           jobTitle: data.type === "platform-admin" ? "Sovereign Administrator" : "Platform Client Subscriber",
@@ -135,13 +135,13 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
       if (data.connections && data.connections.length > 0) {
         const parsed: ContactPerson[] = data.connections.map((item: any) => {
           const nameObj = item.names && item.names[0];
-          const name = nameObj ? nameObj.displayName : "Contact sans nom";
+          const name = nameObj ? nameObj.displayName : "Unnamed Contact";
           
           const emailObj = item.emailAddresses && item.emailAddresses[0];
-          const email = emailObj ? emailObj.value : "Non renseigné";
+          const email = emailObj ? emailObj.value : "Not specified";
           
           const phoneObj = item.phoneNumbers && item.phoneNumbers[0];
-          const phone = phoneObj ? phoneObj.value : "Non renseigné";
+          const phone = phoneObj ? phoneObj.value : "Not specified";
           
           const photoObj = item.photos && item.photos[0];
           const photoUrl = photoObj && !photoObj.default ? photoObj.url : undefined;
@@ -177,7 +177,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
       }
     } catch (err: any) {
       console.error("Failed to load Google Contacts connections:", err);
-      setErrorDetails(err.message || "Impossible de récupérer les contacts depuis Google.");
+      setErrorDetails(err.message || "Unable to retrieve Google contacts.");
     } finally {
       setIsLoading(false);
     }
@@ -203,7 +203,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
       }
     } catch (err: any) {
       console.error("Sign-in trigger failed:", err);
-      setErrorDetails(err.message || "Session annulée ou rejetée.");
+      setErrorDetails(err.message || "Session cancelled or rejected.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -229,7 +229,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
     if (!currentUser) return;
 
     if (!newContactName.trim()) {
-      setErrorDetails("Le nom du contact est requis.");
+      setErrorDetails("Contact name is required.");
       return;
     }
 
@@ -244,8 +244,8 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
       const contactData = {
         id: contactId,
         name: newContactName,
-        email: newContactEmail || "Non renseigné",
-        phone: newContactPhone || "Non renseigné",
+        email: newContactEmail || "Not specified",
+        phone: newContactPhone || "Not specified",
         organization: newContactOrg || "Sovereign Operations Hub",
         type: newContactRole,
         createdAt: new Date().toISOString(),
@@ -290,7 +290,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
       setNewContactEmail("");
       setNewContactPhone("");
       setIsAddingContact(false);
-      alert("Nouveau contact enregistré et persistant dans Cloud Firestore !");
+      alert("New contact registered and persistent in Cloud Firestore!");
     } catch (err: any) {
       console.error("Failed to create Contact in Firestore:", err);
       handleFirestoreError(err, OperationType.WRITE, path);
@@ -341,7 +341,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
             Sovereign Clinical Contacts
           </h3>
           <p className="text-xs text-stone-300 leading-relaxed max-w-3xl">
-            Ce répertoire synchronise en temps réel vos contacts sécurisés de la clinique avec votre compte <strong>Google Contacts</strong> et votre base segmentée <strong>Cloud Firestore</strong>. Enregistrez de nouveaux contacts qualifiés comme <strong>Admin</strong> ou <strong>Client</strong> sous notre protocole de sécurité en boucle fermée.
+            This directory synchronizes your secure clinic contacts in real-time with your Google Contacts account and segmented Cloud Firestore database. Register new approved Admin or Customer nodes under our closed-loop security protocol.
           </p>
         </div>
       </GlassCard>
@@ -353,9 +353,9 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
           </div>
           
           <div className="space-y-2">
-            <h4 className="text-sm font-black text-white uppercase tracking-widest">Connexion Requise</h4>
+            <h4 className="text-sm font-black text-white uppercase tracking-widest">Connection Required</h4>
             <p className="text-[11px] text-stone-400 leading-relaxed">
-              Pour accéder aux contacts Google de l'opérateur et inscrire de nouveaux bénéficiaires ou administrateurs cliniques, connectez-vous avec votre clé d'identité.
+              To authorize access to the operator's Google contacts and enroll clinical members, please authenticate with your credentials.
             </p>
           </div>
 
@@ -374,7 +374,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
                   <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
                 </svg>
               </div>
-              <span className="gsi-material-button-contents font-sans font-semibold text-xs text-stone-850">Se connecter avec Google</span>
+              <span className="gsi-material-button-contents font-sans font-semibold text-xs text-stone-850">Sign in with Google</span>
             </div>
           </button>
         </GlassCard>
@@ -454,13 +454,13 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
               {/* Contacts List Grid */}
               <div className="mt-6 space-y-3 max-h-[500px] overflow-y-auto pr-2">
                 {isLoading ? (
-                  <div className="text-center py-12 flex flex-col items-center justify-center space-y-2">
-                    <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin" />
-                    <span className="text-[10px] text-stone-500 font-bold uppercase tracking-widest">Querying Operator Contacts API...</span>
-                  </div>
+                   <div className="text-center py-12 flex flex-col items-center justify-center space-y-2">
+                     <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin" />
+                     <span className="text-[10px] text-stone-500 font-bold uppercase tracking-widest">Querying Operator Contacts API...</span>
+                   </div>
                 ) : filteredContacts.length === 0 ? (
                   <div className="text-center py-12 bg-black/20 rounded-xl border border-dashed border-stone-900 text-stone-500 text-[10px] uppercase">
-                     Aucun contact trouvé. Enregistrez-en un nouveau via le formulaire.
+                     No contacts found. Register a new one using the form.
                   </div>
                 ) : (
                   filteredContacts.map((contact, i) => (
@@ -552,7 +552,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
                           <button
                             onClick={(e) => handleDeleteFirestoreContact(contact.resourceName, e)}
                             className="p-1 px-2 border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/20 text-rose-500 text-[10px] rounded hover:scale-105 transition-all uppercase cursor-pointer flex items-center gap-1"
-                            title="Supprimer de Firestore"
+                            title="Delete from Firestore"
                           >
                             <Trash2 className="w-3 h-3" />
                             Delete
@@ -584,7 +584,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
 
                 <form onSubmit={handleSubmitContact} className="space-y-4.5 text-left">
                   <div className="space-y-1">
-                    <label className="text-[8.5px] text-stone-400 uppercase font-black block">Nom Complet *</label>
+                    <label className="text-[8.5px] text-stone-400 uppercase font-black block">Full Name *</label>
                     <input
                       type="text"
                       className="w-full bg-black border border-stone-850 p-2 text-xs rounded text-stone-200 outline-none focus:border-cyan-500/45 font-mono"
@@ -597,7 +597,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Adresse E-mail</label>
+                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Email Address</label>
                       <input
                         type="email"
                         className="w-full bg-black border border-stone-850 p-2 text-xs rounded text-stone-200 outline-none focus:border-cyan-500/45 font-mono"
@@ -608,7 +608,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">N° Téléphone</label>
+                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Phone Number</label>
                       <input
                         type="tel"
                         className="w-full bg-black border border-stone-850 p-2 text-xs rounded text-stone-200 outline-none focus:border-cyan-500/45 font-mono"
@@ -621,7 +621,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Clinique / Org</label>
+                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Clinic / Org</label>
                       <input
                         type="text"
                         className="w-full bg-black border border-stone-850 p-2 text-xs rounded text-stone-200 outline-none focus:border-cyan-500/45"
@@ -632,14 +632,14 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Rôle Plateforme / Secteur</label>
+                      <label className="text-[8.5px] text-stone-400 uppercase font-black block">Platform Role / Sector</label>
                       <select
                         className="w-full bg-black border border-stone-850 p-2 text-[10px] rounded text-stone-200 outline-none focus:border-cyan-500/45 font-mono"
                         value={newContactRole}
                         onChange={(e: any) => setNewContactRole(e.target.value)}
                       >
-                        <option value="subscriber-client">Client Membre Abonné</option>
-                        <option value="platform-admin">Administrateur de Plateforme</option>
+                        <option value="subscriber-client">Subscribed Member Client</option>
+                        <option value="platform-admin">Platform Administrator</option>
                       </select>
                     </div>
                   </div>
@@ -682,19 +682,19 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
 
               <div className="space-y-4 text-left leading-normal text-[11px] text-stone-300">
                 <p>
-                  Déclarez et enregistrez votre rôle d'accès sur ce terminal de contrôle souverain. Les privilèges de cryptage et l'accès aux segments 3D sont assignés instantanément.
+                  Declare and assert your active access role on this sovereign control terminal. Cryptographic privileges and segmented 3D viewports are provisioned in real time.
                 </p>
 
                 <div className="p-3.5 bg-black/50 border border-stone-900 rounded-xl space-y-3.5 feedback-grid">
                   <div className="font-extrabold text-[9.5px] uppercase tracking-widest text-purple-200">
-                    SÉLECTIONNER MON PROFIL DE RECOURS
+                    SELECT MY DEPLOYMENT PROFILE
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => {
                         onChangeRole("super-admin");
-                        alert("Accréditation Admin validée. Les modules de commandement tactique sont débloqués.");
+                        alert("Admin credential validated. Tactical command modules are unlocked.");
                       }}
                       className={`py-3 text-[10px] font-black uppercase rounded-lg border transition-all text-center cursor-pointer ${
                         currentRole === "super-admin"
@@ -702,37 +702,37 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
                           : "bg-stone-950/40 border-stone-900 text-stone-500 hover:text-white"
                       }`}
                     >
-                      👑 Admin Plateforme
+                      👑 Platform Admin
                     </button>
 
                     <button
                       onClick={() => {
                         onChangeRole("client");
-                        alert("Accréditation Client activée. Accès de courtoisie et tableau de secours.");
+                        alert("Client accreditation activated. Courtesy access and fallback dashboard.");
                       }}
                       className={`py-3 text-[10px] font-black uppercase rounded-lg border transition-all text-center cursor-pointer ${
                         currentRole === "client"
-                          ? "bg-emerald-500/20 text-emerald-450 border-emerald-500"
+                          ? "bg-emerald-500/20 text-emerald-455 border-emerald-500"
                           : "bg-stone-950/40 border-stone-900 text-stone-500 hover:text-white"
                       }`}
                     >
-                      ⚡ Client / Invité
+                      ⚡ Client / Guest
                     </button>
                   </div>
 
                   <div className="text-[8px] text-stone-500 text-justify leading-relaxed">
-                    Chaque changement de statut re-négocie instantanément les clés mTLS d'acheminement locales avec les nœuds de secours.
+                    Each role renegotiation instantly generates brand-new mTLS routing handshakes with hot-standby cloud nodes.
                   </div>
                 </div>
 
                 <div className="bg-stone-950/40 p-3 rounded-lg border border-stone-900 space-y-1 text-[9.5px]">
-                  <div className="text-stone-400 font-bold uppercase">OPÉRATEUR COURANT :</div>
+                  <div className="text-stone-400 font-bold uppercase">CURRENT OPERATOR:</div>
                   <div className="text-white text-[10.5px] break-all font-semibold italic">
-                    👤 {currentUser?.email || "Session Airgapped sécurisée"}
+                    👤 {currentUser?.email || "Secure Airgapped Session"}
                   </div>
                   {currentUser && (
-                    <div className="text-[7.5px] text-emerald-450 font-black animate-pulse uppercase">
-                      ✓ IDENTITÉ NUMÉRIQUE GOOGLE ATTACHÉE
+                    <div className="text-[7.5px] text-emerald-455 font-black animate-pulse uppercase">
+                      ✓ GOOGLE SECURE IDENTITY ATTACHED
                     </div>
                   )}
                 </div>
@@ -743,7 +743,7 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
                   className="w-full py-3 bg-rose-950/20 hover:bg-rose-950/60 text-rose-500 border border-rose-900 hover:border-rose-600 rounded-xl font-black text-[9.5px] uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  Terminer la Session (Se déconnecter)
+                  End Session (Sign Out)
                 </button>
               </div>
             </GlassCard>

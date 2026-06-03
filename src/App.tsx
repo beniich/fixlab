@@ -60,6 +60,7 @@ import { AssetEnrollment } from "./components/AssetEnrollment";
 import { ClientDashboard } from "./components/ClientDashboard";
 import { SovereignContacts } from "./components/SovereignContacts";
 import { PublicLanding, NeuralHandshake, SovereignPricingPage } from "./components/SovereignLifecycleOrchestrator";
+import { useTranslation } from "./hooks/useTranslation";
 
 // Private custom hook that monitors system logs and notifies when a critical incident is registered
 function useSecurityAlertListener(
@@ -112,6 +113,7 @@ Sovereign Network Command Center`;
 }
 
 export default function App() {
+  const { t, lang, setLang } = useTranslation();
   const [devices, setDevices] = useState<Device[]>(initialDevices);
   const [isLightMode, setIsLightMode] = useState<boolean>(() => {
     return localStorage.getItem("theme") === "light";
@@ -780,28 +782,28 @@ export default function App() {
 
   // Navigations Lists with dynamic, adaptive contextual UI modes (Discord-style)
   const navigationTabs = currentRole === "client" ? [
-    { id: "client-dashboard", label: "01 • GUEST ACCESS HUB", icon: Server },
-    { id: "gmail", label: "02 • SOVEREIGN MAIL", icon: Mail },
-    { id: "platform-gate", label: "03 • PLATFORM OPERATOR", icon: Landmark },
-    { id: "contacts", label: "04 • SOVEREIGN CONTACTS", icon: Users }
+    { id: "client-dashboard", label: t("tabs.client-dashboard"), icon: Server },
+    { id: "gmail", label: t("tabs.gmail"), icon: Mail },
+    { id: "platform-gate", label: t("tabs.platform-gate"), icon: Landmark },
+    { id: "contacts", label: t("tabs.contacts"), icon: Users }
   ] : [
-    { id: "dashboard", label: "01 • COMMAND CENTER", icon: Server },
-    { id: "health-matrix", label: "02 • HEALTH MATRIX", icon: Activity },
-    { id: "data-flow", label: "03 • DATA FLOW", icon: Workflow },
-    { id: "quantum-node", label: "04 • QUANTUM NODE", icon: BrainCircuit },
-    { id: "insights", label: "05 • VISION ARCHITECTE", icon: Layers },
-    { id: "perimeter", label: "06 • SEC PERIMETER", icon: ShieldCheck },
-    { id: "terminal", label: "07 • SECURE TERMINAL", icon: TermIcon },
-    { id: "timeline", label: "08 • INCIDENT TIMELINE", icon: AlertOctagon },
-    { id: "global-map", label: "09 • GLOBAL MAP", icon: Globe },
-    { id: "settings", label: "10 • SYSTEM ESSENCE", icon: Settings2 },
-    { id: "gmail", label: "11 • SOVEREIGN MAIL", icon: Mail },
-    { id: "platform-gate", label: "12 • PLATFORM OPERATOR", icon: Landmark },
-    { id: "sovereign-audit", label: "13 • SOVEREIGN AUDIT", icon: ClipboardCheck },
-    { id: "observation-deck", label: "14 • OBSERVATION DECK", icon: Monitor },
-    { id: "appliance-core", label: "15 • APPLIANCE CORE", icon: Sliders },
-    { id: "asset-enrollment", label: "16 • ASSET ENROLLMENT", icon: ShieldAlert },
-    { id: "contacts", label: "17 • SOVEREIGN CONTACTS", icon: Users }
+    { id: "dashboard", label: t("tabs.dashboard"), icon: Server },
+    { id: "health-matrix", label: t("tabs.health-matrix"), icon: Activity },
+    { id: "data-flow", label: t("tabs.data-flow"), icon: Workflow },
+    { id: "quantum-node", label: t("tabs.quantum-node"), icon: BrainCircuit },
+    { id: "insights", label: t("tabs.insights"), icon: Layers },
+    { id: "perimeter", label: t("tabs.perimeter"), icon: ShieldCheck },
+    { id: "terminal", label: t("tabs.terminal"), icon: TermIcon },
+    { id: "timeline", label: t("tabs.timeline"), icon: AlertOctagon },
+    { id: "global-map", label: t("tabs.global-map"), icon: Globe },
+    { id: "settings", label: t("tabs.settings"), icon: Settings2 },
+    { id: "gmail", label: t("tabs.gmail"), icon: Mail },
+    { id: "platform-gate", label: t("tabs.platform-gate"), icon: Landmark },
+    { id: "sovereign-audit", label: t("tabs.sovereign-audit"), icon: ClipboardCheck },
+    { id: "observation-deck", label: t("tabs.observation-deck"), icon: Monitor },
+    { id: "appliance-core", label: t("tabs.appliance-core"), icon: Sliders },
+    { id: "asset-enrollment", label: t("tabs.asset-enrollment"), icon: ShieldAlert },
+    { id: "contacts", label: t("tabs.contacts"), icon: Users }
   ];
 
   if (!isAuthChecked) {
@@ -967,7 +969,7 @@ export default function App() {
                 }`}
               >
                 <LogOut className="w-4 h-4 shrink-0 text-[#f43f5e]" />
-                <span>Verrouiller (Sign Out)</span>
+                <span>{t("common.logout")}</span>
               </button>
             </nav>
           </div>
@@ -1037,6 +1039,20 @@ export default function App() {
                       <span>LIGHT THEME</span>
                     </>
                   )}
+                </button>
+
+                {/* Global Language Selector (Internationalization System Engine) */}
+                <button
+                  onClick={() => setLang(lang === "en" ? "fr" : "en")}
+                  className={`px-3 py-1.5 border rounded-xl font-mono text-[9px] uppercase tracking-widest font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                    isLightMode 
+                      ? "bg-white border-stone-200 text-stone-750 hover:bg-stone-50 shadow-sm" 
+                      : "bg-[#1a0e41]/80 border-purple-500/10 text-cyan-400 hover:bg-[#24175e]/70"
+                  }`}
+                  title="Toggle Global Language / Langue"
+                >
+                  <Globe className="w-3.5 h-3.5 text-[#22d3ee]" />
+                  <span>{lang === "en" ? "FRANÇAIS (FR)" : "ENGLISH (EN)"}</span>
                 </button>
 
                 <div className={`flex items-center gap-2 border px-3.5 py-2 rounded-xl transition-all duration-300 ${
@@ -1270,10 +1286,10 @@ export default function App() {
 
             <div className="space-y-1.5 text-center">
               <h3 className="text-base font-black uppercase tracking-wider font-sans">
-                VÉRIFICATION DE SÉCURITÉ
+                SECURITY VERIFICATION
               </h3>
               <p className={`text-xs ${isLightMode ? "text-stone-500" : "text-stone-400"}`}>
-                Terminer la session et verrouiller le terminal de sécurité ?
+                End session and lock the security terminal?
               </p>
             </div>
 
@@ -1287,7 +1303,7 @@ export default function App() {
                     : "bg-transparent border-neutral-800 text-stone-400 hover:bg-neutral-900 hover:text-white"
                 }`}
               >
-                Annuler
+                {t("common.cancel")}
               </button>
               
               <button
@@ -1295,6 +1311,7 @@ export default function App() {
                 onClick={async () => {
                   setShowLogoutConfirm(false);
                   await logout();
+                  setLifecycleState("landing");
                 }}
                 className={`w-1/2 font-mono text-[9px] font-black uppercase tracking-widest py-3.5 rounded-xl transition-all cursor-pointer text-white ${
                   isLightMode
@@ -1302,7 +1319,7 @@ export default function App() {
                     : "bg-[#ff5a00] hover:bg-[#ff7e00]"
                 }`}
               >
-                Déconnexion
+                {t("common.confirm")}
               </button>
             </div>
           </div>

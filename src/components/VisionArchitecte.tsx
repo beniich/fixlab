@@ -116,7 +116,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
   // Registration builder state
   const [regName, setRegName] = useState<string>("");
   const [regEmail, setRegEmail] = useState<string>("");
-  const [regClearance, setRegClearance] = useState<string>("OXYGENE");
+  const [regClearance, setRegClearance] = useState<string>("OXYGEN");
   const [regKey, setRegKey] = useState<string>("");
 
   // Satellite transmission (Terminal) state
@@ -154,34 +154,34 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
   // Observatoire journal entries state
   const [newJournalTitle, setNewJournalTitle] = useState<string>("");
   const [newJournalContent, setNewJournalContent] = useState<string>("");
-  const [journalCategory, setJournalCategory] = useState<string>("Matériaux");
+  const [journalCategory, setJournalCategory] = useState<string>("Materials");
   const [observatoryJournals, setObservatoryJournals] = useState<any[]>(() => {
     try {
       const saved = localStorage.getItem("vision_architecte_journals");
       return saved ? JSON.parse(saved) : [
         {
           id: "J-04",
-          title: "La Synthèse de Verre Réfractif",
-          category: "Optique",
+          title: "Synthesis of Refractive Glass",
+          category: "Optics",
           author: "Elara Vance",
           timestamp: "2026-06-03 10:45",
-          content: "L'Atrium intègre désormais les nouvelles dalles de silice carbonée à taux élevé de réfraction lumineus. Les tests d'atténuation aux ultra-violet révèlent un filtrage passif à 99.4%, tout en maintenant une diffusion diffuse du spectre visible à 82%."
+          content: "The Atrium now integrates new high-refraction carbon-silica glass panels. Ultraviolet attenuation testing reveals a passive filtering rate of 99.4%, while maintaining diffuse visible spectrum light transmission of 82%."
         },
         {
           id: "J-03",
-          title: "Dynamique des Fluides en Façades Doubles",
+          title: "Fluid Dynamics in Double-Skin Facades",
           category: "Structure",
           author: "Marcus Aurelius",
           timestamp: "2026-06-02 14:12",
-          content: "L'analyse des contraintes dynamiques sur l'enveloppe du Terminal Alpha indique une dispersion optimale des turbulences. Notre modèle de déviation par lames paraboliques réduit la friction de surface de près de 18.5%."
+          content: "Dynamic stress analysis on the Terminal Alpha skin indicates optimal dispersion of turbulence. Our parabolic vane deflection model reduces surface friction by approximately 18.5%."
         },
         {
           id: "J-02",
-          title: "Béton Translucide Autonettoyant",
-          category: "Matériaux",
+          title: "Self-cleaning Translucent Concrete",
+          category: "Materials",
           author: "Diana Prince",
           timestamp: "2026-06-01 09:30",
-          content: "Des dalles prototypes de béton cellulaire renforcé aux micro-fibres transmettant la lumière ont été soumises à un ancrage sismique d'essai. La structure micro-cristalline prévient la fissuration capillaire."
+          content: "Prototype translucent light-transmitting aerated concrete slabs reinforced with micro-fibres were subjected to seismic stress testing. The micro-crystalline structure prevents capillary cracking."
         }
       ];
     } catch {
@@ -205,13 +205,13 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
       key += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setRegKey(key);
-    showHudToast("Cryptosignature pour registre d'identité générée.");
+    showHudToast("Cryptosignature generated for identity registry.");
   };
 
   const handleRegisterBadge = (e: React.FormEvent) => {
     e.preventDefault();
     if (!regName.trim() || !regEmail.trim()) {
-      showHudToast("Veuillez saisir au moins un nom et une liaison sécurisée.");
+      showHudToast("Please enter at least a name and a secure connection.");
       return;
     }
 
@@ -245,13 +245,13 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
       body: JSON.stringify(newB)
     }).catch(err => console.warn("Backend unsynced", err));
 
-    showHudToast(`Identité enregistrogène créée : Bienvenue, opérateur ${newB.name}!`);
+    showHudToast(`Identity record created: Welcome, operator ${newB.name}!`);
   };
 
   const handleLoginBadge = (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginId.trim() || !loginKey.trim()) {
-      showHudToast("Saisie d'identifiant et mot de clé requis.");
+      showHudToast("Operator ID and password key are required.");
       return;
     }
 
@@ -261,9 +261,9 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
       loginKey.toUpperCase().includes("SYS")
     ) {
       setIsLoggedIn(true);
-      showHudToast(`Accès en mode de liaison sécurisé accordé : ${activeBadge.name}`);
+      showHudToast(`Secure link access granted: ${activeBadge.name}`);
     } else {
-      showHudToast("Divergence d'authentification : Identité introuvable sur la trame.");
+      showHudToast("Authentication mismatch: Identity not found on network frame.");
     }
   };
 
@@ -271,7 +271,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
   const handleInitiateTransmission = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setTransmissionProgress(0);
-    showHudToast("Liaison satellite établie. Synchronisation du vecteur...");
+    showHudToast("Satellite link established. Synchronizing vector...");
 
     const interval = setInterval(() => {
       setTransmissionProgress((p) => {
@@ -298,7 +298,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
           }).catch(err => console.warn("Backend unsynced", err));
           
           setTerminalText("");
-          showHudToast(`Uplink Réussi! Code Transaction : ${txId}`);
+          showHudToast(`Uplink Successful! Transaction Code: ${txId}`);
           return -1;
         }
         return p + 10;
@@ -309,12 +309,12 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
   // Call Gemini AI server route
   const handleAIGeneration = async () => {
     if (!aiPromptInput.trim()) {
-      showHudToast("Veuillez renseigner les consignes matérielles pour l'IA.");
+      showHudToast("Please fill down the material specifications for the AI.");
       return;
     }
 
     setIsAiLoading(true);
-    showHudToast("Lancement de la modélisation constructive par Gemini...");
+    showHudToast("Launching structural modeling via Gemini AI...");
 
     try {
       const response = await fetch("/api/vision-architecte/generate-architecture", {
@@ -326,15 +326,15 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
       if (response.ok) {
         const data = await response.json();
         setAiResponseText(data.result);
-        showHudToast("Structure synthétisée avec succès.");
+        showHudToast("Structure synthesized successfully.");
       } else {
         const errTxt = await response.text();
         setAiResponseText(`Error: ${errTxt}`);
-        showHudToast("Défaillance lors de l'appel constructeur.");
+        showHudToast("Failure during constructor call.");
       }
     } catch (e: any) {
-      setAiResponseText(`Divergence de trame réseau : ${e.message}`);
-      showHudToast("Calcul interrompu.");
+      setAiResponseText(`Network frame mismatch: ${e.message}`);
+      showHudToast("Calculation aborted.");
     } finally {
       setIsAiLoading(false);
     }
@@ -342,12 +342,12 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
 
   const handleQuantumKeyRegen = () => {
     setIsGeneratingKey(true);
-    showHudToast("Réalignement des polariseurs de photons QKD...");
+    showHudToast("Realigning QKD photon polarizers...");
     setTimeout(() => {
       const val = `QKD-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(100 + Math.random() * 900)}X`;
       setQuantumToken(val);
       setIsGeneratingKey(false);
-      showHudToast("Nouvelle signature quantique fixée.");
+      showHudToast("New quantum signature set.");
     }, 1200);
   };
 
@@ -355,7 +355,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
   const handleAddJournalNode = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newJournalTitle.trim() || !newJournalContent.trim()) {
-      showHudToast("Veuillez remplir le titre et le corps de l'observation.");
+      showHudToast("Please fill in the title and body of the observation.");
       return;
     }
 
@@ -381,7 +381,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
 
     setNewJournalTitle("");
     setNewJournalContent("");
-    showHudToast(`Journal ${jId} ajouté à la trame d'observation.`);
+    showHudToast(`Journal ${jId} added to the observation network.`);
   };
 
   const calculateStructuralStress = () => {
@@ -447,17 +447,17 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
       }`}>
         <div className="flex items-center gap-4">
           <div 
-            onClick={() => showHudToast("Séquence de calibration d'identité nominale.")}
+            onClick={() => showHudToast("Nominal identity calibration sequence.")}
             className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400/25 to-blue-500/25 border border-[#00dbe9]/30 flex items-center justify-center cursor-pointer hover:rotate-12 transition-transform duration-300"
           >
             <Layers className="w-5 h-5 text-cyan-400" />
           </div>
           <div className="text-left">
             <h1 className="text-sm font-black tracking-[0.22em] text-[#00dbe9] uppercase font-sans flex items-center gap-1.5">
-              VISION ARCHITECTE <span className="text-[10px] text-zinc-500 font-mono tracking-normal font-normal">// LE PROTOCOLE SÉCURISÉ</span>
+              VISION ARCHITECT <span className="text-[10px] text-zinc-500 font-mono tracking-normal font-normal">// THE SECURE PROTOCOL</span>
             </h1>
             <p className="text-[8.5px] font-mono uppercase tracking-wider text-stone-500 mt-0.5">
-              Console d'Orchestration d'Analyse du Cadran Spatial
+              Spatial Quadrant Analysis Orchestration Console
             </p>
           </div>
         </div>
@@ -468,11 +468,11 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
             {[
               { id: "atrium", label: "Home Page (Atrium)" },
               { id: "portfolio", label: "About" },
-              { id: "laboratoire", label: "Laboratoire (IA)" },
-              { id: "observatoire", label: "Observatoire" },
-              { id: "client", label: "Espace Client" },
+              { id: "laboratoire", label: "Laboratory (AI)" },
+              { id: "observatoire", label: "Observatory" },
+              { id: "client", label: "Client Portal" },
               { id: "terminal", label: "Terminal / Uplink" },
-              { id: "security", label: "Sécurité" }
+              { id: "security", label: "Security" }
             ].map((tab) => {
               const isActive = currentTab === tab.id;
               // Guard for tabs if user is logged out (require credential login screen)
@@ -485,10 +485,10 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
                   onClick={() => {
                     if (needsAccess) {
                       setCurrentTab("security");
-                      showHudToast("Veuillez d'abord lier votre badge d'agent dans le Portail d'Accès.");
+                      showHudToast("Please link your agent badge in the Access Portal first.");
                     } else {
                       setCurrentTab(tab.id);
-                      showHudToast(`Commutation dynamique vers : ${tab.label}`);
+                      showHudToast(`Dynamic transition to: ${tab.label}`);
                     }
                   }}
                   className={`font-mono text-[9px] uppercase tracking-widest font-bold px-3 py-2 rounded-xl transition-all duration-300 relative cursor-pointer ${
@@ -512,14 +512,14 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
             <button
               onClick={() => {
                 setIsLightMode(!isLightMode);
-                showHudToast(`Affichage configuré : ${!isLightMode ? "Table d'Alabastre" : "Atelier d'Obsidienne"}`);
+                showHudToast(`Display configuration: ${!isLightMode ? "Alabaster Table" : "Obsidian Workshop"}`);
               }}
               className={`p-2 rounded-xl border transition-all cursor-pointer ${
                 isLightMode 
                   ? "bg-stone-100 border-stone-200 text-stone-700 hover:bg-stone-200"
                   : "bg-neutral-950 border-neutral-900 text-cyan-400 hover:bg-neutral-900"
               }`}
-              title="Commuter le thème lumineux/sombre"
+              title="Switch theme light/dark"
             >
               {isLightMode ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             </button>
@@ -527,7 +527,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
             {isLoggedIn && (
               <div className="flex items-center gap-2 bg-gradient-to-r from-cyan-950/20 to-neutral-900/20 px-3 py-1.5 rounded-xl border border-neutral-800">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="font-mono text-[9px] text-[#00dbe9] font-bold tracking-wider uppercase">Liaison Synchronisée</span>
+                <span className="font-mono text-[9px] text-[#00dbe9] font-bold tracking-wider uppercase">Synchronized Link</span>
               </div>
             )}
           </div>
@@ -643,7 +643,7 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
 
       {/* FOOTER COMPLIANCE LABELS */}
       <footer className="mt-12 text-center text-zinc-500 text-[10px] font-mono border-t border-neutral-900/60 pt-6">
-        <p>© 2026 VISION ARCHITECTE // SOUVERAIN NEXUS D'IDENTITÉ // TOUS DROITS RÉSERVÉS</p>
+        <p>© 2026 VISION ARCHITECT // SOVEREIGN IDENTITY NEXUS // ALL RIGHTS RESERVED</p>
       </footer>
 
     </div>

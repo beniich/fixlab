@@ -57,7 +57,7 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
 
   const handleSubscribe = (title: string) => {
     setSelectedPlanDetails(title);
-    showToast(`Affiliation formalisée pour le forfait : ${title}`);
+    showToast(`Affiliation finalized for plan: ${title}`);
   };
 
   return (
@@ -66,12 +66,12 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
       {/* 1. PLANS HEADER (Matching Image 7) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         <div className="lg:col-span-8">
-          <span className="font-mono text-[9px] text-[#ff5a00] uppercase font-black tracking-widest">[ OFFRES DE SERVICE SAAS ]</span>
+          <span className="font-mono text-[9px] text-[#ff5a00] uppercase font-black tracking-widest">[ SAAS SERVICE OFFERS ]</span>
           <h2 className="text-3xl font-black text-white font-sans uppercase tracking-tight mt-1">
             Nexus Pro Pricing Plans
           </h2>
           <p className="text-stone-500 text-xs">
-            Sovereign Device Nexus - SaaS Pricing and Plans. Des abonnements d'orchestration calibrés pour toutes les échelles d'opération.
+            Sovereign Device Nexus - SaaS Pricing and Plans. Orchestration slots tailored for all scales of operation.
           </p>
         </div>
 
@@ -87,10 +87,10 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             </div>
           ) : (
             <button
-              onClick={() => { onNavigate("security"); showToast("Écran de certification requis."); }}
+              onClick={() => { onNavigate("security"); showToast("Certification screen required."); }}
               className="bg-neutral-900 border border-neutral-800 text-zinc-300 font-mono text-[9.5px] font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl hover:text-[#ff5a00]"
             >
-              Lier un Badge d'Agent
+              Link Operative Badge
             </button>
           )}
         </div>
@@ -112,7 +112,7 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             {/* Standard "Best option/Most Popular" sticker banner from screen */}
             {plan.isBest && (
               <div className="absolute top-4 right-4 bg-[#ff5a00] text-white font-mono text-[8px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">
-                Recommandé
+                Recommended
               </div>
             )}
 
@@ -152,7 +152,7 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
               onClick={() => handleSubscribe(plan.title)}
               className="mt-8 w-full font-mono text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-[#ff7e00] to-[#ff5a00] text-white py-4 rounded-xl hover:shadow-[0_4px_20px_rgba(255,90,0,0.3)] transition-all cursor-pointer"
             >
-              S'ABONNER AU PLAN
+              SUBSCRIBE TO PLAN
             </button>
 
           </div>
@@ -255,18 +255,18 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             </div>
 
             <h3 className="text-base font-black text-white uppercase tracking-tight">
-              Saisie d'abonnement Validée
+              Subscription Validated
             </h3>
             
             <p className="text-stone-400 text-xs">
-              Votre affiliation au plan <span className="text-[#ff5a00] font-bold">{selectedPlanDetails}</span> a été enregistrée avec succès sur la trame locale.
+              Your affiliation to the <span className="text-[#ff5a00] font-bold">{selectedPlanDetails}</span> plan has been successfully recorded on the local frame.
             </p>
 
             <button
               onClick={() => setSelectedPlanDetails(null)}
               className="w-full font-mono text-[9px] font-black uppercase tracking-widest bg-[#ff5a00] text-white py-3 rounded-xl transition-all hover:bg-[#ff7e00]"
             >
-              Fermer la notification
+              Close notification
             </button>
           </div>
         </div>

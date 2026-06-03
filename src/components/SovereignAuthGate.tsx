@@ -49,7 +49,7 @@ export const SovereignAuthGate: React.FC<SovereignAuthGateProps> = ({ onAuthSucc
       }
     } catch (err: any) {
       console.error("Auth Gate Login Error:", err);
-      setErrorDetails(err.message || "La connexion a été rejetée ou interrompue.");
+      setErrorDetails(err.message || "The connection was rejected or interrupted.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -92,10 +92,10 @@ export const SovereignAuthGate: React.FC<SovereignAuthGateProps> = ({ onAuthSucc
           <div className="space-y-3 text-left">
             <span className="text-[10px] font-black text-purple-300 uppercase tracking-widest flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-cyan-400" />
-              01 • Sélection de l'Accréditation
+              01 • Security Accord Selection
             </span>
             <p className="text-[10.5px] text-stone-400 leading-normal">
-              Spécifiez votre clé d'accréditation d'accès avant d'autoriser la clé biométrique Google.
+              Specify your clearance credential before authorizing with Google verification.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
@@ -117,7 +117,7 @@ export const SovereignAuthGate: React.FC<SovereignAuthGateProps> = ({ onAuthSucc
                 )}
                 <div className="text-xs font-black uppercase tracking-wider mb-1">👑 Administrators</div>
                 <div className="text-[9px] text-stone-400 leading-relaxed">
-                  Accès Command Center, surveillance des équipements biométriques et audit du noyau.
+                  Command Center access, biometric device monitoring, and core audit logs.
                 </div>
               </button>
 
@@ -138,7 +138,7 @@ export const SovereignAuthGate: React.FC<SovereignAuthGateProps> = ({ onAuthSucc
                 )}
                 <div className="text-xs font-black uppercase tracking-wider mb-1">🏥 Hospital Clients</div>
                 <div className="text-[9px] text-stone-400 leading-relaxed">
-                  Hub d'accès invité, messagerie sécurisée, dossier médical mTLS et diagnostic.
+                  Guest access hub, secure communications, mTLS health files, and diagnostics.
                 </div>
               </button>
 
@@ -152,12 +152,12 @@ export const SovereignAuthGate: React.FC<SovereignAuthGateProps> = ({ onAuthSucc
           <div className="space-y-4 text-center">
             <span className="text-[10px] font-black text-purple-300 uppercase tracking-widest flex items-center justify-start gap-1.5 text-left mb-1">
               <Key className="w-3.5 h-3.5 text-cyan-400" />
-              02 • Validation Cryptographique
+              02 • Cryptographic Validation
             </span>
 
             {errorDetails && (
               <div className="p-3 bg-rose-500/10 border border-rose-500/25 rounded-xl text-rose-400 text-[10px] font-bold text-left leading-normal">
-                ⚠ ACCÈS REFUSÉ : {errorDetails}
+                ⚠ ACCESS DENIED: {errorDetails}
               </div>
             )}
 
@@ -167,10 +167,10 @@ export const SovereignAuthGate: React.FC<SovereignAuthGateProps> = ({ onAuthSucc
               className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white shadow-[0_4px_25px_rgba(168,85,247,0.3)] disabled:opacity-50"
             >
               {isLoggingIn ? (
-                <span>Autorisation mTLS en cours...</span>
+                <span>Authorizing mTLS secure handshake...</span>
               ) : (
                 <>
-                  <span>Ouvrir une Session d'identité</span>
+                  <span>Initiate Secured Identity Session</span>
                   <ChevronRight className="w-4 h-4 stroke-[3]" />
                 </>
               )}

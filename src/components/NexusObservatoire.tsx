@@ -157,7 +157,7 @@ export function NexusObservatoire({
     const updated = observatoryJournals.filter(j => j.id !== id);
     setObservatoryJournals(updated);
     localStorage.setItem("vision_architecte_journals", JSON.stringify(updated));
-    showToast("Relevé d'observation supprimé de la trame.");
+    showToast("Observation log deleted from the network.");
   };
 
   return (
@@ -166,7 +166,7 @@ export function NexusObservatoire({
       {/* Page Header (Matching Image 1) */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <span className="font-mono text-[9px] text-[#ff5a00] uppercase font-black tracking-widest">[ RAPPORTS & SÉCURITÉ NEWS ]</span>
+          <span className="font-mono text-[9px] text-[#ff5a00] uppercase font-black tracking-widest">[ REPORTS & SECURITY NEWS ]</span>
           <h2 className="text-3xl font-black text-white font-sans uppercase tracking-tight mt-1">
             Security Insights and News
           </h2>
@@ -179,12 +179,12 @@ export function NexusObservatoire({
         <button
           onClick={() => {
             setShowAddLogForm(!showAddLogForm);
-            showToast(showAddLogForm ? "Fermeture du consignateur." : "Prêt à consigner un incident.");
+            showToast(showAddLogForm ? "Closing logging module." : "Ready to log incident.");
           }}
           className="bg-[#ff5a00]/10 hover:bg-[#ff5a00]/25 text-[#ff5a00] border border-[#ff5a00]/20 px-4 py-2.5 rounded-xl text-xs font-mono font-bold flex items-center gap-2 cursor-pointer transition-all shrink-0"
         >
           <Notebook className="w-4 h-4" />
-          {showAddLogForm ? "Retour aux rapports" : "Consigner un incident"}
+          {showAddLogForm ? "Back to Reports" : "Log an Incident"}
         </button>
       </div>
 
@@ -195,24 +195,24 @@ export function NexusObservatoire({
           setShowAddLogForm(false);
         }} className="p-6 rounded-3xl border border-[#ff5a00]/30 bg-[#0d091a]/80 space-y-4 animate-fade-in max-w-xl">
           <div className="flex justify-between items-center border-b border-rose-950/20 pb-2 mb-2">
-            <span className="text-[9px] font-mono text-[#ff5a00] uppercase font-bold">[ NOUVELLE ACCIDENT / OBSERVATION ]</span>
-            <span className="text-[10px] text-zinc-500 font-mono tracking-wider">LIAISON DE RELEVÉ DIRECT</span>
+            <span className="text-[9px] font-mono text-[#ff5a00] uppercase font-bold">[ NEW INCIDENT / OBSERVATION ]</span>
+            <span className="text-[10px] text-zinc-500 font-mono tracking-wider">DIRECT SYSTEM LINK</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">TITRE DE L'OBSERVATION</label>
+              <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">OBSERVATION TITLE</label>
               <input
                 type="text"
                 required
-                placeholder="Ex: Tempête magnétique altérant le canal 01..."
+                placeholder="e.g. Memory pressure anomaly detected on channel 01..."
                 value={newJournalTitle}
                 onChange={(e) => setNewJournalTitle(e.target.value)}
                 className="w-full bg-black/40 border border-neutral-800 rounded-xl p-3 text-xs text-white placeholder-zinc-650 focus:outline-none focus:border-[#ff5a00]/50"
               />
             </div>
             <div>
-              <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">CATÉGORIE PROTOCOLE</label>
+              <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">PROTOCOL CATEGORY</label>
               <select
                 value={journalCategory}
                 onChange={(e) => setJournalCategory(e.target.value)}
@@ -227,11 +227,11 @@ export function NexusObservatoire({
           </div>
 
           <div>
-            <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">DÉTAIL CRITIQUE DU RAPPORT</label>
+            <label className="text-[9px] font-mono text-stone-400 block uppercase mb-1">CRITICAL REPORT DETAIL</label>
             <textarea
               required
               rows={4}
-              placeholder="Indiquez l'incident ou l'anomalie..."
+              placeholder="Describe the incident or anomaly..."
               value={newJournalContent}
               onChange={(e) => setNewJournalContent(e.target.value)}
               className="w-full bg-black/40 border border-neutral-800 rounded-xl p-3 text-xs text-white placeholder-zinc-650 focus:outline-none focus:border-[#ff5a00]/50"
@@ -242,7 +242,7 @@ export function NexusObservatoire({
             type="submit"
             className="w-full font-mono text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-[#ff7e00] to-[#ff5a00] text-white py-3.5 rounded-xl hover:shadow-[0_4px_15px_rgba(255,90,0,0.3)] transition-all cursor-pointer"
           >
-            TRANSMETTRE ET PREPENDER AUX ACTUALITÉES
+            TRANSMIT AND PREPEND TO NEWS FEED
           </button>
         </form>
       )}
@@ -256,7 +256,7 @@ export function NexusObservatoire({
               key={cat}
               onClick={() => {
                 setSelectedFilterCategory(cat);
-                showToast(`Filtrage actif : ${cat}`);
+                showToast(`Active filter: ${cat}`);
               }}
               className={`font-mono text-[9px] uppercase tracking-wider px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
                 selectedFilterCategory === cat 
@@ -273,7 +273,7 @@ export function NexusObservatoire({
         <div className="relative max-w-sm w-full">
           <input
             type="text"
-            placeholder="Rechercher un rapport..."
+            placeholder="Search reports..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-black/40 border border-neutral-800/80 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white font-sans placeholder-zinc-650 focus:outline-none focus:border-[#ff5a00]/50"
@@ -294,7 +294,7 @@ export function NexusObservatoire({
               key={art.id}
               onClick={() => {
                 setSelectedArticleDetail(art);
-                showToast(`Affichage du rapport : ${art.title}`);
+                showToast(`Displaying report: ${art.title}`);
               }}
               className="group flex flex-col justify-between bg-neutral-950/70 border border-neutral-900/80 hover:border-[#ff5a00]/30 hover:bg-[#0d0a1b]/80 p-5 rounded-3xl cursor-pointer transition-all duration-300 relative overflow-hidden"
             >
@@ -303,7 +303,7 @@ export function NexusObservatoire({
               <div className="absolute top-4 right-4 flex items-center gap-1.5 z-20">
                 {isUserLogged ? (
                   <span className="bg-[#cc0055]/20 text-[#ff2277] font-mono text-[7px] font-black uppercase px-2 py-0.5 rounded border border-[#ff2277]/30 animate-pulse">
-                    RÉCENT AGENT
+                    RECENT AGENT
                   </span>
                 ) : (
                   <span className="bg-neutral-900 text-neutral-500 font-mono text-[7px] font-bold uppercase px-2 py-0.5 rounded border border-neutral-800">
@@ -388,7 +388,7 @@ export function NexusObservatoire({
                     <Clock className="w-3 h-3 text-[#ff5a00]" />
                     <span>{art.timestamp.split(" ")[0]}</span>
                   </div>
-                  <span>PAR {art.author.toUpperCase()}</span>
+                  <span>BY {art.author.toUpperCase()}</span>
                 </div>
               </div>
 
@@ -400,7 +400,7 @@ export function NexusObservatoire({
 
       {filteredArticles.length === 0 && (
         <div className="p-12 text-center border border-neutral-900 rounded-3xl text-stone-500 font-mono text-xs">
-          🚫 AUCUNE OBSERVATION RESPONDANT AUX CRITÈRES DE SÉLECTION DANS LE CADRAN.
+          🚫 NO OBSERVATIONS MATCHING SELECTION CRITERIA FOUND.
         </div>
       )}
 
@@ -408,24 +408,24 @@ export function NexusObservatoire({
       <div className="fflex flex-row justify-between items-center gap-4 border-t border-neutral-900 pt-6">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => showToast("Défilement vers les archives précédentes.")}
+            onClick={() => showToast("Scrolling to past archives.")}
             className="px-3.5 py-1.5 rounded-xl border border-neutral-800 text-stone-400 font-mono text-[9px] hover:text-white"
           >
-            Précédent
+            Previous
           </button>
           
           <span className="font-mono text-[9.5px] text-[#ff5a00] font-black uppercase">[ Page 1 of 5 ]</span>
           
           <button
-            onClick={() => showToast("Défilement vers d'autres rapports du réseau.")}
+            onClick={() => showToast("Scrolling to network reports.")}
             className="px-3.5 py-1.5 rounded-xl border border-neutral-800 text-stone-400 font-mono text-[9px] hover:text-white"
           >
-            Suivant
+            Next
           </button>
         </div>
 
         <button
-          onClick={() => showToast("Chargement de relevés d'archives complémentaires.")}
+          onClick={() => showToast("Loading additional archival logs.")}
           className="bg-[#ff5a00] hover:bg-[#ff7e00] text-white px-5 py-2.5 rounded-xl font-mono text-[9.5px] font-bold uppercase cursor-pointer"
         >
           Load More
@@ -469,18 +469,18 @@ export function NexusObservatoire({
               <button
                 onClick={() => {
                   setSelectedArticleDetail(null);
-                  showToast("Fermeture du lecteur structuré.");
+                  showToast("Closing structured viewer.");
                 }}
                 className="font-mono text-[9px] font-bold uppercase tracking-wider text-zinc-400 hover:text-white px-4 py-2"
               >
-                Fermer l'onglet
+                Close tab
               </button>
               
               <button
-                onClick={() => showToast(`Rapport ${selectedArticleDetail.id} téléchargé localement.`)}
+                onClick={() => showToast(`Report ${selectedArticleDetail.id} downloaded locally.`)}
                 className="bg-[#ff5a00] hover:bg-[#ff7e00] text-white px-4 py-2.5 rounded-xl font-mono text-[9px] font-bold uppercase"
               >
-                Télécharger PDF
+                Download PDF
               </button>
             </div>
 

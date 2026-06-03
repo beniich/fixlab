@@ -60,15 +60,15 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
               At Sovereign Device Nexus, our mission is to empower organizations with absolute control over their device ecosystems. In an increasingly interconnected world, we believe that data sovereignty and robust security are the cornerstones of a trusted digital future. 
             </p>
             <p className="text-stone-400 text-xs leading-relaxed font-sans mt-2">
-              Nous construisons les fondations d'un réseau autogéré où chaque contrôleur matériel devient une ancre hermétique, immunisée contre les tentatives d'usurpation de signature.
+              We build the foundations of a self-managed network where each hardware controller becomes a hermetic anchor, immune to signature spoofing attempts.
             </p>
 
             {showDetailApproach && (
               <div className="p-4 bg-black/40 border border-neutral-900 rounded-2xl text-[11.5px] text-stone-500 space-y-2 leading-relaxed animate-fade-in font-mono">
                 <div>[ SPATIAL SEC METHOD_A5 ]</div>
-                <div>✓ Chiffrement matériel par injection locale de jetons elliptiques.</div>
-                <div>✓ Validation décentralisée des transactions de contrôle physique.</div>
-                <div>✓ Neutralisation automatique des transpondeurs indéterminés.</div>
+                <div>✓ Hardware encryption via local elliptical token injection.</div>
+                <div>✓ Decentralized validation of physical control transactions.</div>
+                <div>✓ Automatic neutralization of indeterminate transponders.</div>
               </div>
             )}
           </div>
@@ -76,12 +76,12 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
           <button
             onClick={() => {
               setShowDetailApproach(!showDetailApproach);
-              showToast(showDetailApproach ? "Fermeture des protocoles." : "Affichage du modèle d'isolation.");
+              showToast(showDetailApproach ? "Protocols closed." : "Isolation model displayed.");
             }}
             className="w-full md:w-auto font-mono text-[9px] font-black uppercase tracking-widest bg-[#ff5a00]/10 hover:bg-[#ff5a00]/25 text-[#ff5a00] border border-[#ff5a00]/20 py-3 px-6 rounded-xl transition-all cursor-pointer inline-flex items-center justify-center gap-2"
           >
             <HelpCircle className="w-4 h-4 text-[#ff5a00]" />
-            {showDetailApproach ? "Masquer les détails" : "En savoir plus sur notre approche"}
+            {showDetailApproach ? "Hide Details" : "Learn more about our approach"}
           </button>
         </div>
 
@@ -129,7 +129,7 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
           </div>
 
           <div className="bg-black/35 py-2.5 px-4 rounded-xl border border-neutral-900 text-center font-mono text-[8px] text-[#ff5a00] uppercase font-bold tracking-widest">
-            MAILLAGE GLOBAL NEXUS : SÉCURISÉ
+            GLOBAL NEXUS MESH : SECURED
           </div>
 
         </div>
@@ -149,7 +149,7 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
             </div>
             <h4 className="font-sans font-black text-sm text-white uppercase tracking-wider">Integrity</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-sans">
-              Unwavering commitment to data privacy and trust. Vos secrets de liaisons ne quittent jamais votre espace souverain local.
+              Unwavering commitment to data privacy and trust. Your connection secrets never leave your local sovereign space.
             </p>
           </div>
 
@@ -160,7 +160,7 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
             </div>
             <h4 className="font-sans font-black text-sm text-white uppercase tracking-wider">Innovation</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-sans">
-              Constantly pushing the boundaries of security technology. Intégration passive de l'IA pour prédire les interférences.
+              Constantly pushing the boundaries of security technology. Passive AI integration to predict interferences.
             </p>
           </div>
 
@@ -171,7 +171,7 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
             </div>
             <h4 className="font-sans font-black text-sm text-white uppercase tracking-wider">Control</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-sans">
-              Giving you the tools to govern your infrastructure with confidence. Contrôles d'isolation sélectifs pour vos dômes.
+              Giving you the tools to govern your infrastructure with confidence. Selective isolation controls for your zones.
             </p>
           </div>
 

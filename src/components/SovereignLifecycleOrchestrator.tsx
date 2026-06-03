@@ -97,14 +97,14 @@ export const PublicLanding: React.FC<PublicLandingProps> = ({
             onClick={onInitiateRegister}
             className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-black text-xs uppercase tracking-widest hover:from-purple-500 hover:to-cyan-400 active:scale-98 transition-all shadow-[0_0_30px_rgba(147,51,234,0.3)] hover:shadow-[0_0_40px_rgba(34,211,238,0.4)] cursor-pointer"
           >
-            S'enregistrer (Register)
+            Register
           </button>
           
           <button
             onClick={onInitiateLogin}
             className="flex-1 py-3.5 rounded-xl bg-black/60 hover:bg-stone-900 border border-purple-500/30 text-cyan-400 hover:text-white font-black text-xs uppercase tracking-widest active:scale-98 transition-all cursor-pointer"
           >
-            Se connecter (Sign In)
+            Sign In
           </button>
         </div>
       </div>
@@ -312,12 +312,12 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
     if (!selectedPlanId || !currentUser) return;
 
     if (!signerAgreement) {
-      setErrorMessage("Veuillez signer le consentement d'encapsulation.");
+      setErrorMessage("Please sign the encapsulation consent agreement.");
       return;
     }
 
     if (cardNumber.replace(/\s+/g, "").length < 16) {
-      setErrorMessage("Identifiant de carte invalide (16 chiffres requis).");
+      setErrorMessage("Invalid card identifier (16 digits required).");
       return;
     }
 
@@ -358,16 +358,15 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
         
         {/* Step-based view router */}
         {checkoutStep === "catalog" && (
-          <>
-            <div className="text-center space-y-3.5 max-w-xl mx-auto">
+          <>            <div className="text-center space-y-3.5 max-w-xl mx-auto">
               <span className="text-[8.5px] uppercase font-black tracking-widest text-[#22d3ee] bg-cyan-950/40 border border-cyan-500/20 px-3.5 py-1 rounded-full">
-                Phase 3: Activation du Contrat
+                Phase 3: Contract Activation
               </span>
               <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase leading-none">
                 SELECT YOUR SOVEREIGNTY
               </h2>
               <p className="text-[11px] text-stone-400 uppercase tracking-widest leading-relaxed">
-                Opérateurs, s'il s'agit de votre première connexion, sélectionnez un plan de garantie pour activer rétroactivement votre espace satellite souverain.
+                Operators, if this is your first connect, select a warranty plan to retroactively activate your sovereign satellite workspace.
               </p>
             </div>
 
@@ -393,7 +392,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
                       <span className={`text-[9px] font-black uppercase tracking-widest ${tier.accent}`}>{tier.name}</span>
                       <div className="flex items-baseline gap-1 text-white">
                         <span className="text-4xl font-black italic">${tier.price}</span>
-                        <span className="text-[10px] text-stone-500 font-bold uppercase tracking-widest">/ mois</span>
+                        <span className="text-[10px] text-stone-500 font-bold uppercase tracking-widest">/ month</span>
                       </div>
                     </div>
 
@@ -404,7 +403,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
                     <ul className="text-[10.5px] text-stone-300 space-y-2 text-left">
                       {tier.features.map((feat, i) => (
                         <li key={i} className="flex items-center gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                           <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                           <span className="truncate">{feat}</span>
                         </li>
                       ))}
@@ -419,7 +418,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
                         : "bg-purple-950/20 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-950/40"
                     }`}
                   >
-                    Activer {tier.id}
+                    Activate {tier.id}
                   </button>
                 </div>
               ))}
@@ -433,7 +432,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
             
             <div className="border-b border-stone-850 pb-4 mb-5 flex justify-between items-center">
               <div>
-                <span className="text-[8px] font-black uppercase tracking-widest text-cyan-400">PASSERELLE DE PAIEMENT</span>
+                <span className="text-[8px] font-black uppercase tracking-widest text-cyan-400">PAYMENT GATEWAY</span>
                 <h3 className="text-sm font-black text-white italic uppercase tracking-wider">SECURE AUTHORIZATION</h3>
               </div>
               <div className="px-2 py-1 rounded bg-cyan-950/50 text-cyan-400 border border-cyan-400/10 text-[8.5px] font-black uppercase tracking-widest">
@@ -449,7 +448,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
               )}
 
               <div className="space-y-1">
-                <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Titulaire de la carte</label>
+                <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Cardholder Name</label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-3 text-stone-500">👤</span>
                   <input
@@ -464,7 +463,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Numéro de carte sécurisé</label>
+                <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Secure Card Number</label>
                 <div className="relative">
                   <CreditCard className="absolute left-3 top-3 w-3.5 h-3.5 text-stone-500" />
                   <input
@@ -485,7 +484,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Expiration (MM/AA)</label>
+                  <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Expiration (MM/YY)</label>
                   <input
                     type="text"
                     required
@@ -504,7 +503,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">Cryptogramme CVV</label>
+                  <label className="text-[8.5px] text-stone-400 uppercase tracking-wider block">CVV Security Code</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 w-3 h-3 text-stone-400" />
                     <input
@@ -522,11 +521,11 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
 
               <div className="p-3 bg-cyan-950/20 border border-cyan-400/10 rounded-xl space-y-1.5 mt-2">
                 <div className="flex justify-between text-[10px] text-stone-400">
-                  <span>Abonnement mensuel :</span>
+                  <span>Monthly subscription:</span>
                   <span className="font-bold text-white">${catalog.find(c => c.id === selectedPlanId)?.price}/mo</span>
                 </div>
                 <div className="flex justify-between text-[10px] text-[#22d3ee] font-black border-t border-stone-850 pt-1.5">
-                  <span>TOTAL REQUIS :</span>
+                  <span>TOTAL REQUIRED:</span>
                   <span>${catalog.find(c => c.id === selectedPlanId)?.price}.00 USD</span>
                 </div>
               </div>
@@ -540,7 +539,7 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
                   className="mt-0.5 rounded accent-cyan-400"
                 />
                 <label htmlFor="signerAgreement" className="text-[9px] text-stone-400 leading-normal select-none">
-                  Je consens à l'encapsulation de sécurité d'identité multi-tenant cryptée avec l'Université de Rabat.
+                  I consent to the encrypted multi-tenant identity security encapsulation with Rabat University.
                 </label>
               </div>
 
@@ -549,14 +548,14 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
                   type="submit"
                   className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition-all cursor-pointer"
                 >
-                  ✓ CONFIRMER ET PAYER
+                  ✓ CONFIRM AND PAY
                 </button>
                 <button
                   type="button"
                   onClick={() => setCheckoutStep("catalog")}
                   className="px-4 py-3 bg-stone-900 border border-stone-800 text-stone-400 hover:text-stone-200 rounded-xl text-[10px] uppercase tracking-wider transition-all cursor-pointer"
                 >
-                  Annuler
+                  Cancel
                 </button>
               </div>
             </form>
@@ -567,9 +566,9 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
         {checkoutStep === "authenticating" && (
           <div className="max-w-md mx-auto text-center space-y-4 py-12">
             <RefreshCw className="w-10 h-10 text-cyan-400 animate-spin mx-auto" />
-            <h3 className="text-xs font-black uppercase tracking-widest text-[#22d3ee]">TRAITEMENT SÉCURISÉ DU PROTOCOLE...</h3>
+            <h3 className="text-xs font-black uppercase tracking-widest text-[#22d3ee]">SECURE PROTOCOL PROCESSING...</h3>
             <p className="text-[10px] text-stone-450 leading-relaxed max-w-xs mx-auto">
-              Nous négocions l'écriture du plan d'abonnement avec votre document utilisateur Cloud Firestore sous enveloppe cryptographique.
+              We are negotiating the subscription plan write with your Cloud Firestore user document under cryptographic envelope.
             </p>
           </div>
         )}
@@ -582,21 +581,21 @@ export const SovereignPricingPage: React.FC<SovereignPricingPageProps> = ({
             </div>
             
             <div className="space-y-2">
-              <h3 className="text-xs font-black uppercase tracking-widest text-[#22d3ee]">SÉCURISATION DU PLAN COMPLÉTÉ</h3>
+              <h3 className="text-xs font-black uppercase tracking-widest text-[#22d3ee]">PLAN SECURITY COMPLETED</h3>
               <p className="text-[11px] text-stone-300 leading-normal text-justify">
-                Félicitations. Vos jetons de sécurité ont été émis et injectés. Votre rôle de sous-système <strong>Client</strong> est officiellement catalogué.
+                Congratulations. Your security tokens have been successfully issued and injected. Your Client subsystem role is officially catalogued.
               </p>
             </div>
 
             <button
-              onClick={() => {
-                if (selectedPlanId) {
-                  onPlanActivated(selectedPlanId);
-                }
-              }}
+               onClick={() => {
+                 if (selectedPlanId) {
+                   onPlanActivated(selectedPlanId);
+                 }
+               }}
               className="w-full py-3 bg-[#22d3ee] text-black font-black text-xs uppercase tracking-widest rounded-xl hover:bg-cyan-300 transition-all cursor-pointer"
             >
-              Accéder au Dashboard Client
+              Access Client Dashboard
             </button>
           </div>
         )}

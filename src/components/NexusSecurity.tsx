@@ -435,8 +435,8 @@ export function NexusSecurity({
 
                     <div className="flex justify-between items-start">
                       <div>
-                        <span className="text-[7.5px] text-zinc-500 block uppercase tracking-widest">SOUVERAIN NEXUS D'IDENTITÉ</span>
-                        <span className="text-[10px] font-black text-[#ff5a00] block mt-0.5">VISION ARCHITECTE</span>
+                        <span className="text-[7.5px] text-zinc-500 block uppercase tracking-widest">SOVEREIGN IDENTITY NEXUS</span>
+                        <span className="text-[10px] font-black text-[#ff5a00] block mt-0.5">VISION ARCHITECT</span>
                       </div>
                       <Fingerprint className="w-6 h-6 text-[#ff5a00] animate-pulse" />
                     </div>

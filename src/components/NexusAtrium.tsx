@@ -108,7 +108,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
         <div 
           onClick={() => {
             setActiveSubView("hub");
-            showToast("Retour à la console d'accueil.");
+            showToast("Returned to welcoming console.");
           }}
           className="flex items-center gap-3 cursor-pointer group"
         >
@@ -131,7 +131,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
           <button 
             onClick={() => { 
               setActiveSubView("solutions"); 
-              showToast("Console de Solution d'Intégrité chargée."); 
+              showToast("Integrity Solution Console loaded."); 
             }}
             className={`text-[10px] uppercase tracking-widest font-mono font-black transition-colors px-2 py-1.5 rounded-lg ${
               activeSubView === "solutions"
@@ -145,7 +145,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
           <button 
             onClick={() => { 
               setActiveSubView("pricing"); 
-              showToast("Grille de tarification souveraine chargée."); 
+              showToast("Sovereign subscription matrix loaded."); 
             }}
             className={`text-[10px] uppercase tracking-widest font-mono font-black transition-colors px-2 py-1.5 rounded-lg ${
               activeSubView === "pricing"
@@ -159,7 +159,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
           <button 
             onClick={() => { 
               setActiveSubView("architecture"); 
-              showToast("Schéma d'architecture de sécurité chargé."); 
+              showToast("Security architecture scheme loaded."); 
             }}
             className={`text-[10px] uppercase tracking-widest font-mono font-black transition-colors px-2 py-1.5 rounded-lg ${
               activeSubView === "architecture"
@@ -174,7 +174,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             <button 
               onClick={() => {
                 onNavigate("security"); 
-                showToast("Redirection vers la passerelle de sécurité d'identité.");
+                showToast("Redirecting to identity security gateway.");
               }} 
               className={`text-[10px] uppercase font-mono font-bold px-4 py-2 rounded-xl transition-all border ${
                 isLightMode 
@@ -188,7 +188,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             <button 
               onClick={() => { 
                 onNavigate("security"); 
-                showToast("Lancement de l'assistant d'activation des services."); 
+                showToast("Launching service activation wizard."); 
               }}
               className="text-[10px] font-mono font-black bg-gradient-to-r from-[#ff8d00] to-[#ff3c00] text-white px-5 py-2.5 rounded-xl hover:shadow-[0_0_20px_rgba(255,90,0,0.45)] transition-all uppercase tracking-wider"
             >
@@ -267,7 +267,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
                 <button
                   onClick={() => {
                     onNavigate("security");
-                    showToast("Initialisation de la trame sécurisée...");
+                    showToast("Initializing secure framework...");
                   }}
                   className="bg-gradient-to-r from-[#ff8a00] to-[#ff3a00] hover:from-[#ff9f1a] hover:to-[#ff521a] text-white px-7 py-4 rounded-2xl text-[11px] font-mono font-black uppercase tracking-widest shadow-[0_5px_22px_rgba(255,90,0,0.3)] hover:shadow-[0_5px_30px_rgba(255,90,0,0.5)] transition-all cursor-pointer flex items-center gap-2 group border border-orange-500/10"
                 >
@@ -278,7 +278,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
                 <button
                   onClick={() => {
                     setActiveSubView("solutions");
-                    showToast("Redirection vers les tutoriels de sécurité...");
+                    showToast("Redirecting to security tutorials...");
                   }}
                   className={`border hover:bg-[#ff5a00]/5 px-7 py-4 rounded-2xl text-[11px] font-mono font-black uppercase tracking-widest transition-all cursor-pointer ${
                     isLightMode 
@@ -600,7 +600,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             <div 
               onClick={() => {
                 onNavigate("security"); 
-                showToast("Accès au portail des configurations d'identités souveraines.");
+                showToast("Accessing sovereign identity configuration matrix.");
               }}
               className={`p-6 rounded-[2rem] border transition-all duration-350 cursor-pointer shadow-[0_12px_24px_rgba(0,0,0,0.15)] text-left group hover:-translate-y-1 select-none relative overflow-hidden ${
                 isLightMode 
@@ -630,7 +630,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             <div 
               onClick={() => {
                 setActiveSubView("solutions");
-                showToast("Lancement de l'oscilloscope en temps réel.");
+                showToast("Launching real-time oscilloscope feed.");
               }}
               className={`p-6 rounded-[2rem] border transition-all duration-350 cursor-pointer shadow-[0_12px_24px_rgba(0,0,0,0.15)] text-left group hover:-translate-y-1 select-none relative overflow-hidden ${
                 isLightMode 
@@ -660,7 +660,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             <div 
               onClick={() => {
                 setActiveSubView("architecture");
-                showToast("Navigation vers la section d'analyse algorithmique.");
+                showToast("Navigating to algorithmic analytics module.");
               }}
               className={`p-6 rounded-[2rem] border transition-all duration-350 cursor-pointer shadow-[0_12px_24px_rgba(0,0,0,0.15)] text-left group hover:-translate-y-1 select-none relative overflow-hidden ${
                 isLightMode 
