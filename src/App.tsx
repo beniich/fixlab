@@ -116,6 +116,7 @@ export default function App() {
   const [isLightMode, setIsLightMode] = useState<boolean>(() => {
     return localStorage.getItem("theme") === "light";
   });
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState<boolean>(false);
 
   useEffect(() => {
     localStorage.setItem("theme", isLightMode ? "light" : "dark");
@@ -957,12 +958,8 @@ export default function App() {
 
               {/* Global Sign Out Button */}
               <button
-                onClick={async () => {
-                  const confirmLogout = window.confirm("Terminer la session et verrouiller le terminal de sécurité ?");
-                  if (confirmLogout) {
-                    await logout();
-                  }
-                }}
+                id="global-logout-btn"
+                onClick={() => setShowLogoutConfirm(true)}
                 className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider text-left transition-all mt-4 cursor-pointer border ${
                   isLightMode 
                     ? "text-[#dc2626] hover:bg-red-50/60 border-red-200 hover:border-red-400" 
@@ -1253,6 +1250,64 @@ export default function App() {
 
       {/* System Telemetry Lower Deck status bar */}
       <SystemStatusBar logs={logs} isConnected={true} isLightMode={isLightMode} />
+
+      {/* Dynamic Security Verification LogOut Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div id="logout-confirm-overlay" className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in text-left">
+          <div className={`w-full max-w-sm rounded-3xl border p-6 text-center space-y-5 shadow-2xl transition-all duration-300 ${
+            isLightMode 
+              ? "bg-[#FAF9F5] border-stone-200 text-stone-900" 
+              : "bg-[#0c0523] border-[#ff5a00]/30 text-white"
+          }`}>
+            
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto border transition-all duration-300 ${
+              isLightMode 
+                ? "bg-stone-100 border-stone-300 text-stone-700" 
+                : "bg-[#ff5a00]/10 border-[#ff5a00]/25 text-[#ff5a00]"
+            }`}>
+              <LogOut className={`w-6 h-6 ${!isLightMode ? "animate-pulse" : ""}`} />
+            </div>
+
+            <div className="space-y-1.5 text-center">
+              <h3 className="text-base font-black uppercase tracking-wider font-sans">
+                VÉRIFICATION DE SÉCURITÉ
+              </h3>
+              <p className={`text-xs ${isLightMode ? "text-stone-500" : "text-stone-400"}`}>
+                Terminer la session et verrouiller le terminal de sécurité ?
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                id="cancel-logout-btn"
+                onClick={() => setShowLogoutConfirm(false)}
+                className={`w-1/2 font-mono text-[9px] font-black uppercase tracking-widest py-3.5 rounded-xl transition-all border cursor-pointer ${
+                  isLightMode 
+                    ? "bg-white border-stone-200 text-stone-700 hover:bg-stone-50" 
+                    : "bg-transparent border-neutral-800 text-stone-400 hover:bg-neutral-900 hover:text-white"
+                }`}
+              >
+                Annuler
+              </button>
+              
+              <button
+                id="confirm-logout-btn"
+                onClick={async () => {
+                  setShowLogoutConfirm(false);
+                  await logout();
+                }}
+                className={`w-1/2 font-mono text-[9px] font-black uppercase tracking-widest py-3.5 rounded-xl transition-all cursor-pointer text-white ${
+                  isLightMode
+                    ? "bg-[#0f4c81] hover:bg-[#0c3c66]"
+                    : "bg-[#ff5a00] hover:bg-[#ff7e00]"
+                }`}
+              >
+                Déconnexion
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

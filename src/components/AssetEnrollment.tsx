@@ -416,10 +416,6 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
     const session = volatileSessions.find(s => s.id === sessionId);
     if (!session) return;
 
-    if (!confirm(`💣 ALERTE SYSTÈME : Êtes-vous certain de vouloir simuler un REDÉMARRAGE physique pour ${session.subscriberName} ?\n\nCela purgera instantanément la RAM disk (/dev/shm), détruisant la clé d'habilitation éphémère et isolant l'ordinateur.`)) {
-      return;
-    }
-
     try {
       const res = await fetch("/api/appliance/volatile/reboot", {
         method: "POST",

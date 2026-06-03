@@ -854,12 +854,8 @@ export const SovereignGmail: React.FC<SovereignGmailProps> = ({
 
                 <button 
                   onClick={() => {
-                    const confirmed = window.confirm(`Permanently purge encryption record for message ${selectedMail.id}? This action clears direct buffer indexes.`);
-                    if (confirmed) {
-                      setEmails(prev => prev.filter(e => e.id !== selectedMail.id));
-                      setSelectedMail(null);
-                      alert("Message sequence wiped safely.");
-                    }
+                    setEmails(prev => prev.filter(e => e.id !== selectedMail.id));
+                    setSelectedMail(null);
                   }}
                   className="flex justify-center items-center p-2 border border-zinc-900 bg-black/45 hover:border-rose-500/25 hover:text-rose-404 text-zinc-450 hover:bg-[#2c0d12]/35 font-bold rounded-lg transition-all"
                   title="Purge Command Record"

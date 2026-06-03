@@ -229,18 +229,9 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
     if (!currentUser) return;
 
     if (!newContactName.trim()) {
-      alert("Le nom de du contact est requis.");
+      setErrorDetails("Le nom du contact est requis.");
       return;
     }
-
-    const confirmMessage = `Voulez-vous enregistrer ce contact sous scellement Firestore ?\n\n` +
-      `Nom: ${newContactName}\n` +
-      `E-mail: ${newContactEmail || "Aucun"}\n` +
-      `Téléphone: ${newContactPhone || "Aucun"}\n` +
-      `Rôle: ${newContactRole === "platform-admin" ? "Platform Admin Staff" : "Subscriber Client"}`;
-
-    const hasConfirmed = window.confirm(confirmMessage);
-    if (!hasConfirmed) return;
 
     setIsCreating(true);
     setErrorDetails(null);
@@ -313,13 +304,10 @@ export const SovereignContacts: React.FC<SovereignContactsProps> = ({
     e.stopPropagation();
     if (!currentUser) return;
     const docId = resourceName.replace("firestore/", "");
-    const hasConfirmed = window.confirm("Voulez-vous vraiment supprimer ce contact de votre base de données Cloud Firestore ?");
-    if (!hasConfirmed) return;
 
     const path = `users/${currentUser.uid}/contacts/${docId}`;
     try {
       await deleteDoc(doc(db, "users", currentUser.uid, "contacts", docId));
-      alert("Contact supprimé avec succès !");
     } catch (err) {
       handleFirestoreError(err, OperationType.DELETE, path);
     }

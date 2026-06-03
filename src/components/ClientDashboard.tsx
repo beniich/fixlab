@@ -135,10 +135,9 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({
 
   const handleTriggerRedLine = () => {
     if (redLineStatus !== "idle") return;
-    if (confirm("🚨 ENGAGER LA LIGNE ROUGE ? 🚨\n\nCela sonnera immédiatement le tocsin au centre de surveillance central d'élite et dépêchera un gardien d'élite pour auditer manuellement et sécuriser votre terminal.")) {
-      setRedLineStatus("requesting");
-      
-      const redLineLog: SystemLog = {
+    setRedLineStatus("requesting");
+    
+    const redLineLog: SystemLog = {
         id: `LOG-RED-${Date.now()}`,
         timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
         source: activeDevice?.name || "Client Portal",
@@ -152,7 +151,6 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({
         setRedLineStatus("dispatched");
         setRedLineCountdown(300);
       }, 1500);
-    }
   };
 
   const formatCountdown = (secs: number) => {
@@ -313,29 +311,27 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({
   // Hard reboot client trigger
   const handleClientSelfReboot = () => {
     if (!activeDevice) return;
-    if (confirm(`⚠️ REDÉMARRAGE CRITIQUE CLIENT ⚠️\n\nSouhaitez-vous forcer un redémarrage à chaud de l'hôte ${activeDevice.name}?\n\nCeci purgera instantanément la RAM disk et détruira la clé cryptographique active.`)) {
-      
-      onModifyDeviceStatus(activeDevice.id, "offline");
-      onActionTriggered("Critical Hardware Reboot Triggered by Subscriber", activeDevice.id, "critical");
+    
+    onModifyDeviceStatus(activeDevice.id, "offline");
+    onActionTriggered("Critical Hardware Reboot Triggered by Subscriber", activeDevice.id, "critical");
 
-      const sysLog: SystemLog = {
-        id: `LOG-REBOOT-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
-        source: activeDevice.name,
-        level: "critical",
-        message: `EMERGENCY DISKLESS RAM RESET: subscriber triggered physical cell purge. Host offline.`
-      };
-      onAddLog(sysLog);
+    const sysLog: SystemLog = {
+      id: `LOG-REBOOT-${Date.now()}`,
+      timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+      source: activeDevice.name,
+      level: "critical",
+      message: `EMERGENCY DISKLESS RAM RESET: subscriber triggered physical cell purge. Host offline.`
+    };
+    onAddLog(sysLog);
 
-      setTerminalLogs(prev => [
-        ...prev,
-        "❌ !!! DISPATCHING MEMORY SYSTEM PURGE !!!",
-        "[*] Erasing cryptographic keys in /dev/shm...",
-        "[*] Flushing temporary system state caches...",
-        "[-] Offlining node network routes...",
-        "[-] STATUS: OFFLINE"
-      ]);
-    }
+    setTerminalLogs(prev => [
+      ...prev,
+      "❌ !!! DISPATCHING MEMORY SYSTEM PURGE !!!",
+      "[*] Erasing cryptographic keys in /dev/shm...",
+      "[*] Flushing temporary system state caches...",
+      "[-] Offlining node network routes...",
+      "[-] STATUS: OFFLINE"
+    ]);
   };
 
   return (
