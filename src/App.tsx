@@ -989,7 +989,7 @@ export default function App() {
               })}
 
               {/* Global Sign Out Button */}
-              {currentUser && (
+              {currentUser ? (
                 <button
                   id="global-logout-btn"
                   onClick={() => setShowLogoutConfirm(true)}
@@ -1001,6 +1001,19 @@ export default function App() {
                 >
                   <LogOut className="w-4 h-4 shrink-0 text-[#f43f5e]" />
                   <span>{t("common.logout")}</span>
+                </button>
+              ) : (
+                <button
+                  id="global-login-btn"
+                  onClick={() => setLifecycleState("auth")}
+                  className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider text-left transition-all mt-4 cursor-pointer border ${
+                    isLightMode 
+                      ? "text-[#0f4c81] hover:bg-stone-250 border-[#0f4c81]/20 hover:border-[#0f4c81]/50" 
+                      : "text-cyan-400 hover:bg-[#24175e]/70 border-[#22d3ee]/20 hover:border-[#22d3ee]/50 shadow-[0_0_10px_rgba(34,211,238,0.1)]"
+                  }`}
+                >
+                  <Lock className="w-4 h-4 shrink-0 text-cyan-400 animate-pulse" />
+                  <span>SE CONNECTER / S'ABONNER</span>
                 </button>
               )}
             </nav>
@@ -1343,7 +1356,8 @@ export default function App() {
                 onClick={async () => {
                   setShowLogoutConfirm(false);
                   await logout();
-                  setLifecycleState("landing");
+                  setLifecycleState("dashboard");
+                  setActiveTab("insights");
                 }}
                 className={`w-1/2 font-mono text-[9px] font-black uppercase tracking-widest py-3.5 rounded-xl transition-all cursor-pointer text-white ${
                   isLightMode
