@@ -9,57 +9,58 @@ import {
   Workflow, Layers, Server, Activity, AlertOctagon, RefreshCw, 
   Settings2, Bot, Menu, X, Hammer, Globe, Mail, Landmark,
   Sun, Moon, ClipboardCheck, Monitor, Sliders, Settings, ShieldAlert,
-  Users, LogOut
+  Users, LogOut, Lock
 } from "lucide-react";
 
-import { Device, SystemLog, SecurityPolicy, GroupFolder, SoftwarePackage, PredictiveFailure, DNSRecord, DNSQueryLog, SovereignSettings } from "./types";
+import { Device, SystemLog, SecurityPolicy, GroupFolder, SoftwarePackage, PredictiveFailure, DNSRecord, DNSQueryLog, SovereignSettings } from "@types";
 import { 
   initialDevices, initialLogs, initialPolicies, initialGroups, 
   initialSoftware, initialPredictiveFailures 
-} from "./mockData";
+} from "@data/mockData";
 
 // Firebase/Firestore Cloud imports
 import { onAuthStateChanged, User } from "firebase/auth";
-import { 
+import {
   collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, getDoc
 } from "firebase/firestore";
-import { db, auth, OperationType, handleFirestoreError, testConnection } from "./utils/firebaseDb";
-import { logout } from "./utils/firebaseAuth";
-import { SovereignAuthGate } from "./components/SovereignAuthGate";
+import { db, auth, OperationType, handleFirestoreError, testConnection } from "@utils/firebaseDb";
+import { logout } from "@utils/firebaseAuth";
 
-// Components
-import { SystemStatusBar } from "./components/SystemStatusBar";
-import { RightFocusPanel } from "./components/RightFocusPanel";
-import { DashboardView } from "./components/DashboardView";
-import { DevicesView } from "./components/DevicesView";
-import { PoliciesView } from "./components/PoliciesView";
-import { GroupsView } from "./components/GroupsView";
-import { ConsoleView } from "./components/ConsoleView";
-import { SoftwareView } from "./components/SoftwareView";
-import { PredictiveView } from "./components/PredictiveView";
-import { AutomationView } from "./components/AutomationView";
-import { DNSView } from "./components/DNSView";
-import { CommandCenterPage } from "./components/CommandCenterPage";
-import { SettingsPage } from "./components/SettingsPage";
-import { SovereignGmail } from "./components/SovereignGmail";
+// — Layout shell —
+import { SystemStatusBar, RightFocusPanel } from "@components/layout";
 
-// Dynamic Variant Layouts Custom Components
-import { IncidentTimeline } from "./components/IncidentTimeline";
-import { RemoteTerminal } from "./components/RemoteTerminal";
-import { HealthMatrix } from "./components/HealthMatrix";
-import { GlobalHorizonMap } from "./components/GlobalHorizonMap";
-import { QuantumNode } from "./components/QuantumNode";
-import { VisionArchitecte } from "./components/VisionArchitecte";
-import { SecurityPerimeter } from "./components/SecurityPerimeter";
-import { DataVisualizationFlow } from "./components/DataVisualizationFlow";
-import { PlatformHypervisor } from "./components/PlatformHypervisor";
-import { SovereignAudit } from "./components/SovereignAudit";
-import { ObservationDeck } from "./components/ObservationDeck";
-import { ApplianceCore } from "./components/ApplianceCore";
-import { AssetEnrollment } from "./components/AssetEnrollment";
-import { ClientDashboard } from "./components/ClientDashboard";
-import { SovereignContacts } from "./components/SovereignContacts";
-import { PublicLanding, NeuralHandshake, SovereignPricingPage } from "./components/SovereignLifecycleOrchestrator";
+// — Auth / lifecycle —
+import { SovereignAuthGate, PlatformHypervisor } from "@components/auth";
+import { PublicLanding, NeuralHandshake, SovereignPricingPage } from "@components/auth/SovereignLifecycleOrchestrator";
+
+// — Dashboard & analytics —
+import {
+  CommandCenterPage, DashboardView, ClientDashboard,
+  ExecutiveInsights, VisionArchitecte, ObservationDeck
+} from "@components/dashboard";
+
+// — Devices & fleet —
+import {
+  DevicesView, HealthMatrix, ApplianceCore, AssetEnrollment,
+  GroupsView, SoftwareView, PredictiveView
+} from "@components/devices";
+
+// — Security & compliance —
+import { SecurityPerimeter, SovereignAudit, PoliciesView } from "@components/security";
+
+// — Network & topology —
+import { DataVisualizationFlow, DNSView, QuantumNode, GlobalHorizonMap } from "@components/network";
+
+// — Terminal & alerting —
+import { RemoteTerminal, ConsoleView, IncidentTimeline, AutomationView } from "@components/terminal";
+
+// — Communication —
+import { SovereignGmail, SovereignContacts } from "@components/communication";
+
+// — Settings —
+import { SettingsPage } from "@components/settings";
+
+// — I18n hook —
 import { useTranslation } from "./hooks/useTranslation";
 
 // Private custom hook that monitors system logs and notifies when a critical incident is registered
@@ -780,31 +781,45 @@ export default function App() {
     }
   };
 
-  // Navigations Lists with dynamic, adaptive contextual UI modes (Discord-style)
-  const navigationTabs = currentRole === "client" ? [
-    { id: "client-dashboard", label: t("tabs.client-dashboard"), icon: Server },
-    { id: "gmail", label: t("tabs.gmail"), icon: Mail },
-    { id: "platform-gate", label: t("tabs.platform-gate"), icon: Landmark },
-    { id: "contacts", label: t("tabs.contacts"), icon: Users }
+  // — Teasing Funnel: defines which tabs are publicly accessible vs. premium-gated —
+  // Guests (no Firebase session) see ONLY the "insights" tab (VisionArchitecte) fully unlocked.
+  // All other tabs show a 🔒 badge in the sidebar and redirect to the auth gate on click.
+  const ALL_TABS = currentRole === "client" ? [
+    { id: "client-dashboard", label: t("tabs.client-dashboard"), icon: Server, public: true },
+    { id: "gmail", label: t("tabs.gmail"), icon: Mail, public: true },
+    { id: "platform-gate", label: t("tabs.platform-gate"), icon: Landmark, public: false },
+    { id: "contacts", label: t("tabs.contacts"), icon: Users, public: true }
   ] : [
-    { id: "dashboard", label: t("tabs.dashboard"), icon: Server },
-    { id: "health-matrix", label: t("tabs.health-matrix"), icon: Activity },
-    { id: "data-flow", label: t("tabs.data-flow"), icon: Workflow },
-    { id: "quantum-node", label: t("tabs.quantum-node"), icon: BrainCircuit },
-    { id: "insights", label: t("tabs.insights"), icon: Layers },
-    { id: "perimeter", label: t("tabs.perimeter"), icon: ShieldCheck },
-    { id: "terminal", label: t("tabs.terminal"), icon: TermIcon },
-    { id: "timeline", label: t("tabs.timeline"), icon: AlertOctagon },
-    { id: "global-map", label: t("tabs.global-map"), icon: Globe },
-    { id: "settings", label: t("tabs.settings"), icon: Settings2 },
-    { id: "gmail", label: t("tabs.gmail"), icon: Mail },
-    { id: "platform-gate", label: t("tabs.platform-gate"), icon: Landmark },
-    { id: "sovereign-audit", label: t("tabs.sovereign-audit"), icon: ClipboardCheck },
-    { id: "observation-deck", label: t("tabs.observation-deck"), icon: Monitor },
-    { id: "appliance-core", label: t("tabs.appliance-core"), icon: Sliders },
-    { id: "asset-enrollment", label: t("tabs.asset-enrollment"), icon: ShieldAlert },
-    { id: "contacts", label: t("tabs.contacts"), icon: Users }
+    { id: "insights",          label: t("tabs.insights"),          icon: Layers,        public: true  },  // ← Free teaser
+    { id: "dashboard",         label: t("tabs.dashboard"),         icon: Server,        public: false },
+    { id: "health-matrix",     label: t("tabs.health-matrix"),     icon: Activity,      public: false },
+    { id: "data-flow",         label: t("tabs.data-flow"),         icon: Workflow,      public: false },
+    { id: "quantum-node",      label: t("tabs.quantum-node"),      icon: BrainCircuit,  public: false },
+    { id: "perimeter",         label: t("tabs.perimeter"),         icon: ShieldCheck,   public: false },
+    { id: "terminal",          label: t("tabs.terminal"),          icon: TermIcon,      public: false },
+    { id: "timeline",          label: t("tabs.timeline"),          icon: AlertOctagon,  public: false },
+    { id: "global-map",        label: t("tabs.global-map"),        icon: Globe,         public: false },
+    { id: "gmail",             label: t("tabs.gmail"),             icon: Mail,          public: false },
+    { id: "sovereign-audit",   label: t("tabs.sovereign-audit"),   icon: ClipboardCheck,public: false },
+    { id: "observation-deck",  label: t("tabs.observation-deck"),  icon: Monitor,       public: false },
+    { id: "appliance-core",    label: t("tabs.appliance-core"),    icon: Sliders,       public: false },
+    { id: "asset-enrollment",  label: t("tabs.asset-enrollment"),  icon: ShieldAlert,   public: false },
+    { id: "contacts",          label: t("tabs.contacts"),          icon: Users,         public: false },
+    { id: "settings",          label: t("tabs.settings"),          icon: Settings2,     public: false },
+    { id: "platform-gate",     label: t("tabs.platform-gate"),     icon: Landmark,      public: false },
   ];
+
+  // Guest mode: show only public tabs in nav; premium tabs display locked
+  const navigationTabs = !currentUser
+    ? ALL_TABS  // show all tabs in sidebar, locked ones will render with 🔒
+    : ALL_TABS;
+
+  // Guest-mode: if unauthenticated and tries to access a locked tab, force back to insights
+  const isGuestMode = !currentUser;
+  const currentTabMeta = ALL_TABS.find(t => t.id === activeTab);
+  const isTabLocked = isGuestMode && currentTabMeta && !currentTabMeta.public;
+
+  const [showUpgradeModal, setShowUpgradeModal] = useState<boolean>(false);
 
   if (!isAuthChecked) {
     return (
@@ -814,6 +829,7 @@ export default function App() {
       </div>
     );
   }
+
 
   // Sovereign User Lifecycle Orchestration Funnel
   if (lifecycleState === "landing" && !currentUser) {
@@ -922,14 +938,22 @@ export default function App() {
               {navigationTabs.map((tab) => {
                 const TabIcon = tab.icon;
                 const isActive = activeTab === tab.id;
+                const isLocked = isGuestMode && !tab.public;
+
                 return (
                   <button
                     key={tab.id}
                     onClick={() => {
+                      if (isLocked) {
+                        setLifecycleState("auth");
+                        return;
+                      }
                       setActiveTab(tab.id);
                       setMobileMenuOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-wider text-left transition-all relative cursor-pointer ${
+                    className={`w-full flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-wider text-left transition-all relative ${
+                      isLocked ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                    } ${
                       isActive 
                         ? isLightMode
                           ? "bg-white text-[#0f4c81] border border-stone-300/80 shadow-[0_3px_10px_rgba(0,0,0,0.02)] font-black"
@@ -939,18 +963,24 @@ export default function App() {
                           : "text-[#7c6bb5] hover:bg-purple-950/40 hover:text-white border border-transparent"
                     }`}
                   >
-                    <TabIcon className={`w-4 h-4 shrink-0 ${
-                      isActive 
-                        ? isLightMode 
-                          ? "text-[#0f4c81]" 
-                          : "text-cyan-400 drop-shadow-[0_0_3px_#22d3ee]" 
-                        : isLightMode 
-                          ? "text-stone-400" 
-                          : "text-[#7c6bb5]"
-                    }`} />
-                    <span>{tab.label}</span>
-                    {isActive && (
-                      <div className={`absolute right-3.5 top-4.5 w-1.5 h-1.5 rounded-full ${
+                    <div className="flex items-center gap-3">
+                      <TabIcon className={`w-4 h-4 shrink-0 ${
+                        isActive 
+                          ? isLightMode 
+                            ? "text-[#0f4c81]" 
+                            : "text-cyan-400 drop-shadow-[0_0_3px_#22d3ee]" 
+                          : isLightMode 
+                            ? "text-stone-400" 
+                            : "text-[#7c6bb5]"
+                      }`} />
+                      <span>{tab.label}</span>
+                    </div>
+
+                    {/* Indicators */}
+                    {isLocked ? (
+                      <Lock className={`w-3.5 h-3.5 shrink-0 ${isLightMode ? "text-stone-400" : "text-purple-500/60"}`} />
+                    ) : isActive && (
+                      <div className={`w-1.5 h-1.5 rounded-full ${
                         isLightMode ? "bg-[#0f4c81]" : "bg-cyan-400 shadow-[0_0_8px_#22d3ee]"
                       }`} />
                     )}
@@ -959,18 +989,20 @@ export default function App() {
               })}
 
               {/* Global Sign Out Button */}
-              <button
-                id="global-logout-btn"
-                onClick={() => setShowLogoutConfirm(true)}
-                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider text-left transition-all mt-4 cursor-pointer border ${
-                  isLightMode 
-                    ? "text-[#dc2626] hover:bg-red-50/60 border-red-200 hover:border-red-400" 
-                    : "text-[#f43f5e] hover:bg-rose-950/20 border-rose-950/40 hover:border-rose-850"
-                }`}
-              >
-                <LogOut className="w-4 h-4 shrink-0 text-[#f43f5e]" />
-                <span>{t("common.logout")}</span>
-              </button>
+              {currentUser && (
+                <button
+                  id="global-logout-btn"
+                  onClick={() => setShowLogoutConfirm(true)}
+                  className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-[11px] font-black uppercase tracking-wider text-left transition-all mt-4 cursor-pointer border ${
+                    isLightMode 
+                      ? "text-[#dc2626] hover:bg-red-50/60 border-red-200 hover:border-red-400" 
+                      : "text-[#f43f5e] hover:bg-rose-950/20 border-rose-950/40 hover:border-rose-850"
+                  }`}
+                >
+                  <LogOut className="w-4 h-4 shrink-0 text-[#f43f5e]" />
+                  <span>{t("common.logout")}</span>
+                </button>
+              )}
             </nav>
           </div>
 

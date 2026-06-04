@@ -18,6 +18,18 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@types": [
+        "./src/types/index.ts"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@data/*": [
+        "./src/data/*"
       ]
     },
     "allowImportingTsExtensions": true,
