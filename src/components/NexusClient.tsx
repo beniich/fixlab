@@ -71,7 +71,7 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             Nexus Pro Pricing Plans
           </h2>
           <p className="text-stone-500 text-xs">
-            Sovereign Device Nexus - SaaS Pricing and Plans. Orchestration slots tailored for all scales of operation.
+            FixLab - SaaS Pricing and Plans. Orchestration slots tailored for all scales of operation.
           </p>
         </div>
 
@@ -275,3 +275,4 @@ export function NexusClient({ isLightMode, onNavigate, showToast, isLoggedIn, ac
     </div>
   );
 }
+

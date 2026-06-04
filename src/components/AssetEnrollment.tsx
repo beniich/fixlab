@@ -244,7 +244,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
     setIsExecutingScript(true);
     setTerminalLogs([
       `[root@nexus-client]# ./enroll-agent.sh --token ${bashTokenInput}`,
-      "--- INITIALIZING SOVEREIGN NEXUS ENROLLMENT ---",
+      "--- INITIALIZING FixLab ENROLLMENT ---",
       "[system] Authenticating execution scope... kernel-mode established.",
       "[probe] IP Check: Validating network route to Sovereignty Gateway..."
     ]);
@@ -527,7 +527,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
             Asset Provisioning / Asset Security Protocol
           </h2>
           <p className="text-[10px] text-stone-400">
-            Integrate new infrastructure elements into the Sovereign Nexus on a permanent or volatile basis.
+            Integrate new infrastructure elements into the FixLab on a permanent or volatile basis.
           </p>
         </div>
 
@@ -953,7 +953,7 @@ export const AssetEnrollment: React.FC<AssetEnrollmentProps> = ({ currentRole, d
                     </div>
 
                     <div className="text-center border-b border-stone-800 pb-5">
-                      <h1 className="text-sm font-black uppercase tracking-[0.5em] text-white">Sovereign Nexus Command</h1>
+                      <h1 className="text-sm font-black uppercase tracking-[0.5em] text-white">FixLab Command</h1>
                       <p className="text-[9px] font-bold text-stone-500 mt-1 uppercase tracking-tight">Tactical Asset Enrollment Form - Clearance Level 4</p>
                       <button
                         type="button"
@@ -1469,3 +1469,4 @@ $ ls -la /dev/shm/*
     </div>
   );
 };
+

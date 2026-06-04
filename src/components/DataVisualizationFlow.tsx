@@ -32,7 +32,7 @@ export const DataVisualizationFlow: React.FC<DataVisualizationFlowProps> = () =>
             <span>DATA VISUALIZATION FLOW</span>
           </h2>
           <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold tracking-widest">
-            Sovereign Device Nexus - Live Connection Signals
+            FixLab - Live Connection Signals
           </p>
         </div>
         <div>
@@ -278,3 +278,4 @@ export const DataVisualizationFlow: React.FC<DataVisualizationFlowProps> = () =>
     </div>
   );
 };
+

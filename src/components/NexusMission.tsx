@@ -57,7 +57,7 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
               <Server className="w-4 h-4" /> Pioneering Sovereign Security
             </div>
             <p className="text-stone-300 text-sm leading-relaxed font-sans">
-              At Sovereign Device Nexus, our mission is to empower organizations with absolute control over their device ecosystems. In an increasingly interconnected world, we believe that data sovereignty and robust security are the cornerstones of a trusted digital future. 
+              At FixLab, our mission is to empower organizations with absolute control over their device ecosystems. In an increasingly interconnected world, we believe that data sovereignty and robust security are the cornerstones of a trusted digital future. 
             </p>
             <p className="text-stone-400 text-xs leading-relaxed font-sans mt-2">
               We build the foundations of a self-managed network where each hardware controller becomes a hermetic anchor, immune to signature spoofing attempts.
@@ -185,7 +185,7 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
             Join the Sovereign Future
           </h4>
           <p className="text-white/80 text-xs font-sans max-w-xl">
-            Experience the power of the Sovereign Device Nexus platform and secure your infrastructure today.
+            Experience the power of the FixLab platform and secure your infrastructure today.
           </p>
         </div>
 
@@ -204,3 +204,4 @@ export function NexusMission({ isLightMode, onNavigate, showToast }: MissionProp
     </div>
   );
 }
+

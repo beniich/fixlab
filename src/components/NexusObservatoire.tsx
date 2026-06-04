@@ -54,7 +54,7 @@ export function NexusObservatoire({
       author: "CyberSec Team",
       timestamp: "2026-10-28 09:15",
       isStaticVisualOnly: false,
-      content: "Secure device onboarding is critical for protecting physical ecosystems. When a node bootstraps onto the Sovereign Device Nexus, it requires unique hardware-based signatures (PUF - Physical Unclonable Functions).\n\nKey Recommendations:\n1. Never use default pre-shared keys.\n2. Leverage out-of-band certificate generation.\n3. Validate the hash key before committing transmission authority.",
+      content: "Secure device onboarding is critical for protecting physical ecosystems. When a node bootstraps onto the FixLab, it requires unique hardware-based signatures (PUF - Physical Unclonable Functions).\n\nKey Recommendations:\n1. Never use default pre-shared keys.\n2. Leverage out-of-band certificate generation.\n3. Validate the hash key before committing transmission authority.",
       imageUrl: "lock"
     },
     {
@@ -69,12 +69,12 @@ export function NexusObservatoire({
     },
     {
       id: "SA-3",
-      title: "Sovereign Nexus Platform Update: Enhanced Encryption",
+      title: "FixLab Platform Update: Enhanced Encryption",
       category: "PLATFORM",
       author: "Core Eng",
       timestamp: "2026-10-26 14:00",
       isStaticVisualOnly: false,
-      content: "Version 4.5 of the Sovereign Device Nexus is officially deployed! This update introduces advanced ring-cryptography signatures and decreases key renegotiation latencies by 35%.\n\nChanges have been implemented passively and won't affect active satellite routes in production.",
+      content: "Version 4.5 of the FixLab is officially deployed! This update introduces advanced ring-cryptography signatures and decreases key renegotiation latencies by 35%.\n\nChanges have been implemented passively and won't affect active satellite routes in production.",
       imageUrl: "encryption"
     },
     {
@@ -491,3 +491,4 @@ export function NexusObservatoire({
     </div>
   );
 }
+

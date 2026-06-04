@@ -284,7 +284,7 @@ export const GlobalHorizonMap: React.FC<GlobalHorizonMapProps> = ({
             <span className="text-sky-500 cursor-default uppercase">Geographic Fleet Map</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Sovereign Device Nexus — Visualizing real-time nodes and security telemetry worldwide
+            FixLab — Visualizing real-time nodes and security telemetry worldwide
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -760,3 +760,4 @@ export const GlobalHorizonMap: React.FC<GlobalHorizonMapProps> = ({
     </div>
   );
 };
+

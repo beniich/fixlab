@@ -493,7 +493,7 @@ export const ObservationDeck: React.FC<ObservationDeckProps> = ({ devices, curre
 
               <div className="space-y-3">
                 <p className="text-[10px] text-stone-400 leading-relaxed">
-                  The Sovereign Nexus continuous AI analyzer scans guest-side viewport frames using Optical Character Recognition (OCR).
+                  The FixLab continuous AI analyzer scans guest-side viewport frames using Optical Character Recognition (OCR).
                 </p>
 
                 {/* Simulated Real OCR content display */}
@@ -545,3 +545,4 @@ export const ObservationDeck: React.FC<ObservationDeckProps> = ({ devices, curre
     </div>
   );
 };
+

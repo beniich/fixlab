@@ -81,7 +81,7 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
     setTimeout(() => {
       setSimulationStatus("SECURED");
       setSimulationLogs(prev => [
-        `[${new Date().toLocaleTimeString()}] ✔ INTEGRITY CHECK PASSED: Sovereign Device Nexus environment fully sealed.`,
+        `[${new Date().toLocaleTimeString()}] ✔ INTEGRITY CHECK PASSED: FixLab environment fully sealed.`,
         ...prev
       ]);
       showToast("Handshake complete: System verified completely secure.");
@@ -119,10 +119,10 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
             </svg>
           </div>
           <div>
-            <span className="font-mono text-[9px] text-[#ff7e00] block tracking-[0.18em] font-black uppercase">[ SOUVERAIN NEXUS ]</span>
+            <span className="font-mono text-[9px] text-[#ff7e00] block tracking-[0.18em] font-black uppercase">[ FIXLAB ]</span>
             <span className={`text-sm font-sans font-black uppercase tracking-wider transition-colors ${
               isLightMode ? "text-stone-900" : "text-white"
-            }`}>Sovereign Device Nexus</span>
+            }`}>FixLab</span>
           </div>
         </div>
 
@@ -226,16 +226,16 @@ export function NexusAtrium({ isLightMode, onNavigate, showToast, isLoggedIn, ac
               <h2 className={`text-4xl md:text-5xl lg:text-6xl font-black font-sans tracking-tight leading-[1.1] ${
                 isLightMode ? "text-stone-900" : "text-white"
               }`}>
-                Sovereign <br />
+                Fix<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8d00] to-[#ff3c00] drop-shadow-[0_2px_15px_rgba(255,90,0,0.2)]">
-                  Device Nexus
+                  Lab
                 </span>
               </h2>
 
               <p className={`text-sm leading-relaxed max-w-md font-medium ${
                 isLightMode ? "text-stone-600" : "text-zinc-400"
               }`}>
-                Secure. Manage. Connect. Your Sovereign Device Ecosystem.
+                Secure. Manage. Connect. Your FixLab Device Ecosystem.
                 Establish end-to-end cryptographic tunnels, protect critical physical infrastructure nodes, and harness AI-driven real-time vector security monitoring.
               </p>
 

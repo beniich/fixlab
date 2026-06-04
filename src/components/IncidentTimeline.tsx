@@ -80,7 +80,7 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
       {/* Header section */}
       <div className="text-center mb-12 relative z-10">
         <span className="font-mono text-amber-600/70 text-[9px] uppercase tracking-[0.2em] font-black block mb-1">
-          Sovereign Device Nexus
+          FixLab
         </span>
         <h1 className="text-4xl font-light text-zinc-900 tracking-tight font-sans">
           Refined Incident Timeline
@@ -206,3 +206,4 @@ export const IncidentTimeline: React.FC<IncidentTimelineProps> = ({
     </div>
   );
 };
+

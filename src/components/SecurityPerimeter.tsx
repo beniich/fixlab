@@ -36,7 +36,7 @@ export const SecurityPerimeter: React.FC<SecurityPerimeterProps> = () => {
             SECURITY PERIMETER HUB
           </h2>
           <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold tracking-widest">
-            Sovereign Device Nexus - High-end Fleet Defense Overview
+            FixLab - High-end Fleet Defense Overview
           </p>
         </div>
         <div className="mt-2 md:mt-0">
@@ -176,3 +176,4 @@ export const SecurityPerimeter: React.FC<SecurityPerimeterProps> = () => {
     </div>
   );
 };
+

@@ -69,7 +69,7 @@ export const HealthMatrix: React.FC<HealthMatrixProps> = ({
             <span>Fleet Health Matrix</span>
           </h1>
           <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold tracking-wider">
-            Sovereign device nexus telemetry cluster matrix
+            FixLab telemetry cluster matrix
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -167,3 +167,4 @@ export const HealthMatrix: React.FC<HealthMatrixProps> = ({
     </div>
   );
 };
+

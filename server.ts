@@ -2047,7 +2047,7 @@ Request timeout for icmp_seq 2 (Unreachable target IP boundary).
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`🛡️ Sovereign Device Nexus Manager running full-stack at http://localhost:${PORT}`);
+    console.log(`🛡️ FixLab — running full-stack at http://localhost:${PORT}`);
   });
 }
 

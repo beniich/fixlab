@@ -165,7 +165,7 @@ export function NexusSecurity({
                 Secure User Login
               </h3>
               <p className="text-stone-500 text-[11px]">
-                Sovereign Device Nexus Credentials Gateway
+                FixLab Credentials Gateway
               </p>
             </div>
 
@@ -496,3 +496,4 @@ export function NexusSecurity({
     </div>
   );
 }
+

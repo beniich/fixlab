@@ -48,7 +48,7 @@ export function NexusLaboratoire({
             SYSTEM ARCHITECTURE TECHNICAL VIEW
           </h2>
           <p className="text-stone-500 text-xs">
-            Sovereign Device Nexus - Technical System Architecture and Real-Time Flows. Click on circles to trigger simulation.
+            FixLab - Technical System Architecture and Real-Time Flows. Click on circles to trigger simulation.
           </p>
         </div>
 
@@ -247,7 +247,7 @@ export function NexusLaboratoire({
               READY TO SECURE AND OPTIMIZE YOUR DEVICE FLEET?
             </h4>
             <p className="text-stone-400 text-xs mt-1">
-              Start your journey with Sovereign Device Nexus today.
+              Start your journey with FixLab today.
             </p>
           </div>
           <button
@@ -431,3 +431,4 @@ export function NexusLaboratoire({
     </div>
   );
 }
+
