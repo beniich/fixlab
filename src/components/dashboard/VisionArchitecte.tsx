@@ -43,9 +43,10 @@ interface VisionProps {
   devices?: any[];
   logs?: any[];
   isLightMode?: boolean;
+  onRequestAuth?: () => void;
 }
 
-export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentIsLightMode }: VisionProps) {
+export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentIsLightMode, onRequestAuth }: VisionProps) {
   const [isLightMode, setIsLightMode] = useState<boolean>(() => {
     return parentIsLightMode !== undefined ? parentIsLightMode : false;
   });
@@ -401,10 +402,10 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
   return (
     <div 
       id="vision-architecte-container"
-      className={`min-h-[100vh] p-4 md:p-8 font-sans transition-all duration-500 relative overflow-hidden rounded-[2.5rem] border ${
+      className={`min-h-screen w-full font-sans transition-all duration-500 relative overflow-hidden ${
         isLightMode 
-          ? "bg-[#FAF9F5] text-[#1E1E1E] border-stone-200/95 shadow-[0_20px_50px_rgba(0,0,0,0.05)]" 
-          : "bg-[#08090b] text-[#F3F4F6] border-neutral-900 shadow-[0_25px_60px_rgba(0,0,0,0.6)]"
+          ? "bg-[#FAF9F5] text-[#1E1E1E]" 
+          : "bg-[#08090b] text-[#F3F4F6]"
       }`}
     >
       {/* Absolute Ambient structural grids blueprint paper */}
@@ -529,6 +530,19 @@ export function VisionArchitecte({ devices = [], logs = [], isLightMode: parentI
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-mono text-[9px] text-[#00dbe9] font-bold tracking-wider uppercase">Synchronized Link</span>
               </div>
+            )}
+
+            {/* Premium CTA — only shown when the component is rendered as a public landing page */}
+            {onRequestAuth && (
+              <button
+                id="vision-premium-access-btn"
+                onClick={onRequestAuth}
+                className="ml-2 relative group flex items-center gap-2 px-4 py-2 rounded-xl font-mono text-[9px] font-black uppercase tracking-widest text-black bg-gradient-to-r from-[#00dbe9] to-[#7c3aed] shadow-[0_0_20px_rgba(0,219,233,0.4)] hover:shadow-[0_0_32px_rgba(0,219,233,0.7)] transition-all duration-300 cursor-pointer overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12" />
+                <Zap className="w-3.5 h-3.5 text-black shrink-0" />
+                <span>Accès Premium</span>
+              </button>
             )}
           </div>
         </div>

@@ -831,13 +831,20 @@ export default function App() {
   }
 
 
-  // Sovereign User Lifecycle Orchestration Funnel
-  if (lifecycleState === "landing" && !currentUser) {
+  // ═══════════════════════════════════════════════════════════════════════
+  // GUEST MODE: Render Vision Architecte as an immersive full-screen website
+  // No sidebar, no status bar — pure landing page experience.
+  // ═══════════════════════════════════════════════════════════════════════
+  if (!currentUser && lifecycleState !== "auth" && lifecycleState !== "handshake" && lifecycleState !== "pricing") {
     return (
-      <PublicLanding 
-        onInitiateLogin={() => setLifecycleState("auth")}
-        onInitiateRegister={() => setLifecycleState("auth")}
-      />
+      <div id="public-landing-root" className="min-h-screen w-full bg-[#08090b] text-[#F3F4F6]">
+        <VisionArchitecte
+          devices={devices}
+          logs={logs}
+          isLightMode={false}
+          onRequestAuth={() => setLifecycleState("auth")}
+        />
+      </div>
     );
   }
 
@@ -879,6 +886,8 @@ export default function App() {
       />
     );
   }
+
+
 
   return (
     <div id="sovereign-root" className={`min-h-screen flex flex-col justify-between selection:bg-cyan-500/30 selection:text-white transition-colors duration-300 ${
